@@ -1,8 +1,34 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# ⚙ Getting Started
 
-## Getting Started
+### Set up a Github token to make it easy to install the private algodex-sdk npm package.
 
-First, run the development server:
+https://github.com/settings/tokens
+
+Make sure you add the "read:packages" permission.
+Copy and save the secret.
+
+In a Linux terminal (git-bash on Windows):
+
+create an ~/.npmrc file with the following contents:
+```
+//npm.pkg.github.com/:_authToken=tokensecretgoeshere
+@algodex:registry=https://npm.pkg.github.com/
+```
+or you can use npm login with your token
+```
+$ npm login --scope=@algodex --registry=https://npm.pkg.github.com
+> Username: USERNAME
+> Password: TOKEN_SECRET
+> Email: PUBLIC-EMAIL-ADDRESS
+```
+
+### Clone and install the necessary libraries
+
+```
+yarn
+```
+
+### Run the development server:
 
 ```bash
 npm run dev
@@ -11,6 +37,8 @@ yarn dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+### Further edits info (default docs):
 
 You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
 
@@ -32,28 +60,3 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-
-## 📦 Package Aliases:
-
-```json
-{
-  "@/components/*": [
-    "./components/*"
-  ],
-  "@/styles/*": [
-    "./styles/*"
-  ],
-  "@/stores/*": [
-    "./stores/*"
-  ],
-  "@/hooks/*": [
-    "./hooks/*"
-  ],
-  "@/services/*": [
-    "./services/*"
-  ],
-  "@/utils/*": [
-    "./utils/*"
-  ]
-}
-```
