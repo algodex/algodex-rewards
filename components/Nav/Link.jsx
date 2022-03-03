@@ -1,15 +1,19 @@
 import * as React from 'react'
 import PropTypes from 'prop-types'
 import clsx from 'clsx'
-import { useRouter } from 'next/router'
+
+// Next Components
 import NextLink from 'next/link'
-import MuiLink from '@mui/material/Link'
+import { useRouter } from 'next/router'
+
+// MUI Components
 import { styled } from '@mui/material/styles'
+import MuiLink from '@mui/material/Link'
 
 // Add support for the sx prop for consistency with the other branches.
 const Anchor = styled('a')({})
 
-export const NextLinkComposed = React.forwardRef(function NextLinkComposed(props, ref) {
+const NextLinkComposed = React.forwardRef(function NextLinkComposed(props, ref) {
   // eslint-disable-next-line no-unused-vars
   const { to, linkAs, href, replace, scroll, shallow, prefetch, locale, ...other } = props
 
@@ -30,19 +34,58 @@ export const NextLinkComposed = React.forwardRef(function NextLinkComposed(props
 })
 
 NextLinkComposed.propTypes = {
+  /**
+   *
+   */
   href: PropTypes.any,
+  /**
+   *
+   */
   linkAs: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+  /**
+   *
+   */
   locale: PropTypes.string,
+  /**
+   *
+   */
   passHref: PropTypes.bool,
+  /**
+   *
+   */
   prefetch: PropTypes.bool,
+  /**
+   *
+   */
   replace: PropTypes.bool,
+  /**
+   *
+   */
   scroll: PropTypes.bool,
+  /**
+   *
+   */
   shallow: PropTypes.bool,
+  /**
+   *
+   */
   to: PropTypes.oneOfType([PropTypes.object, PropTypes.string]).isRequired,
 }
 
-// A styled version of the Next.js Link component:
-// https://nextjs.org/docs/api-reference/next/link
+/**
+ * Link
+ *
+ * A styled version of the Next.js Link component
+ *
+ * @see https://nextjs.org/docs/api-reference/next/link
+ * @component
+ * @example
+ * render(
+ *   <Link href="/" color="secondary">
+ *     Go to the home page
+ *   </Link>
+ * )
+ */
 const Link = React.forwardRef(function Link(props, ref) {
   const {
     activeClassName = 'active',
@@ -89,12 +132,34 @@ const Link = React.forwardRef(function Link(props, ref) {
 })
 
 Link.propTypes = {
+  locale: PropTypes.any,
+  /**
+   * Active Classname
+   */
   activeClassName: PropTypes.string,
+  /**
+   * As component
+   */
   as: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+  /**
+   * Class name to apply
+   */
   className: PropTypes.string,
+  /**
+   * Href location
+   */
   href: PropTypes.any,
+  /**
+   * Link as Component
+   */
   linkAs: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+  /**
+   * Remove link style
+   */
   noLinkStyle: PropTypes.bool,
+  /**
+   * Element role
+   */
   role: PropTypes.string,
 }
 

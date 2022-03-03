@@ -25,7 +25,7 @@ export function App(props) {
       <ThemeProvider theme={theme}>
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
-        <Layout >
+        <Layout>
           <Component {...pageProps} />
         </Layout>
       </ThemeProvider>

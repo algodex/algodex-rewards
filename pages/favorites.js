@@ -3,15 +3,16 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Container from '@mui/material/Container'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-import Link from '@/components/Link'
+import Link from '@/components/Nav/Link'
 import {useTranslation} from 'next-i18next'
+import {defaults} from 'next-i18next.config'
 
 export async function getStaticProps({ locale }) {
   return {
     props: {
       ...(await serverSideTranslations(
         locale,
-        ['common', 'favorites', 'bottom-navigation', 'app-bar-toolbar']
+        [...defaults, 'favorites']
       )),
     },
   }
@@ -23,7 +24,7 @@ export default function Home() {
     <>
       <Head>
         <title>{t('title')}</title>
-        <meta name="description" content="About Page" />
+        <meta name="description" content={t('description')} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Container maxWidth="md">
@@ -32,7 +33,7 @@ export default function Home() {
             {t('heading')}
           </Typography>
           <Link href="/" color="secondary">
-            Go to the home page
+            {t('home-page-link')}
           </Link>
           <Typography variant="body1">
             {t('body')}

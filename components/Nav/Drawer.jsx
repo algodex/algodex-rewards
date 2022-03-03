@@ -1,5 +1,6 @@
 import * as React from 'react'
 import {useTranslation} from 'next-i18next'
+import PropTypes from 'prop-types'
 
 // MUI Components
 import MUIDrawer from '@mui/material/Drawer'
@@ -19,10 +20,21 @@ import MailIcon from '@mui/icons-material/Mail'
 import FavoriteIcon from '@mui/icons-material/Favorite'
 
 // Custom MUI Components
-import ListItemLink from '@/components/ListItemLink'
+import ListItemLink from '@/components/Nav/ListItemLink'
 
-function Drawer({width, ...props}){
+
+/**
+ * Drawer
+ * @component
+ * @param width
+ * @param offset
+ * @param props
+ * @returns {JSX.Element}
+ * @constructor
+ */
+function Drawer({width, offset, ...props}){
   const {t} = useTranslation('drawer')
+  const { t: common } = useTranslation('common')
   return (
     <MUIDrawer
       variant="permanent"
@@ -34,22 +46,22 @@ function Drawer({width, ...props}){
       {...props}
     >
       {/* Add Toolbar for spacing */}
-      <Toolbar />
+      <Toolbar sx={{height: offset}}/>
       <Box sx={{ overflow: 'auto' }}>
         <List
           subheader={
             <ListSubheader component="div" id="nested-list-subheader">
-              {t('Routeable Pages')}
+              {t('title')}
             </ListSubheader>
           }>
-          <ListItemLink to="/" icon={<HomeIcon/>} primary={t('Home')}/>
-          <ListItemLink to="/favorites" icon={<FavoriteIcon/>} primary={t('Favorites')}/>
+          <ListItemLink to="/" icon={<HomeIcon/>} primary={common('home')}/>
+          <ListItemLink to="/favorites" icon={<FavoriteIcon/>} primary={common('favorites')}/>
         </List>
         <Divider />
         <List
           subheader={
             <ListSubheader component="div" id="nested-list-subheader">
-              {t('Example List Items')}
+              {t('subtitle')}
             </ListSubheader>
           }
         >
@@ -64,8 +76,18 @@ function Drawer({width, ...props}){
         </List>
       </Box>
     </MUIDrawer>
-
   )
+}
+
+Drawer.propTypes = {
+  /**
+   * width
+   */
+  width: PropTypes.number.isRequired,
+  /**
+   * offset
+   */
+  offset: PropTypes.number
 }
 
 Drawer.defaultProps = {

@@ -1,12 +1,15 @@
-import AppBar from '@mui/material/AppBar'
-import Paper from '@mui/material/Paper'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import {useTheme} from '@mui/material/styles'
-
-import DefaultToolbar from '@/components/Toolbar'
-import DefaultBottomNavigation from '@/components/BottomNavigation'
-import DefaultDrawer from '@/components/Drawer'
+import AppBar from '@mui/material/AppBar'
+import Paper from '@mui/material/Paper'
 import Box from '@mui/material/Box'
+import PropTypes from 'prop-types'
+
+// Defaults
+import DefaultToolbar from '@/components/Nav/Toolbar'
+import DefaultBottomNavigation from '@/components/Nav/BottomNavigation'
+import DefaultDrawer from '@/components/Nav/Drawer'
+
 
 /**
  * Layout Component
@@ -18,28 +21,35 @@ import Box from '@mui/material/Box'
  * @param componentsProps
  * @returns {JSX.Element}
  * @constructor
+ * @component
  */
 export function Layout({children, components, componentsProps}){
   const {Toolbar, BottomNavigation, Drawer} = components
   const drawerWidth = 240
+  // Example for Changing Toolbar Height
+  // const toolbarHeight = 200
+  const toolbarHeight = undefined
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
-  // Example of a Responsive Layout
+  // Example of a Responsive Layout with Fixed Viewport
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', maxHeight: '100vh', height:'100vh' }}>
       <AppBar position="static" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
-        <Toolbar {...componentsProps.Toolbar}/>
+        <Toolbar isMobile={isMobile} height={toolbarHeight} {...componentsProps.Toolbar}/>
       </AppBar>
+      {/* Flex row for when the Drawer is visible */}
       <Box sx={{display: 'flex', flex: 1, overflow: 'auto'}}>
         {
           // Show the Desktop Drawer
           !isMobile &&
         <Drawer
           width={drawerWidth}
+          offset={toolbarHeight}
           {...componentsProps.Drawer}
         />
         }
+        {/* Display the Page Component */}
         {children}
       </Box>
       {
@@ -57,6 +67,14 @@ export function Layout({children, components, componentsProps}){
       }
     </Box>
   )
+}
+
+Layout.propTypes = {
+  components: PropTypes.shape({
+    Toolbar: PropTypes.elementType.isRequired,
+    BottomNavigation: PropTypes.elementType.isRequired,
+    Drawer: PropTypes.elementType.isRequired
+  }).isRequired
 }
 
 Layout.defaultProps = {

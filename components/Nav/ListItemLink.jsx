@@ -1,13 +1,26 @@
-import CustomLink from './Link'
-import ListItem from '@mui/material/ListItem'
-import ListItemIcon from '@mui/material/ListItemIcon'
-import ListItemText from '@mui/material/ListItemText'
-import PropTypes from 'prop-types'
-import {forwardRef, useMemo} from 'react'
+import React, {forwardRef, useMemo} from 'react'
 import {useRouter} from 'next/router'
+import PropTypes from 'prop-types'
 
-const ListItemLink = (props) => {
-  const { icon, primary, to } = props
+// MUI Components
+import ListItem from '@mui/material/ListItem'
+import ListItemText from '@mui/material/ListItemText'
+import ListItemIcon from '@mui/material/ListItemIcon'
+
+// Custom Components
+import CustomLink from '@/components/Nav/Link'
+
+/**
+ * ListItemLink
+ *
+ * @param icon
+ * @param primary
+ * @param to
+ * @returns {JSX.Element}
+ * @see https://mui.com/guides/routing/#list
+ * @constructor
+ */
+function ListItemLink({ icon, primary, to }) {
   const router = useRouter()
   const activeNav = router.asPath
 
@@ -30,8 +43,17 @@ const ListItemLink = (props) => {
 }
 
 ListItemLink.propTypes = {
+  /**
+   * icon
+   */
   icon: PropTypes.element,
+  /**
+   * primary
+   */
   primary: PropTypes.string.isRequired,
+  /**
+   * to
+   */
   to: PropTypes.string.isRequired,
 }
 
