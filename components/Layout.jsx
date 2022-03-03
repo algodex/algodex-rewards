@@ -1,84 +1,83 @@
 import AppBar from '@mui/material/AppBar'
-import Toolbar from '@mui/material/Toolbar'
-import IconButton from '@mui/material/IconButton'
-import MenuIcon from '@mui/icons-material/Menu'
-import Typography from '@mui/material/Typography'
-import Button from '@mui/material/Button'
-import {BottomNavigation, BottomNavigationAction, Paper} from '@mui/material'
-import HomeIcon from '@mui/icons-material/Home'
-import FavoriteIcon from '@mui/icons-material/Favorite'
-import {useRouter} from 'next/router'
-import {useCallback} from 'react'
+import Paper from '@mui/material/Paper'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import {useTheme} from '@mui/material/styles'
 
-const DefaultToolbar = () => (<Toolbar>
-  <IconButton
-    size="large"
-    edge="start"
-    color="inherit"
-    aria-label="menu"
-    sx={{ mr: 2 }}
-  >
-    <MenuIcon />
-  </IconButton>
-  <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-    Page Title
-  </Typography>
-  <Button color="inherit">Call To Action</Button>
-</Toolbar>)
+import DefaultToolbar from '@/components/Toolbar'
+import DefaultBottomNavigation from '@/components/BottomNavigation'
+import DefaultDrawer from '@/components/Drawer'
+import Box from '@mui/material/Box'
 
-const DefaultBottomNavigation = () => {
-  const router = useRouter()
-  const activeNav = router.asPath
-
-  const onChange = useCallback((e, newValue)=>{
-    router.push(newValue)
-  }, [router])
-
-  return (
-    <BottomNavigation
-      showLabels
-      value={activeNav}
-      onChange={onChange}
-    >
-      <BottomNavigationAction
-        to="/"
-        value="/"
-        label="Home"
-        icon={<HomeIcon />}
-      />
-      <BottomNavigationAction
-        to="/favorites"
-        value="/favorites"
-        label="Favorites"
-        icon={<FavoriteIcon />}
-      />
-    </BottomNavigation>
-  )
-}
-
+/**
+ * Layout Component
+ *
+ * Component includes three slots
+ *
+ * @param children
+ * @param components
+ * @param componentsProps
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export function Layout({children, components, componentsProps}){
-  const {Toolbar, BottomNavigation} = components
+  const {Toolbar, BottomNavigation, Drawer} = components
+  const drawerWidth = 240
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+
+  // Example of a Responsive Layout
   return (
-    <>
-      <AppBar position="static">
+    <Box sx={{ display: 'flex', flexDirection: 'column', maxHeight: '100vh' }}>
+      <AppBar position="static" sx={{ flex: 1, zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <Toolbar {...componentsProps.Toolbar}/>
       </AppBar>
-      {children}
-      <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
-        <BottomNavigation {...componentsProps.BottomNavigation}/>
-      </Paper>
-    </>
+      <Box sx={{display: 'flex', flex: 1, overflow: 'auto'}}>
+        {
+          // Show the Desktop Drawer
+          !isMobile &&
+        <Drawer
+          width={drawerWidth}
+          {...componentsProps.Drawer}
+        />
+        }
+        <Box
+          component="main"
+          sx={{
+            display: 'flex',
+            flex:1,
+            overflow: 'auto',
+            height: '100%'
+          }}>
+          {children}
+        </Box>
+      </Box>
+      {
+        // Show the Mobile Navigation
+        isMobile &&
+        <Paper
+          sx={{
+            position: 'static',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            zIndex: (theme) => theme.zIndex.drawer + 1}} elevation={3}>
+          <BottomNavigation {...componentsProps.BottomNavigation}/>
+        </Paper>
+      }
+    </Box>
   )
 }
 
 Layout.defaultProps = {
   components: {
     Toolbar: DefaultToolbar,
-    BottomNavigation: DefaultBottomNavigation
+    BottomNavigation: DefaultBottomNavigation,
+    Drawer: DefaultDrawer
   },
   componentsProps: {
     Toolbar: {},
-    BottomNavigation: {}
+    BottomNavigation: {},
+    Drawer: {}
   }
 }
 
