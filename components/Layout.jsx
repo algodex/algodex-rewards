@@ -27,8 +27,8 @@ export function Layout({children, components, componentsProps}){
 
   // Example of a Responsive Layout
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', maxHeight: '100vh' }}>
-      <AppBar position="static" sx={{ flex: 1, zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', maxHeight: '100vh', height:'100vh' }}>
+      <AppBar position="static" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <Toolbar {...componentsProps.Toolbar}/>
       </AppBar>
       <Box sx={{display: 'flex', flex: 1, overflow: 'auto'}}>
@@ -40,16 +40,7 @@ export function Layout({children, components, componentsProps}){
           {...componentsProps.Drawer}
         />
         }
-        <Box
-          component="main"
-          sx={{
-            display: 'flex',
-            flex:1,
-            overflow: 'auto',
-            height: '100%'
-          }}>
-          {children}
-        </Box>
+        {children}
       </Box>
       {
         // Show the Mobile Navigation
