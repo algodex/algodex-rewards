@@ -7,7 +7,7 @@ import Link from '@/components/Nav/Link'
 import {useTranslation} from 'next-i18next'
 import {defaults} from 'next-i18next.config'
 
-export async function getStaticProps({ locale }) {
+export async function getServerSideProps({ locale }) {
   return {
     props: {
       ...(await serverSideTranslations(

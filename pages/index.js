@@ -8,7 +8,7 @@ import {useTranslation} from 'next-i18next'
 import {serverSideTranslations} from 'next-i18next/serverSideTranslations'
 import {defaults} from '../next-i18next.config'
 import Box from '@mui/material/Box'
-export async function getStaticProps({ locale }) {
+export async function getServerSideProps({ locale }) {
   return {
     props: {
       ...(await serverSideTranslations(
