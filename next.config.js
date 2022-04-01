@@ -1,10 +1,13 @@
+const withPWA = require('next-pwa')
+const { i18n } = require('./next-i18next.config')
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  eslint: {
-    dirs: ['pages', 'utils', 'components'],
-    // Only run ESLint on the 'pages' and 'utils' directories during production builds (next build)
-  },
+  i18n,
+  pwa: {
+    dest: 'public',
+    disable: process.env.NODE_ENV === 'development',
+  }
 }
 
-module.exports = nextConfig
+module.exports = withPWA(nextConfig)

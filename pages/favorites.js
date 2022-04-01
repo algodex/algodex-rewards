@@ -1,25 +1,43 @@
 import Head from 'next/head'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Container from '@mui/material/Container'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-import Link from '@/components/Link'
+import Link from '@/components/Nav/Link'
+import {useTranslation} from 'next-i18next'
+import {defaults} from 'next-i18next.config'
+
+export async function getServerSideProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(
+        locale,
+        [...defaults, 'favorites']
+      )),
+    },
+  }
+}
 
 export default function Home() {
+  const { t } = useTranslation('favorites')
   return (
     <>
       <Head>
-        <title>About</title>
-        <meta name="description" content="About Page" />
+        <title>{t('title')}</title>
+        <meta name="description" content={t('description')} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Container maxWidth="sm">
+      <Container maxWidth="md">
         <Box sx={{ my: 4 }}>
           <Typography variant="h4" component="h1" gutterBottom>
-            Example Favorites Page
+            {t('heading')}
           </Typography>
           <Link href="/" color="secondary">
-            Go to the home page
+            {t('home-page-link')}
           </Link>
+          <Typography variant="body1">
+            {t('body')}
+          </Typography>
         </Box>
       </Container>
     </>
