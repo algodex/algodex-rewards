@@ -1,4 +1,6 @@
 {
-  "home": "Home",
-  "favorites": "Favorites"
+  "home": "HOME",
+  "chart": "CHART",
+  "wallet": "WALLET",
+  "periods": "PERIODS"
 }

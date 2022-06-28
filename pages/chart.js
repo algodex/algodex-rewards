@@ -1,20 +1,18 @@
-import React, { useContext } from 'react'
-import { useTranslation } from 'next-i18next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { defaults } from '../next-i18next.config'
+import { useContext } from 'react'
 import Head from 'next/head'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { useTranslation } from 'next-i18next'
+import { defaults } from 'next-i18next.config'
 
 // Material UI components
 import Container from '@mui/material/Container'
+import Box from '@mui/material/Box'
 
-//Custom components
-import { EarningsChart } from '@/components/Chart/EarningsChart'
-import { AssetList } from '@/components/AssetList'
-
-//Custom hooks
+// Custom components and hook(s)
 import { WalletDropdown } from '@/components/WalletDropdown'
-import { PendingEpochCard } from '@/components/Periods/PendingEpochCard'
-import { TotalRewardsCard } from '@/components/Periods/TotalRewardsCard'
+import { EarningsChart } from '@/components/Chart/EarningsChart'
+import { AssetTable } from '@/components/Table/AssetTable'
+
 
 //context api
 import { WalletContext } from 'contexts/WalletContext'
@@ -22,16 +20,16 @@ import { WalletContext } from 'contexts/WalletContext'
 export async function getServerSideProps({ locale }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, [...defaults, 'index'])),
+      ...(await serverSideTranslations(locale, [...defaults, 'chart'])),
     },
   }
 }
-export default function Home() {
-  const { t } = useTranslation('index')
+
+export default function Chart() {
+  const { t } = useTranslation('chart')
   const {formattedAddresses} = useContext(WalletContext)
   const isConnected = formattedAddresses.length > 0
   // const isConnected = false
-
 
   return (
     <>
@@ -42,12 +40,11 @@ export default function Home() {
       </Head>
       <Container maxWidth="md" sx={{ paddingInline: '2rem' }}>
         <WalletDropdown />
-        <TotalRewardsCard isConnected={isConnected} />
-        <PendingEpochCard isConnected={isConnected} />
         <hr />
         <EarningsChart isConnected={isConnected} />
-        <hr />
-        <AssetList isConnected={isConnected} />
+        <Box sx={{ paddingBlock: '2rem' }}>
+          <AssetTable isConnected={isConnected} />
+        </Box>
       </Container>
     </>
   )

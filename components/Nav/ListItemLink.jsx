@@ -20,16 +20,16 @@ import CustomLink from '@/components/Nav/Link'
  * @see https://mui.com/guides/routing/#list
  * @constructor
  */
-function ListItemLink({ icon, primary, to }) {
+function ListItemLink({ icon, primary, to, ...res }) {
   const router = useRouter()
   const activeNav = router.asPath
 
   const renderLink = useMemo(
     () =>
       forwardRef(function Link(itemProps, ref) {
-        return <CustomLink href={to} ref={ref} {...itemProps} role={undefined} />
+        return <CustomLink href={to} ref={ref} {...itemProps} role={undefined} {...res} />
       }),
-    [to],
+    [to, res],
   )
 
   return (

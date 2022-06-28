@@ -1,28 +1,61 @@
 import { createTheme } from '@mui/material/styles'
 import { red } from '@mui/material/colors'
 
+const fontFamilies = {
+  heading: '\'Alliance No.1\', Inter, sans-serif',
+  body: 'Inter, sans-serif',
+  monospace: '\'Roboto Mono\', monospace',
+}
+
 // Create a theme instance.
 const dark = createTheme({
+  typography: {
+    fontFamily: [fontFamilies.body],
+    p: {
+      display: 'block',
+    },
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        outlined: {
+          borderWidth: '1.8px',
+        },
+      },
+    },
+  },
   palette: {
     type: 'dark',
     primary: {
-      main: '#26292C',
-      light: 'rgb(81, 91, 95)',
-      dark: 'rgb(26, 35, 39)',
-      contrastText: '#ffffff',
+      main: '#FFFFFF',
+      light: '#718096',
+      dark: '#1A202C',
+      contrastText: '#FFFFFF',
     },
     secondary: {
-      main: '#FFB74D',
-      light: 'rgb(255, 197, 112)',
-      dark: 'rgb(200, 147, 89)',
-      contrastText: 'rgba(0, 0, 0, 0.87)',
-    },
-    titleBar: {
-      main: '#555555',
-      contrastText: '#ffffff',
+      main: '#4A5568',
+      light: '#A1AEC0',
+      light2: '#ABB0BC',
+      light3: '#626E81',
+      dark: '#2D3748',
+      contrastText: '#DADADA',
     },
     error: {
       main: red.A400,
+    },
+    background: {
+      default: '#1A202C',
+    },
+    accent: {
+      main: '#579F6E',
+      contrastText: '#FFFFFF',
+    },
+    gray: {
+      main: '#707070',
+    },
+    titleBar: {
+      main: '#eeeeee',
+      contrastText: '#222222',
     },
   },
 })

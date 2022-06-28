@@ -1,15 +1,22 @@
-import {useTranslation} from 'next-i18next'
-import {useRouter} from 'next/router'
-import {useCallback} from 'react'
+import { useTranslation } from 'next-i18next'
+import { useRouter } from 'next/router'
+import { useCallback } from 'react'
 
 // MUI Components
 import MUIBottomNavigation from '@mui/material/BottomNavigation'
 import BottomNavigationAction from '@mui/material/BottomNavigationAction'
 
-// Icons
-import HomeIcon from '@mui/icons-material/Home'
-import FavoriteIcon from '@mui/icons-material/Favorite'
-
+const styles = {
+  link: {
+    borderRight: '1px solid',
+    borderColor: 'secondary.main',
+    color: 'secondary.main',
+    ['.MuiBottomNavigationAction-label']: {
+      fontWeight: 700,
+      fontSize: '0.99rem',
+    },
+  },
+}
 /**
  * Bottom Navigation
  * @param onChange
@@ -18,35 +25,56 @@ import FavoriteIcon from '@mui/icons-material/Favorite'
  * @constructor
  * @component
  */
-function BottomNavigation({onChange, ...rest}) {
-  const {t: common} = useTranslation('common')
+function BottomNavigation({ onChange, ...rest }) {
+  const { t: common } = useTranslation('common')
   const router = useRouter()
   // activeNav is set when the application routes to a new page
   const activeNav = router.asPath
 
   // Default onChange behavior
-  const _onChange = useCallback((e, newValue)=>{
-    router.push(newValue)
-  }, [router])
+  const _onChange = useCallback(
+    (e, newValue) => {
+      router.push(newValue)
+    },
+    [router]
+  )
 
   return (
     <MUIBottomNavigation
       showLabels
       value={activeNav}
       onChange={onChange || _onChange}
+      sx={{
+        backgroundColor: 'background.default',
+        borderTop: '1px solid',
+        borderColor: 'secondary.main',
+        color: 'secondary.main',
+      }}
       {...rest}
     >
       <BottomNavigationAction
         to="/"
         value="/"
         label={common('home')}
-        icon={<HomeIcon />}
+        sx={styles.link}
       />
       <BottomNavigationAction
-        to="/favorites"
-        value="/favorites"
-        label={common('favorites')}
-        icon={<FavoriteIcon />}
+        to="/chart"
+        value="/chart"
+        label={common('chart')}
+        sx={styles.link}
+      />
+      <BottomNavigationAction
+        to="#!"
+        value="/periods"
+        label={common('periods')}
+        sx={styles.link}
+      />
+      <BottomNavigationAction
+        to="/wallet"
+        value="/wallet"
+        label={common('wallet')}
+        sx={{ ...styles.link, border: 'none' }}
       />
     </MUIBottomNavigation>
   )

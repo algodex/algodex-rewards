@@ -1,15 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {useTranslation} from 'next-i18next'
 
 // MUI Components
 import MUIToolbar from '@mui/material/Toolbar'
 import IconButton from '@mui/material/IconButton'
 import MenuIcon from '@mui/icons-material/Menu'
-import Typography from '@mui/material/Typography'
 
 // Custom Language Selector
 import LocaleNavMenu from '@/components/Nav/LocaleNavMenu'
+import { Logo } from '../Logo'
 
 /**
  * Toolbar
@@ -21,25 +20,29 @@ import LocaleNavMenu from '@/components/Nav/LocaleNavMenu'
  * @returns {JSX.Element}
  * @constructor
  */
-function Toolbar({title, height, isMobile, onClick, ...rest}) {
-  const { t } = useTranslation('toolbar')
+function Toolbar({ height, isMobile, onClick, ...rest }) {
   return (
-    <MUIToolbar sx={{height}} {...rest}>
+    <MUIToolbar
+      sx={{ height, backgroundColor: 'background.default' }}
+      {...rest}
+    >
+      <Logo />
+      <LocaleNavMenu isMobile={isMobile} onClick={onClick} />
       {/* TODO: Make Menu Collapsable*/}
-      <IconButton
-        size="large"
-        edge="start"
-        color="inherit"
-        aria-label="menu"
-        sx={{ mr: 2 }}
-        onClick={()=>{alert('TODO: Make Menu Collapse')}}
-      >
-        <MenuIcon />
-      </IconButton>
-      <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-        {title || t('title')}
-      </Typography>
-      <LocaleNavMenu isMobile={isMobile} onClick={onClick}/>
+      {isMobile && (
+        <IconButton
+          size="large"
+          edge="start"
+          color="inherit"
+          aria-label="menu"
+          sx={{ ml: '5px' }}
+          onClick={() => {
+            alert('TODO: Make Menu Collapse')
+          }}
+        >
+          <MenuIcon sx={{fontSize:'2.4rem'}}/>
+        </IconButton>
+      )}
     </MUIToolbar>
   )
 }
@@ -56,10 +59,10 @@ Toolbar.propTypes = {
   /**
    * isMobile
    */
-  isMobile: PropTypes.bool
+  isMobile: PropTypes.bool,
 }
 
 Toolbar.defaultProps = {
-  onClick: console.log
+  onClick: console.log,
 }
 export default Toolbar

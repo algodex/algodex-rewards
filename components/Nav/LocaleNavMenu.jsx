@@ -1,17 +1,22 @@
-import React, {useState} from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import {useRouter} from 'next/router'
-import {i18n} from 'next-i18next.config'
+import { useRouter } from 'next/router'
+import { i18n } from 'next-i18next.config'
 
 // MUI Components
 import Button from '@mui/material/Button'
-import Menu from '@mui/material/Menu'
+import ClickAwayListener from '@mui/material/ClickAwayListener'
+import Grow from '@mui/material/Grow'
+import Paper from '@mui/material/Paper'
+import Popper from '@mui/material/Popper'
+import MenuList from '@mui/material/MenuList'
 
 // Icons
 import Flag from 'react-country-flag'
 
 // Custom Components
 import MenuItemLink from '@/components/Nav/MenuItemLink'
+import { Typography } from '@mui/material'
 
 // Map locale code to the flag used in 'react-country-flag'
 const localeToFlags = {
@@ -39,74 +44,135 @@ const localeToFlags = {
   de: 'DE',
   kr: 'KR',
   fr: 'FR',
-  pl: 'PL'
+  pl: 'PL',
 }
 
 /**
  * LanguageNavMenu
  * @component
- * @param isMobile
  * @param onClick
  * @returns {JSX.Element}
  * @constructor
  */
-export const LocaleNavMenu = ( {isMobile, onClick} ) => {
+export const LocaleNavMenu = ({ onClick }) => {
   const { asPath, locale } = useRouter()
-  const [anchorEl, setAnchorEl] = useState(null)
+  const [open, setOpen] = React.useState(false)
+  const anchorRef = React.useRef(null)
 
-  const open = Boolean(anchorEl)
-
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget)
+  const handleToggle = () => {
+    setOpen((prevOpen) => !prevOpen)
   }
 
-  const handleClose = () => {
-    setAnchorEl(null)
+  const handleClose = (event) => {
+    if (anchorRef.current && anchorRef.current.contains(event.target)) {
+      return
+    }
+    setOpen(false)
   }
+
+  const handleListKeyDown = (event) => {
+    if (event.key === 'Tab') {
+      event.preventDefault()
+      setOpen(false)
+    } else if (event.key === 'Escape') {
+      setOpen(false)
+    }
+  }
+
+  // return focus to the button when we transitioned from !open -> open
+  const prevOpen = React.useRef(open)
+  React.useEffect(() => {
+    if (prevOpen.current === true && open === false) {
+      anchorRef.current.focus()
+    }
+
+    prevOpen.current = open
+  }, [open])
 
   return (
     <>
       <Button
         data-testid="dropdown-container-web"
         variant="contained"
-        color={isMobile ? 'secondary' : 'info'}
-        aria-controls={open ? 'basic-menu' : undefined}
-        aria-haspopup="true"
+        color={'secondary'}
+        ref={anchorRef}
+        id="composition-button"
+        aria-controls={open ? 'composition-menu' : undefined}
         aria-expanded={open ? 'true' : undefined}
-        onClick={handleClick}
+        aria-haspopup="true"
+        onClick={handleToggle}
       >
-        {locale} <Flag countryCode={localeToFlags[locale]} svg />
+        <Typography
+          marginRight={'5px'}
+          color={'primary.contrastext'}
+          fontWeight={'700'}
+          fontSize={'0.9rem'}
+        >
+          {locale}{' '}
+        </Typography>{' '}
+        <Flag
+          countryCode={localeToFlags[locale]}
+          svg
+          style={{
+            fontSize: '1.4rem',
+          }}
+        />
       </Button>
-      <Menu
-        id="demo-positioned-menu"
-        aria-labelledby="demo-positioned-button"
-        anchorEl={anchorEl}
+
+      <Popper
         open={open}
-        onClose={onClick || handleClose}
+        anchorEl={anchorRef.current}
+        role={undefined}
+        placement="bottom-start"
+        transition
+        disablePortal
       >
-        {i18n.locales
-          .filter((localeCd) => localeCd !== locale)
-          .map((localeCd) => (
-            <MenuItemLink
-              to={asPath}
-              locale={localeCd}
-              onClick={onClick || handleClose}
-              key={localeCd}
-              primary={localeCd}
-              icon={<Flag countryCode={localeToFlags[localeCd]} svg />}
-              data-testid="dropdown-item-web">
-            </MenuItemLink>
-          ))}
-      </Menu>
+        {({ TransitionProps, placement }) => (
+          <Grow
+            {...TransitionProps}
+            style={{
+              transformOrigin:
+                placement === 'bottom-start' ? 'left top' : 'left bottom',
+            }}
+          >
+            <Paper>
+              <ClickAwayListener onClickAway={handleClose}>
+                <MenuList
+                  autoFocusItem={open}
+                  id="composition-menu"
+                  aria-labelledby="composition-button"
+                  onKeyDown={handleListKeyDown}
+                >
+                  {i18n.locales
+                    .filter((localeCd) => localeCd !== locale)
+                    .map((localeCd) => (
+                      <MenuItemLink
+                        to={asPath}
+                        locale={localeCd}
+                        onClick={onClick || handleClose}
+                        key={localeCd}
+                        primary={localeCd}
+                        icon={
+                          <Flag countryCode={localeToFlags[localeCd]} svg />
+                        }
+                        data-testid="dropdown-item-web"
+                      ></MenuItemLink>
+                    ))}
+                </MenuList>
+              </ClickAwayListener>
+            </Paper>
+          </Grow>
+        )}
+      </Popper>
     </>
   )
 }
 
 LocaleNavMenu.propTypes = {
   /**
-   * isMobile
+   * onClick
    */
-  isMobile: PropTypes.bool
+  onClick: PropTypes.func,
 }
 
 LocaleNavMenu.displayName = 'LanguageSelection'

@@ -3,7 +3,7 @@ import Document, { Html, Head, Main, NextScript } from 'next/document'
 import createEmotionServer from '@emotion/server/create-instance'
 import getTheme from '@/themes/getTheme'
 import createEmotionCache from '@/utils/createEmotionCache'
-const theme = getTheme('normal')
+const theme = getTheme('dark')
 export default class MyDocument extends Document {
   render() {
     return (

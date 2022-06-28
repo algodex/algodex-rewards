@@ -16,38 +16,40 @@ import NextApp from 'next/app'
 
 import getTheme from '@/themes/getTheme'
 import createEmotionCache from '@/utils/createEmotionCache'
-import {Layout} from '@/components/Layout'
+import { Layout } from '@/components/Layout'
 
-const theme = getTheme('normal')
+import AppContext from 'contexts/WalletContext'
+
+const theme = getTheme('dark')
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache()
 
-const mobileSsrMatchMedia = query => ({
+const mobileSsrMatchMedia = (query) => ({
   matches: mediaQuery.match(query, {
     // The estimated CSS width of the browser.
-    width: '0px'
-  })
+    width: '0px',
+  }),
 })
-const desktopSsrMatchMedia = query => ({
+const desktopSsrMatchMedia = (query) => ({
   matches: mediaQuery.match(query, {
     // The estimated CSS width of the browser.
-    width: '1024px'
-  })
+    width: '1024px',
+  }),
 })
 
 const mobileMuiTheme = createTheme({
   ...theme,
   components: {
     ...theme.components,
-    MuiUseMediaQuery: { defaultProps: { ssrMatchMedia: mobileSsrMatchMedia } }
-  }
+    MuiUseMediaQuery: { defaultProps: { ssrMatchMedia: mobileSsrMatchMedia } },
+  },
 })
 const desktopMuiTheme = createTheme({
   ...theme,
   components: {
     ...theme.components,
-    MuiUseMediaQuery: { defaultProps: { ssrMatchMedia: desktopSsrMatchMedia } }
-  }
+    MuiUseMediaQuery: { defaultProps: { ssrMatchMedia: desktopSsrMatchMedia } },
+  },
 })
 
 export function App(props) {
@@ -57,21 +59,26 @@ export function App(props) {
       <Head>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
-      <ThemeProvider  theme={
-        pageProps.deviceType === 'mobile' ? mobileMuiTheme : desktopMuiTheme
-      }>
+      <ThemeProvider
+        theme={
+          pageProps.deviceType === 'mobile' ? mobileMuiTheme : desktopMuiTheme
+        }
+      >
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+        <AppContext>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </AppContext>
       </ThemeProvider>
     </CacheProvider>
   )
 }
 App.getInitialProps = async (ctx) => {
   const initialProps = await NextApp.getInitialProps(ctx)
-  const deviceType = parser(ctx.ctx.req.headers['user-agent']).device.type || 'desktop'
+  const deviceType =
+    parser(ctx.ctx.req.headers['user-agent']).device.type || 'desktop'
   return { pageProps: { ...initialProps, deviceType } }
 }
 App.propTypes = {
