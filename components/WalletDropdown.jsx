@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react'
+import PropTypes from 'prop-types'
 
 // Material UI components
 import Typography from '@mui/material/Typography'
@@ -8,22 +9,19 @@ import Modal from '@mui/material/Modal'
 
 //Custom components
 import { ConfirmLocationModal } from '@/components/Modals/ConfirmLocationModal'
-
-//Custom hooks
 import { ConnectWalletPrompt } from './Modals/ConnectWalletPrompt'
 
 
 //context api
 import { WalletContext } from 'contexts/WalletContext'
 
-export const WalletDropdown = () => {
-  const {formattedAddresses} = useContext(WalletContext)
+export const WalletDropdown = ({ screen }) => {
+  const { formattedAddresses } = useContext(WalletContext)
   const formattedAddressesLength = formattedAddresses.length
   // const formattedAddressesLength = 0
   const [showList, setShowList] = useState(false)
   const [openModal, setOpenModal] = useState(false)
   const [connectWalletModal, setConnectWalletModal] = useState(false)
-  
 
   const addWallet = () => {
     setConnectWalletModal(!connectWalletModal)
@@ -57,6 +55,8 @@ export const WalletDropdown = () => {
         onClick={() => {
           if (formattedAddressesLength < 1) {
             toggleModal()
+          }else if (screen == 'wallet') {
+            addWallet()
           }
         }}
       >
@@ -64,32 +64,36 @@ export const WalletDropdown = () => {
           {formattedAddressesLength > 0 ? (
             <Box flex={1}>
               <>
-                {formattedAddresses
-                  .slice(0, showList ? formattedAddressesLength : 1)
-                  .map((address) => (
-                    <Typography
-                      key={address}
-                      fontSize={'1rem'}
-                      textAlign={'center'}
-                      fontWeight={700}
-                      marginLeft={'auto'}
-                      sx={{
-                        display: 'block',
-                        paddingBlock: `${showList ? '1rem' : '0'}`,
-                        borderBottom: `solid ${showList ? '1px' : '0'}`,
-                        borderColor: 'accent.contrastText',
-                      }}
-                    >
-                      {shortenAddress(address)}
-                    </Typography>
-                  ))}
-                {showList && (
+                {screen !== 'wallet' && (
+                  <>
+                    {formattedAddresses
+                      .slice(0, showList ? formattedAddressesLength : 1)
+                      .map((address) => (
+                        <Typography
+                          key={address}
+                          fontSize={'1rem'}
+                          textAlign={'center'}
+                          fontWeight={700}
+                          marginLeft={'auto'}
+                          sx={{
+                            display: 'block',
+                            paddingBlock: `${showList ? '1rem' : '0'}`,
+                            borderBottom: `solid ${showList ? '1px' : '0'}`,
+                            borderColor: 'accent.contrastText',
+                          }}
+                        >
+                          {shortenAddress(address)}
+                        </Typography>
+                      ))}
+                  </>
+                )}
+                {(showList || screen == 'wallet') && (
                   <Typography
-                    fontSize={'0.85rem'}
+                    fontSize={screen == 'wallet' ? '1rem' : '0.85rem'}
                     textAlign={'center'}
                     fontWeight={700}
                     marginLeft={'auto'}
-                    paddingBlock={'1rem'}
+                    paddingBlock={screen == 'wallet' ? 0 : '1rem'}
                     onClick={addWallet}
                   >
                     Add Another Wallet
@@ -108,14 +112,16 @@ export const WalletDropdown = () => {
             </Typography>
           )}
         </>
-        <ExpandMoreIcon
-          sx={{ marginLeft: 'auto' }}
-          onClick={() => {
-            if (formattedAddressesLength > 0) {
-              setShowList(!showList)
-            }
-          }}
-        />
+        {screen !== 'wallet' && (
+          <ExpandMoreIcon
+            sx={{ marginLeft: 'auto' }}
+            onClick={() => {
+              if (formattedAddressesLength > 0) {
+                setShowList(!showList)
+              }
+            }}
+          />
+        )}
       </Box>
       <ConfirmLocationModal open={openModal} handleClose={toggleModal} />
       <Modal
@@ -146,4 +152,8 @@ export const WalletDropdown = () => {
       </Modal>
     </>
   )
+}
+
+WalletDropdown.propTypes = {
+  screen: PropTypes.string,
 }

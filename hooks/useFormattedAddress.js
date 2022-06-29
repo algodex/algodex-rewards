@@ -5,7 +5,8 @@ import useMyAlgo from './use-my-algo'
 import { WalletContext } from 'contexts/WalletContext'
 
 function useFormattedAddress() {
-  const {setFormattedAddresses} = useContext(WalletContext)
+  const { formattedAddresses, setFormattedAddresses } =
+    useContext(WalletContext)
 
   const updateAddresses = useCallback(
     (addresses) => {
@@ -21,9 +22,23 @@ function useFormattedAddress() {
     [setFormattedAddresses]
   )
 
+  const disConnectWallet = (address) => {
+    if (formattedAddresses.length > 1) {
+      const remainder = formattedAddresses.filter((addy) => addy != address)
+      localStorage.setItem(
+        'algodex_user_wallet_addresses',
+        JSON.stringify(remainder)
+      )
+      setFormattedAddresses(remainder)
+    } else {
+      localStorage.removeItem('algodex_user_wallet_addresses')
+      setFormattedAddresses([])
+    }
+  }
+
   const { connect: connectAlgoWallet } = useMyAlgo(updateAddresses)
 
-  return { connectAlgoWallet }
+  return { connectAlgoWallet, disConnectWallet }
 }
 
 export default useFormattedAddress
