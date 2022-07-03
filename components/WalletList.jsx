@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import Image from 'next/image'
 
 //Material UI
@@ -10,11 +10,8 @@ import AccordionDetails from '@mui/material/AccordionDetails'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Button from '@mui/material/Button'
 
-//context api
-import { WalletContext } from 'contexts/WalletContext'
-
 //Custom hook
-import useFormattedAddress from '@/hooks/useFormattedAddress'
+import useWallets from '@/hooks/useWallets'
 
 const styles = {
   accordionStyles: {
@@ -26,8 +23,7 @@ const styles = {
 }
 
 export const WalletList = () => {
-  const { formattedAddresses } = useContext(WalletContext)
-  const { disConnectWallet } = useFormattedAddress()
+  const { addresses, myAlgoDisconnect, peraDisconnect } = useWallets()
 
   const shortenAddress = (address) => {
     const list = address.split('')
@@ -36,9 +32,17 @@ export const WalletList = () => {
     return `${first.join('')}...${last.join('')}`
   }
 
+  const disconnectWallet = (address, type) => {
+    if (type == 'my-algo-wallet') {
+      myAlgoDisconnect(address)
+    } else {
+      peraDisconnect(address)
+    }
+  }
+
   return (
     <>
-      {formattedAddresses.map((address) => (
+      {addresses.map(({ address, type }) => (
         <Box key={address} marginY={'2rem'}>
           <Box
             sx={{
@@ -124,7 +128,7 @@ export const WalletList = () => {
                 <Button
                   variant="outlined"
                   sx={{ fontSize: '0.8rem' }}
-                  onClick={() => disConnectWallet(address)}
+                  onClick={() => disconnectWallet(address, type)}
                 >
                   Disconnect {shortenAddress(address)}
                 </Button>

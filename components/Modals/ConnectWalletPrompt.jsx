@@ -7,16 +7,17 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import useFormattedAddress from '@/hooks/useFormattedAddress'
 
-
 export const ConnectWalletPrompt = ({ toggleModal }) => {
-  const { connectAlgoWallet } = useFormattedAddress()
+  const { myAlgoConnect, peraConnect } = useFormattedAddress()
 
   const connectWallet = (type) => {
     if (toggleModal) {
       toggleModal()
     }
     if (type == 'myalgo') {
-      connectAlgoWallet()
+      myAlgoConnect()
+    } else {
+      peraConnect()
     }
   }
 

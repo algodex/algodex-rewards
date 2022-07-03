@@ -11,14 +11,13 @@ import Modal from '@mui/material/Modal'
 import { ConfirmLocationModal } from '@/components/Modals/ConfirmLocationModal'
 import { ConnectWalletPrompt } from './Modals/ConnectWalletPrompt'
 
-
 //context api
-import { WalletContext } from 'contexts/WalletContext'
+import { WalletsContext } from '@/hooks/useWallets'
 
 export const WalletDropdown = ({ screen }) => {
-  const { formattedAddresses } = useContext(WalletContext)
-  const formattedAddressesLength = formattedAddresses.length
-  // const formattedAddressesLength = 0
+  const { addresses } = useContext(WalletsContext)
+  const addressesLength = addresses.length
+  // const addressesLength = 0
   const [showList, setShowList] = useState(false)
   const [openModal, setOpenModal] = useState(false)
   const [connectWalletModal, setConnectWalletModal] = useState(false)
@@ -30,7 +29,7 @@ export const WalletDropdown = ({ screen }) => {
   const toggleModal = () => {
     setOpenModal(!openModal)
   }
-  const shortenAddress = (address) => {
+  const shortenAddress = ({ address }) => {
     const list = address.split('')
     const first = list.slice(0, 6)
     const last = list.slice(list.length - 6, list.length)
@@ -45,7 +44,7 @@ export const WalletDropdown = ({ screen }) => {
           color: 'accent.contrastText',
           display: 'flex',
           justifyContent: 'center',
-          alignItems: 'center',
+          alignItems: `${showList ? 'baseline' : 'center'}`,
           minHeight: '2.625rem',
           borderRadius: '3px',
           padding: '1rem',
@@ -53,25 +52,25 @@ export const WalletDropdown = ({ screen }) => {
           cursor: 'pointer',
         }}
         onClick={() => {
-          if (formattedAddressesLength < 1) {
+          if (addressesLength < 1) {
             toggleModal()
-          }else if (screen == 'wallet') {
+          } else if (screen == 'wallet') {
             addWallet()
           }
         }}
       >
         <>
-          {formattedAddressesLength > 0 ? (
+          {addressesLength > 0 ? (
             <Box flex={1}>
               <>
                 {screen !== 'wallet' && (
                   <>
-                    {formattedAddresses
-                      .slice(0, showList ? formattedAddressesLength : 1)
+                    {addresses
+                      .slice(0, showList ? addressesLength : 1)
                       .map((address) => (
                         <Typography
                           key={address}
-                          fontSize={'1rem'}
+                          fontSize={'1.2rem'}
                           textAlign={'center'}
                           fontWeight={700}
                           marginLeft={'auto'}
@@ -89,7 +88,7 @@ export const WalletDropdown = ({ screen }) => {
                 )}
                 {(showList || screen == 'wallet') && (
                   <Typography
-                    fontSize={screen == 'wallet' ? '1rem' : '0.85rem'}
+                    fontSize={screen == 'wallet' ? '1rem' : '0.95rem'}
                     textAlign={'center'}
                     fontWeight={700}
                     marginLeft={'auto'}
@@ -114,9 +113,12 @@ export const WalletDropdown = ({ screen }) => {
         </>
         {screen !== 'wallet' && (
           <ExpandMoreIcon
-            sx={{ marginLeft: 'auto' }}
+            sx={{
+              marginLeft: 'auto',
+              transform: `${showList ? 'rotate(180deg)' : '0'}`,
+            }}
             onClick={() => {
-              if (formattedAddressesLength > 0) {
+              if (addressesLength > 0) {
                 setShowList(!showList)
               }
             }}

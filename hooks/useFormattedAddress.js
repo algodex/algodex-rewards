@@ -1,12 +1,13 @@
 import { useCallback, useContext } from 'react'
-import useMyAlgo from './use-my-algo'
 
 //context
-import { WalletContext } from 'contexts/WalletContext'
+import { WalletsContext } from '@/hooks/useWallets'
+
+//Custom hook
+import useWallets from './useWallets'
 
 function useFormattedAddress() {
-  const { formattedAddresses, setFormattedAddresses } =
-    useContext(WalletContext)
+  const { addresses, setAddresses } = useContext(WalletsContext)
 
   const updateAddresses = useCallback(
     (addresses) => {
@@ -17,28 +18,29 @@ function useFormattedAddress() {
         'algodex_user_wallet_addresses',
         JSON.stringify(addresses)
       )
-      setFormattedAddresses(addresses)
+      setAddresses(addresses)
     },
-    [setFormattedAddresses]
+    [setAddresses]
   )
 
   const disConnectWallet = (address) => {
-    if (formattedAddresses.length > 1) {
-      const remainder = formattedAddresses.filter((addy) => addy != address)
+    if (addresses.length > 1) {
+      const remainder = addresses.filter((addy) => addy != address)
       localStorage.setItem(
         'algodex_user_wallet_addresses',
         JSON.stringify(remainder)
       )
-      setFormattedAddresses(remainder)
+      setAddresses(remainder)
     } else {
       localStorage.removeItem('algodex_user_wallet_addresses')
-      setFormattedAddresses([])
+      setAddresses([])
     }
   }
 
-  const { connect: connectAlgoWallet } = useMyAlgo(updateAddresses)
+  // const { connect: connectAlgoWallet } = useMyAlgo(updateAddresses)
+  const { myAlgoConnect, peraConnect } = useWallets(updateAddresses)
 
-  return { connectAlgoWallet, disConnectWallet }
+  return { myAlgoConnect, peraConnect, disConnectWallet }
 }
 
 export default useFormattedAddress

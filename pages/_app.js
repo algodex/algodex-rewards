@@ -18,7 +18,7 @@ import getTheme from '@/themes/getTheme'
 import createEmotionCache from '@/utils/createEmotionCache'
 import { Layout } from '@/components/Layout'
 
-import AppContext from 'contexts/WalletContext'
+import { WalletsProvider } from '@/hooks/useWallets'
 
 const theme = getTheme('dark')
 // Client-side cache, shared for the whole session of the user in the browser.
@@ -66,11 +66,11 @@ export function App(props) {
       >
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
-        <AppContext>
+        <WalletsProvider>
           <Layout>
             <Component {...pageProps} />
           </Layout>
-        </AppContext>
+        </WalletsProvider>
       </ThemeProvider>
     </CacheProvider>
   )

@@ -10,11 +10,11 @@ import Container from '@mui/material/Container'
 // Custom components and hook(s)
 import { WalletDropdown } from '@/components/WalletDropdown'
 import { CurrentEpochCard } from '@/components/Periods/CurrentEpochCard'
-import { EpochTable } from '@/components/Table/EpochTable'
+import { EpochTable } from '@/components/Tables/EpochTable'
 
 
 //context api
-import { WalletContext } from 'contexts/WalletContext'
+import { WalletsContext } from '@/hooks/useWallets'
 
 export async function getServerSideProps({ locale }) {
   return {
@@ -26,8 +26,8 @@ export async function getServerSideProps({ locale }) {
 
 export default function Periods() {
   const { t } = useTranslation('periods')
-  const {formattedAddresses} = useContext(WalletContext)
-  const isConnected = formattedAddresses.length > 0
+  const {addresses} = useContext(WalletsContext)
+  const isConnected = addresses.length > 0
   // const isConnected = false
 
   return (

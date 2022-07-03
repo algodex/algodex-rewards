@@ -17,7 +17,7 @@ import { PendingEpochCard } from '@/components/Periods/PendingEpochCard'
 import { TotalRewardsCard } from '@/components/Periods/TotalRewardsCard'
 
 //context api
-import { WalletContext } from 'contexts/WalletContext'
+import { WalletsContext } from '@/hooks/useWallets'
 
 export async function getServerSideProps({ locale }) {
   return {
@@ -28,8 +28,8 @@ export async function getServerSideProps({ locale }) {
 }
 export default function Home() {
   const { t } = useTranslation('index')
-  const {formattedAddresses} = useContext(WalletContext)
-  const isConnected = formattedAddresses.length > 0
+  const {addresses} = useContext(WalletsContext)
+  const isConnected = addresses.length > 0
   // const isConnected = false
 
 

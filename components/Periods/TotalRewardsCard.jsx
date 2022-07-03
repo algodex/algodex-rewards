@@ -32,26 +32,25 @@ export const TotalRewardsCard = ({ isConnected }) => {
               height: '20px',
               display: 'flex',
               justifyContent: 'center',
-              marginTop: '1px',
+              marginTop: '3px',
             }}
           >
             <Image
               src={'/algodex-icon.svg'}
               alt="algodex_icon"
-              height="9"
-              width="9"
+              height="8"
+              width="8"
             />
           </Box>
           <Box sx={{ width: '100%' }}>
             <Typography variant="p" fontSize={'1.1rem'} fontWeight={600}>
-              ALGX Earnings:
+              Total Rewards Earned:
             </Typography>
             <Box
               marginBottom={'0.5rem'}
               sx={{
                 display: 'flex',
                 justifyContent: 'space-between',
-                alignItems: 'center',
               }}
             >
               <Typography fontSize={'0.95rem'} fontWeight={600}>
@@ -65,6 +64,7 @@ export const TotalRewardsCard = ({ isConnected }) => {
                 <Typography
                   fontSize={'0.85rem'}
                   fontWeight={700}
+                  textAlign={'right'}
                   sx={{ color: 'secondary.light' }}
                 >
                   $14.57 USD
@@ -75,7 +75,6 @@ export const TotalRewardsCard = ({ isConnected }) => {
               sx={{
                 display: 'flex',
                 justifyContent: 'space-between',
-                alignItems: 'center',
               }}
             >
               <Typography fontSize={'0.95rem'} fontWeight={600}>
@@ -89,6 +88,7 @@ export const TotalRewardsCard = ({ isConnected }) => {
                 <Typography
                   fontSize={'0.85rem'}
                   fontWeight={700}
+                  textAlign={'right'}
                   sx={{ color: 'secondary.light' }}
                 >
                   $6.98 USD

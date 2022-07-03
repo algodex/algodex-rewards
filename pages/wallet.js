@@ -19,7 +19,7 @@ export async function getServerSideProps({ locale }) {
 }
 
 export default function Wallet() {
-  const { t } = useTranslation('chart')
+  const { t } = useTranslation('wallet')
 
   return (
     <>

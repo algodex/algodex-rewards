@@ -67,7 +67,6 @@ export const PendingEpochCard = ({ isConnected }) => {
                   sx={{
                     display: 'flex',
                     justifyContent: 'space-between',
-                    alignItems: 'center',
                   }}
                 >
                   <Typography fontSize={'0.95rem'} fontWeight={600}>
@@ -81,6 +80,7 @@ export const PendingEpochCard = ({ isConnected }) => {
                     <Typography
                       fontSize={'0.85rem'}
                       fontWeight={700}
+                      textAlign={'right'}
                       sx={{ color: 'secondary.light' }}
                     >
                       $14.57 USD
@@ -92,7 +92,6 @@ export const PendingEpochCard = ({ isConnected }) => {
                   sx={{
                     display: 'flex',
                     justifyContent: 'space-between',
-                    alignItems: 'center',
                   }}
                 >
                   <Typography fontSize={'0.95rem'} fontWeight={600}>
@@ -106,6 +105,7 @@ export const PendingEpochCard = ({ isConnected }) => {
                     <Typography
                       fontSize={'0.85rem'}
                       fontWeight={700}
+                      textAlign={'right'}
                       sx={{ color: 'secondary.light' }}
                     >
                       $6.98 USD
@@ -130,7 +130,7 @@ export const PendingEpochCard = ({ isConnected }) => {
                 variant="p"
                 fontSize={'0.9rem'}
                 fontWeight={600}
-                sx={{ textDecoration: 'underline', marginBottom:'0.7rem' }}
+                sx={{ textDecoration: 'underline', marginBottom: '0.7rem' }}
               >
                 How are Rewards Calculated?
               </Typography>

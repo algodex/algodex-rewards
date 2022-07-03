@@ -8,7 +8,9 @@ module.exports = {
     'pages': {
       '*': defaults,
       '/': [...defaults, 'index'],
-      '/favorites': [...defaults, 'favorites']
+      '/chart': [...defaults, 'chart'],
+      '/periods': [...defaults, 'periods'],
+      '/wallet': [...defaults, 'wallet']
     }
   },
   localePath: path.resolve('./locales'),

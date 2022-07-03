@@ -33,5 +33,5 @@ Logo.propTypes = {
 }
 
 Logo.defaultProps = {
-  styles: { flexGrow: 1 },
+  styles: { },
 }

@@ -162,8 +162,8 @@ export const EarningsChart = ({ isConnected }) => {
                 sx={[
                   styles.selectorContainer,
                   styles.selector,
-                  { minWidth: '80px', lineHeight: '1rem', marginRight: '13px' },
                   activeStage == item ? styles.activeSelector : {},
+                  { width: '80px', lineHeight: '0.8rem', marginRight: '13px',height: '35px' },
                 ]}
               >
                 {item}
