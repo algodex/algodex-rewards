@@ -14,7 +14,7 @@ const ERROR = {
  * @return {object}
  */
 export default function useWalletConnect(onConnect, onDisconnect) {
-  const {addresses} = useContext(WalletsContext)
+  const { addresses } = useContext(WalletsContext)
   /**
    * Instance referenc
    */
@@ -84,7 +84,7 @@ export default function useWalletConnect(onConnect, onDisconnect) {
   )
 
   const handleConnected = (err, payload) => {
-    console.log({payload})
+    console.log({ payload })
     console.debug('CONNECTED')
     if (err) {
       throw err

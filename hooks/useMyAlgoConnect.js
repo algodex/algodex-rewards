@@ -2,7 +2,7 @@ import { useContext, useEffect, useRef } from 'react'
 import { WalletsContext } from './useWallets'
 const ERROR = {
   FAILED_TO_INIT: 'MyAlgo Wallet failed to initialize.',
-  FAILED_TO_CONNECT: 'MyAlgo Wallet failed to connect.'
+  FAILED_TO_CONNECT: 'MyAlgo Wallet failed to connect.',
 }
 
 /**
@@ -14,8 +14,7 @@ const ERROR = {
 export default function useMyAlgoConnect(onConnect, onDisconnect) {
   // Instance reference
   const myAlgoWallet = useRef()
-  const {addresses} = useContext(WalletsContext)
-
+  const { addresses } = useContext(WalletsContext)
 
   const disconnect = (_address) => {
     onDisconnect(_address, addresses)
