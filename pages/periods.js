@@ -12,7 +12,6 @@ import { WalletDropdown } from '@/components/WalletDropdown'
 import { CurrentEpochCard } from '@/components/Periods/CurrentEpochCard'
 import { EpochTable } from '@/components/Tables/EpochTable'
 
-
 //context api
 import { WalletsContext } from '@/hooks/useWallets'
 
@@ -26,7 +25,7 @@ export async function getServerSideProps({ locale }) {
 
 export default function Periods() {
   const { t } = useTranslation('periods')
-  const {addresses} = useContext(WalletsContext)
+  const { addresses } = useContext(WalletsContext)
   const isConnected = addresses.length > 0
   // const isConnected = false
 

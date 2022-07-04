@@ -29,7 +29,7 @@ const dark = createTheme({
     primary: {
       main: '#F8FAFC',
       light: '#718096',
-      light2:'#EDF2F6',
+      light2: '#EDF2F6',
       dark: '#1A202C',
       contrastText: '#FFFFFF',
     },

@@ -28,10 +28,9 @@ export async function getServerSideProps({ locale }) {
 }
 export default function Home() {
   const { t } = useTranslation('index')
-  const {addresses} = useContext(WalletsContext)
+  const { addresses } = useContext(WalletsContext)
   const isConnected = addresses.length > 0
   // const isConnected = false
-
 
   return (
     <>

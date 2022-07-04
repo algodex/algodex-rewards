@@ -13,7 +13,6 @@ import { WalletDropdown } from '@/components/WalletDropdown'
 import { EarningsChart } from '@/components/Chart/EarningsChart'
 import { AssetTable } from '@/components/Tables/AssetTable'
 
-
 //context api
 import { WalletsContext } from '@/hooks/useWallets'
 
@@ -27,7 +26,7 @@ export async function getServerSideProps({ locale }) {
 
 export default function Chart() {
   const { t } = useTranslation('chart')
-  const {addresses} = useContext(WalletsContext)
+  const { addresses } = useContext(WalletsContext)
   const isConnected = addresses.length > 0
   // const isConnected = false
 
