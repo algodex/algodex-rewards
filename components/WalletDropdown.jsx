@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
 // Material UI components
@@ -12,10 +12,10 @@ import { ConfirmLocationModal } from '@/components/Modals/ConfirmLocationModal'
 import { ConnectWalletPrompt } from './Modals/ConnectWalletPrompt'
 
 //context api
-import { WalletsContext } from '@/hooks/useWallets'
+import useWallets from '@/hooks/useWallets'
 
 export const WalletDropdown = ({ screen }) => {
-  const { addresses } = useContext(WalletsContext)
+  const { addresses, setActiveWallet } = useWallets()
   const addressesLength = addresses.length
   // const addressesLength = 0
   const [showList, setShowList] = useState(false)
@@ -29,7 +29,7 @@ export const WalletDropdown = ({ screen }) => {
   const toggleModal = () => {
     setOpenModal(!openModal)
   }
-  const shortenAddress = ({ address }) => {
+  const shortenAddress = (address) => {
     const list = address.split('')
     const first = list.slice(0, 6)
     const last = list.slice(list.length - 6, list.length)
@@ -67,7 +67,7 @@ export const WalletDropdown = ({ screen }) => {
                   <>
                     {addresses
                       .slice(0, showList ? addressesLength : 1)
-                      .map((address) => (
+                      .map(({address}) => (
                         <Typography
                           key={address}
                           fontSize={'1.2rem'}
@@ -76,10 +76,11 @@ export const WalletDropdown = ({ screen }) => {
                           marginLeft={'auto'}
                           sx={{
                             display: 'block',
-                            paddingBlock: `${showList ? '1rem' : '0'}`,
+                            paddingBlock: `${showList ? '0.8rem' : '0'}`,
                             borderBottom: `solid ${showList ? '1px' : '0'}`,
                             borderColor: 'accent.contrastText',
                           }}
+                          onClick={()=>{setActiveWallet(address)}}
                         >
                           {shortenAddress(address)}
                         </Typography>

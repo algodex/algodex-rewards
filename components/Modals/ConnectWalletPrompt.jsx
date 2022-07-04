@@ -5,10 +5,12 @@ import PropTypes from 'prop-types'
 // Material UI components
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
-import useFormattedAddress from '@/hooks/useFormattedAddress'
+
+//Custom hooks
+import useWallets from '@/hooks/useWallets'
 
 export const ConnectWalletPrompt = ({ toggleModal }) => {
-  const { myAlgoConnect, peraConnect } = useFormattedAddress()
+  const { myAlgoConnect, peraConnect } = useWallets()
 
   const connectWallet = (type) => {
     if (toggleModal) {

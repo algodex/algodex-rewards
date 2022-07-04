@@ -33,13 +33,18 @@ function _mergeAddresses(a, b) {
 export const WalletsContext = createContext()
 export function WalletsProvider({ children }) {
   const [addresses, setAddresses] = useState([])
+  const [activeWallet, setActiveWallet] = useState()
+
+  // Fetch saved and active wallets from local storage
   useEffect(() => {
     setAddresses(
       JSON.parse(localStorage.getItem('algodex_user_wallet_addresses')) || []
     )
+    setActiveWallet(localStorage.getItem('activeWallet'))
+
   }, [])
   return (
-    <WalletsContext.Provider value={{ addresses, setAddresses }}>
+    <WalletsContext.Provider value={{ addresses, setAddresses, activeWallet, setActiveWallet }}>
       {children}
     </WalletsContext.Provider>
   )
@@ -58,10 +63,8 @@ function useWallets(initialState) {
     throw new Error('Must be inside of a Wallets Provider')
   }
   const [wallet, setWallet] = useState(initialState)
-  //   const [activeWallet, setActiveWallet] = useState()
-  const { addresses, setAddresses } = context
-  console.debug({ addresses })
-  // TODO: Account Info Query
+  const { addresses, setAddresses, activeWallet, setActiveWallet } = context
+
   // Handle any Connection
   const handleConnect = useCallback(
     async (_addresses) => {
@@ -103,9 +106,14 @@ function useWallets(initialState) {
     if (_addresses.length > 1) {
       const remainder = _addresses.filter(({ address }) => address != _address)
       updateStorage(remainder)
+      if(_address == activeWallet){
+        setActiveWallet(remainder[0])
+      }
     } else {
       localStorage.removeItem('algodex_user_wallet_addresses')
+      localStorage.removeItem('activeWallet')
       setAddresses([])
+      setActiveWallet()
     }
   }, [])
 
@@ -118,26 +126,41 @@ function useWallets(initialState) {
     handleDisconnect
   )
 
-  // Fetch active wallet from local storage
-  //   useEffect(() => {
-  //     const res = localStorage.getItem('activeWallet')
-  //     if (res && res !== activeWallet) {
-  //       setActiveWallet(localStorage.getItem('activeWallet'))
-  //     }
-  //   }, [setActiveWallet])
-
-  //Update storage
+  //Update addresses to local storage
   const updateStorage = (_addresses) => {
-    localStorage.setItem(
-      'algodex_user_wallet_addresses',
-      JSON.stringify(_addresses)
-    )
-    setAddresses(_addresses)
+    if (activeWallet) {
+      let active = _addresses.find(({ address }) => address == activeWallet)
+      let _formattedAddresses = _addresses.filter(
+        ({ address }) => address !== activeWallet
+      )
+      setAddresses([active, ..._formattedAddresses])
+    } else {
+      setAddresses(_addresses)
+      setActiveWallet(_addresses[0].address)
+    }
   }
+
+  useEffect(() => {
+    if (addresses.length > 0) {
+      localStorage.setItem(
+        'algodex_user_wallet_addresses',
+        JSON.stringify(addresses)
+      )
+    }
+  }, [addresses])
+
+  useEffect(() => {
+    console.log('update active', activeWallet)
+    if (activeWallet) {
+      updateStorage(addresses)
+      localStorage.setItem('activeWallet', activeWallet)
+    }
+  }, [activeWallet])
 
   return {
     wallet,
     setWallet,
+    setActiveWallet,
     addresses,
     myAlgoConnect,
     peraConnect,
