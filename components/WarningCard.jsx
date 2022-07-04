@@ -35,7 +35,6 @@ export const WarningCard = ({ warnings }) => {
             {text} <br />
           </span>
         ))}
-       
       </Typography>
     </Box>
   )

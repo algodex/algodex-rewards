@@ -1,5 +1,5 @@
-import React, {forwardRef, useMemo} from 'react'
-import {useRouter} from 'next/router'
+import React, { forwardRef, useMemo } from 'react'
+import { useRouter } from 'next/router'
 import PropTypes from 'prop-types'
 
 // MUI Components
@@ -27,9 +27,17 @@ function ListItemLink({ icon, primary, to, ...res }) {
   const renderLink = useMemo(
     () =>
       forwardRef(function Link(itemProps, ref) {
-        return <CustomLink href={to} ref={ref} {...itemProps} role={undefined} {...res} />
+        return (
+          <CustomLink
+            href={to}
+            ref={ref}
+            {...itemProps}
+            role={undefined}
+            {...res}
+          />
+        )
       }),
-    [to, res],
+    [to, res]
   )
 
   return (

@@ -13,9 +13,13 @@ import MuiLink from '@mui/material/Link'
 // Add support for the sx prop for consistency with the other branches.
 const Anchor = styled('a')({})
 
-const NextLinkComposed = React.forwardRef(function NextLinkComposed(props, ref) {
+const NextLinkComposed = React.forwardRef(function NextLinkComposed(
+  props,
+  ref
+) {
   // eslint-disable-next-line no-unused-vars
-  const { to, linkAs, href, replace, scroll, shallow, prefetch, locale, ...other } = props
+  const { to, linkAs, replace, scroll, shallow, prefetch, locale, ...other } =
+    props
 
   return (
     <NextLink
@@ -105,7 +109,8 @@ const Link = React.forwardRef(function Link(props, ref) {
   })
 
   const isExternal =
-    typeof href === 'string' && (href.indexOf('http') === 0 || href.indexOf('mailto:') === 0)
+    typeof href === 'string' &&
+    (href.indexOf('http') === 0 || href.indexOf('mailto:') === 0)
 
   if (isExternal) {
     if (noLinkStyle) {
@@ -116,7 +121,9 @@ const Link = React.forwardRef(function Link(props, ref) {
   }
 
   if (noLinkStyle) {
-    return <NextLinkComposed className={className} ref={ref} to={href} {...other} />
+    return (
+      <NextLinkComposed className={className} ref={ref} to={href} {...other} />
+    )
   }
 
   return (

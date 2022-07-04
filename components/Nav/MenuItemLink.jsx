@@ -1,5 +1,5 @@
-import React, {forwardRef, useMemo} from 'react'
-import {useRouter} from 'next/router'
+import React, { forwardRef, useMemo } from 'react'
+import { useRouter } from 'next/router'
 import PropTypes from 'prop-types'
 
 // MUI Components
@@ -27,13 +27,25 @@ function MenuItemLink({ onClick, locale, icon, primary, to }) {
   const renderLink = useMemo(
     () =>
       forwardRef(function Link(itemProps, ref) {
-        return <CustomLink locale={locale} href={to} ref={ref} {...itemProps} role={undefined} />
+        return (
+          <CustomLink
+            locale={locale}
+            href={to}
+            ref={ref}
+            {...itemProps}
+            role={undefined}
+          />
+        )
       }),
-    [to],
+    [to]
   )
 
   return (
-    <MenuItem onClick={onClick} component={renderLink} selected={activeNav === to}>
+    <MenuItem
+      onClick={onClick}
+      component={renderLink}
+      selected={activeNav === to}
+    >
       {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
       <ListItemText primary={primary} />
     </MenuItem>

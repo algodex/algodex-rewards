@@ -108,65 +108,59 @@ export const AssetTable = ({ isConnected }) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows
-                  .map((row, index) => {
-                    const isItemSelected = isSelected(row.asset)
-                    const labelId = `enhanced-table-checkbox-${index}`
-                    return (
-                      <TableRow
-                        hover
-                        onClick={(event) => handleClick(event, row.asset)}
-                        role="checkbox"
-                        aria-checked={isItemSelected}
-                        tabIndex={-1}
-                        key={row.asset}
-                        selected={isItemSelected}
-                      >
-                        <StyledTableCell padding="checkbox">
-                          {row.asset == 'ALL' ? (
-                            <Checkbox
-                              sx={{ color: 'secondary.contrastText' }}
-                              indeterminate={
-                                selected.length > 0 &&
-                                selected.length < rows.length
-                              }
-                              checked={
-                                rows.length > 0 &&
-                                selected.length === rows.length
-                              }
-                              onChange={handleSelectAllClick}
-                              inputProps={{
-                                'aria-label': 'select all',
-                              }}
-                            />
-                          ) : (
-                            <Checkbox
-                              sx={{ color: 'secondary.contrastText' }}
-                              checked={isItemSelected}
-                              inputProps={{
-                                'aria-labelledby': labelId,
-                              }}
-                            />
-                          )}
-                        </StyledTableCell>
-                        {columns.map((column) => {
-                          const value = row[column.id]
-                          return (
-                            <StyledTableCell
-                              key={column.id}
-                              align={column.align}
-                            >
-                              {value}
-                            </StyledTableCell>
-                          )
-                        })}
-                      </TableRow>
-                    )
-                  })}
+                {rows.map((row, index) => {
+                  const isItemSelected = isSelected(row.asset)
+                  const labelId = `enhanced-table-checkbox-${index}`
+                  return (
+                    <TableRow
+                      hover
+                      onClick={(event) => handleClick(event, row.asset)}
+                      role="checkbox"
+                      aria-checked={isItemSelected}
+                      tabIndex={-1}
+                      key={row.asset}
+                      selected={isItemSelected}
+                    >
+                      <StyledTableCell padding="checkbox">
+                        {row.asset == 'ALL' ? (
+                          <Checkbox
+                            sx={{ color: 'secondary.contrastText' }}
+                            indeterminate={
+                              selected.length > 0 &&
+                              selected.length < rows.length
+                            }
+                            checked={
+                              rows.length > 0 && selected.length === rows.length
+                            }
+                            onChange={handleSelectAllClick}
+                            inputProps={{
+                              'aria-label': 'select all',
+                            }}
+                          />
+                        ) : (
+                          <Checkbox
+                            sx={{ color: 'secondary.contrastText' }}
+                            checked={isItemSelected}
+                            inputProps={{
+                              'aria-labelledby': labelId,
+                            }}
+                          />
+                        )}
+                      </StyledTableCell>
+                      {columns.map((column) => {
+                        const value = row[column.id]
+                        return (
+                          <StyledTableCell key={column.id} align={column.align}>
+                            {value}
+                          </StyledTableCell>
+                        )
+                      })}
+                    </TableRow>
+                  )
+                })}
               </TableBody>
             </Table>
           </TableContainer>
-       
         </>
       )}
     </>
