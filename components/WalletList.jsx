@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React from 'react'
 import Image from 'next/image'
 
@@ -12,7 +13,7 @@ import Button from '@mui/material/Button'
 
 //Custom hook
 import useWallets from '@/hooks/useWallets'
-import { WarningCard } from './WarningCard'
+// import { WarningCard } from './WarningCard'
 
 const styles = {
   accordionStyles: {
@@ -44,7 +45,7 @@ export const WalletList = () => {
   console.log('page', addresses)
   return (
     <>
-      {addresses.map(({ address, type, assets }) => (
+      {addresses.map(({ address, type }) => (
         <Box key={address} marginY={'2rem'}>
           <Box
             sx={{
@@ -94,7 +95,6 @@ export const WalletList = () => {
                 <WarningCard
                   title="Not enough ALGX in wallet for rewards"
                   warnings={[
-                    // eslint-disable-next-line max-len
                     'At least 100 ALGX must be held for a wallet to vest retroactive rewards and/or earn new rewards.',
                   ]}
                 />
