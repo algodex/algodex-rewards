@@ -84,7 +84,7 @@ export default function useWalletConnect(onConnect, onDisconnect) {
   )
 
   const handleConnected = (err, payload) => {
-    console.log({ payload })
+    // console.log({ payload })
     console.debug('CONNECTED')
     if (err) {
       throw err
@@ -103,16 +103,16 @@ export default function useWalletConnect(onConnect, onDisconnect) {
       connector: walletConnect.current,
       address: acct,
     }))
-    console.log('connected here')
+    // console.log('connected here')
     onConnect(_addresses)
     QRCodeModal.close()
   }
   useEffect(() => {
-    console.log('listener')
-    console.log(walletConnect)
+    // console.log('listener')
+    // console.log(walletConnect)
     // let listener;
     if (typeof walletConnect.current !== 'undefined') {
-      console.log('listener-2')
+      // console.log('listener-2')
       walletConnect.current.on('connect', handleConnected)
       walletConnect.current.on('session_update', handleConnected)
       walletConnect.current.on('disconnect', handleDisconnect)

@@ -18,7 +18,6 @@ import algosdk from 'algosdk'
  * @private
  */
 function _mergeAddresses(a, b) {
-  console.log('ab', a, b)
   if (!Array.isArray(a) || !Array.isArray(b)) {
     throw new TypeError('Must be an array of addresses!')
   }
@@ -41,10 +40,11 @@ export function WalletsProvider({ children }) {
       JSON.parse(localStorage.getItem('algodex_user_wallet_addresses')) || []
     )
     setActiveWallet(localStorage.getItem('activeWallet'))
-
   }, [])
   return (
-    <WalletsContext.Provider value={{ addresses, setAddresses, activeWallet, setActiveWallet }}>
+    <WalletsContext.Provider
+      value={{ addresses, setAddresses, activeWallet, setActiveWallet }}
+    >
       {children}
     </WalletsContext.Provider>
   )
@@ -76,25 +76,33 @@ function useWallets(initialState) {
       )
       if (_addresses.length > 0) {
         let accounts = []
-        _addresses.forEach(async ({ address }) => {
-          try {
-            const account = await indexerClient.lookupAccountByID(address).do()
-            accounts.push(account)
-          } catch (error) {
-            console.error(error)
-          }
+        // eslint-disable-next-line no-undef
+        const loop = new Promise((resolve) => {
+          _addresses.forEach(async (address) => {
+            try {
+              const account = await indexerClient
+                .lookupAccountByID(address.address)
+                .do()
+              accounts.push(account)
+            } catch (error) {
+              console.error(error)
+            }
+            resolve()
+          })
         })
-        const mergedPrivateAddresses = _mergeAddresses(_addresses, accounts)
-        console.debug({
-          accounts,
-          _addresses,
-          addresses,
-          mergedPrivateAddresses,
-          // merge: _mergeAddresses(addresses, _mergeAddresses(_addresses, accounts))
+        loop.then(() => {
+          const mergedPrivateAddresses = _mergeAddresses(_addresses, accounts)
+          console.debug({
+            accounts,
+            _addresses,
+            addresses,
+            mergedPrivateAddresses,
+            // merge: _mergeAddresses(addresses, _mergeAddresses(_addresses, accounts))
+          })
+          updateStorage(
+            _mergeAddresses(addresses, _mergeAddresses(_addresses, accounts))
+          )
         })
-        updateStorage(
-          _mergeAddresses(addresses, _mergeAddresses(_addresses, accounts))
-        )
       }
     },
     [setAddresses, addresses]
@@ -106,7 +114,7 @@ function useWallets(initialState) {
     if (_addresses.length > 1) {
       const remainder = _addresses.filter(({ address }) => address != _address)
       updateStorage(remainder)
-      if(_address == activeWallet){
+      if (_address == activeWallet) {
         setActiveWallet(remainder[0])
       }
     } else {
@@ -130,10 +138,12 @@ function useWallets(initialState) {
   const updateStorage = (_addresses) => {
     if (activeWallet) {
       let active = _addresses.find(({ address }) => address == activeWallet)
-      let _formattedAddresses = _addresses.filter(
-        ({ address }) => address !== activeWallet
-      )
-      setAddresses([active, ..._formattedAddresses])
+      let _formattedAddresses = [
+        active,
+        ..._addresses.filter(({ address }) => address !== activeWallet),
+      ]
+
+      setAddresses(_formattedAddresses)
     } else {
       setAddresses(_addresses)
       setActiveWallet(_addresses[0].address)
@@ -150,7 +160,6 @@ function useWallets(initialState) {
   }, [addresses])
 
   useEffect(() => {
-    console.log('update active', activeWallet)
     if (activeWallet) {
       updateStorage(addresses)
       localStorage.setItem('activeWallet', activeWallet)

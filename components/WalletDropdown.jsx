@@ -15,7 +15,7 @@ import { ConnectWalletPrompt } from './Modals/ConnectWalletPrompt'
 import useWallets from '@/hooks/useWallets'
 
 export const WalletDropdown = ({ screen }) => {
-  const { addresses, setActiveWallet } = useWallets()
+  const { addresses, activeWallet, setActiveWallet } = useWallets()
   const addressesLength = addresses.length
   // const addressesLength = 0
   const [showList, setShowList] = useState(false)
@@ -67,7 +67,7 @@ export const WalletDropdown = ({ screen }) => {
                   <>
                     {addresses
                       .slice(0, showList ? addressesLength : 1)
-                      .map(({address}) => (
+                      .map(({ address }) => (
                         <Typography
                           key={address}
                           fontSize={'1.2rem'}
@@ -80,7 +80,11 @@ export const WalletDropdown = ({ screen }) => {
                             borderBottom: `solid ${showList ? '1px' : '0'}`,
                             borderColor: 'accent.contrastText',
                           }}
-                          onClick={()=>{setActiveWallet(address)}}
+                          onClick={() => {
+                            if (activeWallet !== address) {
+                              setActiveWallet(address)
+                            }
+                          }}
                         >
                           {shortenAddress(address)}
                         </Typography>

@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded'
 
-export const WarningCard = ({ warnings }) => {
+export const WarningCard = ({ title, warnings }) => {
   return (
     <Box
       sx={{
@@ -22,24 +22,36 @@ export const WarningCard = ({ warnings }) => {
       }}
     >
       <WarningRoundedIcon sx={{ marginRight: '5px' }} />
-      <Typography
-        variant="p"
-        fontSize={'0.8rem'}
-        fontWeight={600}
-        sx={{
-          lineHeight: '1.5rem',
-        }}
-      >
-        {warnings.map((text) => (
-          <span key={text}>
-            {text} <br />
-          </span>
-        ))}
-      </Typography>
+      <Box>
+        {title && (
+          <Typography
+            variant="p"
+            fontSize={'0.85rem'}
+            fontWeight={700}
+          >
+            <span>{title} </span>
+          </Typography>
+        )}
+        <Typography
+          variant="p"
+          fontSize={'0.8rem'}
+          fontWeight={500}
+          sx={{
+            lineHeight: '1.5rem',
+          }}
+        >
+          {warnings.map((text) => (
+            <span key={text}>
+              {text} <br />
+            </span>
+          ))}
+        </Typography>
+      </Box>
     </Box>
   )
 }
 
 WarningCard.propTypes = {
+  title: PropTypes.string,
   warnings: PropTypes.array,
 }

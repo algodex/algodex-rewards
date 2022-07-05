@@ -12,6 +12,7 @@ import Button from '@mui/material/Button'
 
 //Custom hook
 import useWallets from '@/hooks/useWallets'
+import { WarningCard } from './WarningCard'
 
 const styles = {
   accordionStyles: {
@@ -40,9 +41,10 @@ export const WalletList = () => {
     }
   }
 
+  console.log('page', addresses)
   return (
     <>
-      {addresses.map(({ address, type }) => (
+      {addresses.map(({ address, type, assets }) => (
         <Box key={address} marginY={'2rem'}>
           <Box
             sx={{
@@ -88,42 +90,45 @@ export const WalletList = () => {
               </Typography>
             </AccordionSummary>
             <AccordionDetails>
-              {[
-                ...Array(
-                  '812,569.26589',
-                  '512.456',
-                  '10.2',
-                  '1007898.56',
-                  '5.668',
-                  '22.224'
-                ),
-              ].map((asset) => (
-                <Box
-                  key={asset}
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    marginBottom: '5px',
-                  }}
-                >
-                  <Typography
-                    color={'primary.main'}
-                    fontSize={'0.8rem'}
-                    fontWeight={600}
-                  >
-                    ALGO
-                  </Typography>
-                  <Typography
-                    color={'primary.light2'}
-                    fontSize={'0.8rem'}
-                    textAlign={'right'}
-                  >
-                    {asset}
-                  </Typography>
-                </Box>
-              ))}
-
+              {/* {assets.length == 0 || address.algxBalance == 'low' ? (
+                <WarningCard
+                  title="Not enough ALGX in wallet for rewards"
+                  warnings={[
+                    // eslint-disable-next-line max-len
+                    'At least 100 ALGX must be held for a wallet to vest retroactive rewards and/or earn new rewards.',
+                  ]}
+                />
+              ) : (
+                <>
+                  {assets.map((asset) => (
+                    <Box
+                      key={asset['asset-id']}
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        marginBottom: '5px',
+                      }}
+                    >
+                      <Typography
+                        color={'primary.main'}
+                        fontSize={'0.8rem'}
+                        fontWeight={600}
+                      >
+                        {asset['asset-id'] == 724480511 && 'ALGX'}
+                        {asset['asset-id'] == 31566704 && 'ALGO'}
+                      </Typography>
+                      <Typography
+                        color={'primary.light2'}
+                        fontSize={'0.8rem'}
+                        textAlign={'right'}
+                      >
+                        {asset.amount}
+                      </Typography>
+                    </Box>
+                  ))}
+                </>
+              )} */}
               <Box sx={{ marginBlock: '1.5rem', textAlign: 'center' }}>
                 <Button
                   variant="outlined"
