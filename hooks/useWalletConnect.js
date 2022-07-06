@@ -1,10 +1,9 @@
-import { useCallback, useContext, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
 import QRCodeModal from 'algorand-walletconnect-qrcode-modal'
-import { WalletsContext } from './useWallets'
 const ERROR = {
   FAILED_TO_INIT: 'MyAlgo Wallet failed to initialize.',
-  FAILED_TO_CONNECT: 'MyAlgo Wallet failed to connect.',
+  FAILED_TO_CONNECT: 'MyAlgo Wallet failed to connect.'
 }
 
 /**
@@ -14,14 +13,14 @@ const ERROR = {
  * @return {object}
  */
 export default function useWalletConnect(onConnect, onDisconnect) {
-  const { addresses } = useContext(WalletsContext)
+  // const [addresses, setAddresses] = useState([]);
   /**
    * Instance referenc
    */
   const walletConnect = useRef()
 
   const connect = async () => {
-    console.debug('Connecting')
+    console.log('Connecting')
     try {
       // Something went wrong!
       if (!walletConnect.current) {
@@ -31,42 +30,43 @@ export default function useWalletConnect(onConnect, onDisconnect) {
 
       // Check if connection is already established
       if (!walletConnect.current.connected) {
-        console.debug('Creating Session')
+        console.log('Creating Session')
         // create new session
         walletConnect.current.createSession()
       } else {
-        console.debug('Already Connected')
+        console.log('Already Connected')
         QRCodeModal.close()
       }
       // Map the connector to the address list
       const _addresses = walletConnect.current.accounts.map((acct) => {
-        console.debug(acct)
+        console.log(acct)
         return {
           name: 'WalletConnect',
           address: acct,
           type: 'wallet-connect',
-          connector: walletConnect.current,
+          connector: walletConnect.current
         }
       })
+      // setAddresses(_addresses);
       onConnect(_addresses)
     } catch (e) {
       console.error(ERROR.FAILED_TO_CONNECT, e)
     }
   }
-  const disconnect = (_address) => {
-    if (walletConnect.current._connected) {
+  const disconnect = () => {
+    if (walletConnect.current.connected) {
       walletConnect.current.killSession()
     }
-    onDisconnect(_address, addresses)
   }
-
   useEffect(() => {
     const initWalletConnect = async () => {
       const WalletConnect = (await import('@walletconnect/client')).default
-
+      // WalletConnect.prototype.sign = (
+      //     await import('@algodex/algodex-sdk/lib/wallet/signers/WalletConnect')
+      // ).default
       walletConnect.current = new WalletConnect({
         bridge: 'https://bridge.walletconnect.org', // Required
-        qrcodeModal: QRCodeModal,
+        qrcodeModal: QRCodeModal
       })
       walletConnect.current.connected = false
     }
@@ -75,17 +75,15 @@ export default function useWalletConnect(onConnect, onDisconnect) {
 
   const handleDisconnect = useCallback(
     (err) => {
-      console.debug('DISCONNECTED')
+      console.log('DISCONNECTED')
       if (err) throw err
-      const { accounts } = walletConnect.current
-      onDisconnect(accounts[0], addresses)
+      onDisconnect()
     },
     [onDisconnect]
   )
 
   const handleConnected = (err, payload) => {
-    // console.log({ payload })
-    console.debug('CONNECTED')
+    console.log('CONNECTED')
     if (err) {
       throw err
     }
@@ -101,18 +99,15 @@ export default function useWalletConnect(onConnect, onDisconnect) {
     const _addresses = accounts.map((acct) => ({
       type: 'wallet-connect',
       connector: walletConnect.current,
-      address: acct,
+      address: acct
     }))
-    // console.log('connected here')
+    console.log('connected here')
     onConnect(_addresses)
     QRCodeModal.close()
   }
   useEffect(() => {
-    // console.log('listener')
-    // console.log(walletConnect)
     // let listener;
     if (typeof walletConnect.current !== 'undefined') {
-      // console.log('listener-2')
       walletConnect.current.on('connect', handleConnected)
       walletConnect.current.on('session_update', handleConnected)
       walletConnect.current.on('disconnect', handleDisconnect)
@@ -125,6 +120,5 @@ export default function useWalletConnect(onConnect, onDisconnect) {
       }
     }
   }, [walletConnect.current])
-
   return { connect, disconnect, connector: walletConnect.current }
 }
