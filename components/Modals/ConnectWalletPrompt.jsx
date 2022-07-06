@@ -7,10 +7,10 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 
 //Custom hooks
-import useWallets from '@/hooks/useWallets'
+import useRewardsAddresses from '@/hooks/useRewardsAddresses'
 
 export const ConnectWalletPrompt = ({ toggleModal }) => {
-  const { myAlgoConnect, peraConnect } = useWallets()
+  const { myAlgoConnect, peraConnect } = useRewardsAddresses()
 
   const connectWallet = (type) => {
     if (toggleModal) {

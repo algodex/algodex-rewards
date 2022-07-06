@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React from 'react'
+import React, { useContext } from 'react'
 import Image from 'next/image'
 
 //Material UI
@@ -12,8 +12,10 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Button from '@mui/material/Button'
 
 //Custom hook
-import useWallets from '@/hooks/useWallets'
-// import { WarningCard } from './WarningCard'
+import useRewardsAddresses, {
+  RewardsAddressesContext,
+} from '@/hooks/useRewardsAddresses'
+import { WarningCard } from './WarningCard'
 
 const styles = {
   accordionStyles: {
@@ -25,7 +27,8 @@ const styles = {
 }
 
 export const WalletList = () => {
-  const { addresses, myAlgoDisconnect, peraDisconnect } = useWallets()
+  const { handleDisconnect } = useRewardsAddresses()
+  const { addresses } = useContext(RewardsAddressesContext)
 
   const shortenAddress = (address) => {
     const list = address.split('')
@@ -34,18 +37,10 @@ export const WalletList = () => {
     return `${first.join('')}...${last.join('')}`
   }
 
-  const disconnectWallet = (address, type) => {
-    if (type == 'my-algo-wallet') {
-      myAlgoDisconnect(address)
-    } else {
-      peraDisconnect(address)
-    }
-  }
-
   console.log('page', addresses)
   return (
     <>
-      {addresses.map(({ address, type }) => (
+      {addresses.map(({ address, type, assets, amount }) => (
         <Box key={address} marginY={'2rem'}>
           <Box
             sx={{
@@ -91,7 +86,7 @@ export const WalletList = () => {
               </Typography>
             </AccordionSummary>
             <AccordionDetails>
-              {/* {assets.length == 0 || address.algxBalance == 'low' ? (
+              {amount < 1000 ? (
                 <WarningCard
                   title="Not enough ALGX in wallet for rewards"
                   warnings={[
@@ -128,12 +123,12 @@ export const WalletList = () => {
                     </Box>
                   ))}
                 </>
-              )} */}
+              )}
               <Box sx={{ marginBlock: '1.5rem', textAlign: 'center' }}>
                 <Button
                   variant="outlined"
                   sx={{ fontSize: '0.8rem' }}
-                  onClick={() => disconnectWallet(address, type)}
+                  onClick={() => handleDisconnect(address, type, addresses)}
                 >
                   Disconnect {shortenAddress(address)}
                 </Button>

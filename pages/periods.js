@@ -13,7 +13,7 @@ import { CurrentEpochCard } from '@/components/Periods/CurrentEpochCard'
 import { EpochTable } from '@/components/Tables/EpochTable'
 
 //context api
-import { WalletsContext } from '@/hooks/useWallets'
+import { RewardsAddressesContext } from '@/hooks/useRewardsAddresses'
 
 export async function getServerSideProps({ locale }) {
   return {
@@ -25,7 +25,7 @@ export async function getServerSideProps({ locale }) {
 
 export default function Periods() {
   const { t } = useTranslation('periods')
-  const { addresses } = useContext(WalletsContext)
+  const { addresses } = useContext(RewardsAddressesContext)
   const isConnected = addresses.length > 0
   // const isConnected = false
 

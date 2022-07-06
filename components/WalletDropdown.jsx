@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import PropTypes from 'prop-types'
 
 // Material UI components
@@ -7,15 +7,16 @@ import Box from '@mui/material/Box'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Modal from '@mui/material/Modal'
 
-//Custom components
+//Custom components and hooks
 import { ConfirmLocationModal } from '@/components/Modals/ConfirmLocationModal'
 import { ConnectWalletPrompt } from './Modals/ConnectWalletPrompt'
-
-//context api
-import useWallets from '@/hooks/useWallets'
+import useRewardsAddresses, {
+  RewardsAddressesContext,
+} from '@/hooks/useRewardsAddresses'
 
 export const WalletDropdown = ({ screen }) => {
-  const { addresses, activeWallet, setActiveWallet } = useWallets()
+  const { activeWallet, setActiveWallet } = useRewardsAddresses()
+  const { addresses } = useContext(RewardsAddressesContext)
   const addressesLength = addresses.length
   // const addressesLength = 0
   const [showList, setShowList] = useState(false)

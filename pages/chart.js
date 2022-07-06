@@ -14,7 +14,7 @@ import { EarningsChart } from '@/components/Chart/EarningsChart'
 import { AssetTable } from '@/components/Tables/AssetTable'
 
 //context api
-import { WalletsContext } from '@/hooks/useWallets'
+import { RewardsAddressesContext } from '@/hooks/useRewardsAddresses'
 
 export async function getServerSideProps({ locale }) {
   return {
@@ -26,7 +26,7 @@ export async function getServerSideProps({ locale }) {
 
 export default function Chart() {
   const { t } = useTranslation('chart')
-  const { addresses } = useContext(WalletsContext)
+  const { addresses } = useContext(RewardsAddressesContext)
   const isConnected = addresses.length > 0
   // const isConnected = false
 
