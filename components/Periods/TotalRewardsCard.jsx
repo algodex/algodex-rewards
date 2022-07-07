@@ -23,23 +23,12 @@ export const TotalRewardsCard = ({ isConnected }) => {
             alignItems: 'flex-start',
           }}
         >
-          <Box
-            sx={{
-              marginRight: '6px',
-              border: '2px solid',
-              borderRadius: '50%',
-              width: '20px',
-              height: '20px',
-              display: 'flex',
-              justifyContent: 'center',
-              marginTop: '3px',
-            }}
-          >
+          <Box marginRight={'7px'} marginTop={'3px'}>
             <Image
-              src={'/algodex-icon.svg'}
+              src={'/algo-rounded-icon.png'}
               alt="algodex_icon"
-              height="8"
-              width="8"
+              height="16"
+              width="16"
             />
           </Box>
           <Box sx={{ width: '100%' }}>
