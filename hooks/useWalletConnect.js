@@ -74,7 +74,7 @@ export default function useWalletConnect(onConnect, onDisconnect) {
     (err) => {
       console.log('DISCONNECTED')
       if (err) throw err
-      onDisconnect('wallet-connect')
+      onDisconnect()
     },
     [onDisconnect]
   )

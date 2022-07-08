@@ -46,7 +46,7 @@ function useWallets() {
     async (_addresses) => {
       const accounts = []
       const mergedPrivateAddresses = _mergeAddresses(_addresses, accounts)
-      console.debug({
+      console.log({
         accounts,
         _addresses,
         addresses,
@@ -59,19 +59,8 @@ function useWallets() {
   )
 
   // Handle any Disconnect
-  const handleDisconnect = useCallback((_address) => {
-    console.error('Handle removing from storage', _address)
-    // Update the addresses here after removing it from storage
-    if(_address == 'wallet-connect'){
-      const remainder = addresses.filter((addr)=> addr.type != 'wallet-connect' )
-      setAddresses(remainder)
-      console.log({remainder})
-      return
-    }
-    if(_address){
-      const remainder = addresses.filter(({address})=> address != _address)
-      setAddresses(remainder)
-    }
+  const handleDisconnect = useCallback((_addresses) => {
+    console.error('Handle removing from storage', _addresses)
   }, [])
 
   // My Algo Connect/Disconnect
