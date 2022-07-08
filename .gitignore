@@ -138,3 +138,6 @@ dist
 
 # vercel
 .vercel
+
+#misc
+.DS_Store
