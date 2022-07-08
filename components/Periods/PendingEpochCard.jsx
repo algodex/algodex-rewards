@@ -141,7 +141,7 @@ export const PendingEpochCard = ({ isConnected }) => {
               fontStyle={'italic'}
               marginLeft={'0.5rem'}
             >
-              Rewards will be paid out [time] two days after the end of one-week
+              Rewards will be paid out within two days after the end of one-week
               accrual periods
             </Typography>
 

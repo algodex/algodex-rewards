@@ -37,7 +37,7 @@ export const WalletList = () => {
     return `${first.join('')}...${last.join('')}`
   }
 
-  console.log('page', addresses)
+  // console.log('page', addresses)
   return (
     <>
       {addresses.map(({ address, type, assets, amount }) => (
@@ -118,7 +118,7 @@ export const WalletList = () => {
                         fontSize={'0.8rem'}
                         textAlign={'right'}
                       >
-                        {asset.amount}
+                        {asset.amount / 1000000}
                       </Typography>
                     </Box>
                   ))}

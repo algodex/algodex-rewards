@@ -61,9 +61,6 @@ export default function useWalletConnect(onConnect, onDisconnect) {
   useEffect(() => {
     const initWalletConnect = async () => {
       const WalletConnect = (await import('@walletconnect/client')).default
-      // WalletConnect.prototype.sign = (
-      //     await import('@algodex/algodex-sdk/lib/wallet/signers/WalletConnect')
-      // ).default
       walletConnect.current = new WalletConnect({
         bridge: 'https://bridge.walletconnect.org', // Required
         qrcodeModal: QRCodeModal
@@ -77,7 +74,7 @@ export default function useWalletConnect(onConnect, onDisconnect) {
     (err) => {
       console.log('DISCONNECTED')
       if (err) throw err
-      onDisconnect()
+      onDisconnect('wallet-connect')
     },
     [onDisconnect]
   )
@@ -121,4 +118,5 @@ export default function useWalletConnect(onConnect, onDisconnect) {
     }
   }, [walletConnect.current])
   return { connect, disconnect, connector: walletConnect.current }
+
 }
