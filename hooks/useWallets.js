@@ -33,7 +33,7 @@ WalletsProvider.propTypes = {
  * @param {Object} initialState Wallet Initial State
  * @return {*}
  */
-function useWallets() {
+function useWallets(updateAddresses) {
   const context = useContext(WalletsContext)
   if (context === undefined) {
     throw new Error('Must be inside of a Wallets Provider')
@@ -54,6 +54,7 @@ function useWallets() {
         merge: _mergeAddresses(addresses, _mergeAddresses(_addresses, accounts))
       })
       setAddresses(_mergeAddresses(addresses, _mergeAddresses(_addresses, accounts)))
+      updateAddresses(_mergeAddresses(addresses, _mergeAddresses(_addresses, accounts)))
     },
     [setAddresses, addresses]
   )
@@ -76,6 +77,7 @@ function useWallets() {
 
   return {
     addresses,
+    setAddresses,
     myAlgoConnect,
     peraConnect,
     peraDisconnect,

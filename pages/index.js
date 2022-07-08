@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { defaults } from '../next-i18next.config'
@@ -10,14 +10,13 @@ import Container from '@mui/material/Container'
 //Custom components
 import { EarningsChart } from '@/components/Chart/EarningsChart'
 import { AssetList } from '@/components/AssetList'
-
-//Custom hooks
 import { WalletDropdown } from '@/components/WalletDropdown'
 import { PendingEpochCard } from '@/components/Periods/PendingEpochCard'
 import { TotalRewardsCard } from '@/components/Periods/TotalRewardsCard'
 
-//context api
-import { RewardsAddressesContext } from '@/hooks/useRewardsAddresses'
+//Custom hooks
+import useRewardsAddresses from '@/hooks/useRewardsAddresses'
+
 
 export async function getServerSideProps({ locale }) {
   return {
@@ -28,7 +27,7 @@ export async function getServerSideProps({ locale }) {
 }
 export default function Home() {
   const { t } = useTranslation('index')
-  const { addresses } = useContext(RewardsAddressesContext)
+  const { addresses } = useRewardsAddresses()
   const isConnected = addresses.length > 0
   // const isConnected = false
 

@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React, { useContext } from 'react'
+import React from 'react'
 import Image from 'next/image'
 
 //Material UI
@@ -12,9 +12,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Button from '@mui/material/Button'
 
 //Custom hook
-import useRewardsAddresses, {
-  RewardsAddressesContext,
-} from '@/hooks/useRewardsAddresses'
+import useRewardsAddresses from '@/hooks/useRewardsAddresses'
 import { WarningCard } from './WarningCard'
 
 const styles = {
@@ -27,8 +25,7 @@ const styles = {
 }
 
 export const WalletList = () => {
-  const { handleDisconnect } = useRewardsAddresses()
-  const { addresses } = useContext(RewardsAddressesContext)
+  const { addresses, handleDisconnect } = useRewardsAddresses()
 
   const shortenAddress = (address) => {
     const list = address.split('')

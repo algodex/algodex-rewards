@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
 // Material UI components
@@ -10,13 +10,16 @@ import Modal from '@mui/material/Modal'
 //Custom components and hooks
 import { ConfirmLocationModal } from '@/components/Modals/ConfirmLocationModal'
 import { ConnectWalletPrompt } from './Modals/ConnectWalletPrompt'
-import useRewardsAddresses, {
-  RewardsAddressesContext,
-} from '@/hooks/useRewardsAddresses'
+import useRewardsAddresses from '@/hooks/useRewardsAddresses'
 
 export const WalletDropdown = ({ screen }) => {
-  const { activeWallet, setActiveWallet } = useRewardsAddresses()
-  const { addresses } = useContext(RewardsAddressesContext)
+  const {
+    addresses,
+    activeWallet,
+    setActiveWallet,
+    myAlgoConnect,
+    peraConnect,
+  } = useRewardsAddresses()
   const addressesLength = addresses.length
   // const addressesLength = 0
   const [showList, setShowList] = useState(false)
@@ -35,6 +38,14 @@ export const WalletDropdown = ({ screen }) => {
     const first = list.slice(0, 6)
     const last = list.slice(list.length - 6, list.length)
     return `${first.join('')}...${last.join('')}`
+  }
+
+  const connectWallet = (type) => {
+    if (type == 'myalgo') {
+      myAlgoConnect()
+    } else {
+      peraConnect()
+    }
   }
 
   return (
@@ -131,7 +142,11 @@ export const WalletDropdown = ({ screen }) => {
           />
         )}
       </Box>
-      <ConfirmLocationModal open={openModal} handleClose={toggleModal} />
+      <ConfirmLocationModal
+        open={openModal}
+        handleClose={toggleModal}
+        connectWallet={connectWallet}
+      />
       <Modal
         open={connectWalletModal}
         onClose={addWallet}
@@ -155,7 +170,12 @@ export const WalletDropdown = ({ screen }) => {
             borderColor: 'secondary.light2',
           }}
         >
-          <ConnectWalletPrompt toggleModal={addWallet} />
+          <ConnectWalletPrompt
+            connectWallet={(e) => {
+              addWallet()
+              connectWallet(e)
+            }}
+          />
         </Box>
       </Modal>
     </>

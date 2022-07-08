@@ -6,23 +6,7 @@ import PropTypes from 'prop-types'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 
-//Custom hooks
-import useRewardsAddresses from '@/hooks/useRewardsAddresses'
-
-export const ConnectWalletPrompt = ({ toggleModal }) => {
-  const { myAlgoConnect, peraConnect } = useRewardsAddresses()
-
-  const connectWallet = (type) => {
-    if (toggleModal) {
-      toggleModal()
-    }
-    if (type == 'myalgo') {
-      myAlgoConnect()
-    } else {
-      peraConnect()
-    }
-  }
-
+export const ConnectWalletPrompt = ({ connectWallet }) => {
   return (
     <>
       <Typography
@@ -90,5 +74,5 @@ export const ConnectWalletPrompt = ({ toggleModal }) => {
 }
 
 ConnectWalletPrompt.propTypes = {
-  toggleModal: PropTypes.func,
+  connectWallet: PropTypes.func,
 }

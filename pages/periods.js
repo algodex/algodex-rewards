@@ -1,4 +1,3 @@
-import { useContext } from 'react'
 import Head from 'next/head'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
@@ -11,9 +10,8 @@ import Container from '@mui/material/Container'
 import { WalletDropdown } from '@/components/WalletDropdown'
 import { CurrentEpochCard } from '@/components/Periods/CurrentEpochCard'
 import { EpochTable } from '@/components/Tables/EpochTable'
+import useRewardsAddresses from '@/hooks/useRewardsAddresses'
 
-//context api
-import { RewardsAddressesContext } from '@/hooks/useRewardsAddresses'
 
 export async function getServerSideProps({ locale }) {
   return {
@@ -25,7 +23,7 @@ export async function getServerSideProps({ locale }) {
 
 export default function Periods() {
   const { t } = useTranslation('periods')
-  const { addresses } = useContext(RewardsAddressesContext)
+  const { addresses } = useRewardsAddresses()
   const isConnected = addresses.length > 0
   // const isConnected = false
 

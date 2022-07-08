@@ -11,7 +11,7 @@ import Button from '@mui/material/Button'
 import { ConnectWalletPrompt } from './ConnectWalletPrompt'
 import { SelectCountry } from './SelectCountry'
 
-export const ConfirmLocationModal = ({ open, handleClose }) => {
+export const ConfirmLocationModal = ({ open, handleClose, connectWallet }) => {
   const [openSuccessModal, setOpenSuccessModal] = useState(false)
   const [countryValue, setCountryValue] = useState({})
 
@@ -129,7 +129,10 @@ export const ConfirmLocationModal = ({ open, handleClose }) => {
           <hr />
 
           <ConnectWalletPrompt
-            toggleModal={toggleSuccessModal}
+            connectWallet={(e) => {
+              toggleSuccessModal()
+              connectWallet(e)
+            }}
             countryValue={countryValue}
           />
         </Box>
@@ -140,6 +143,7 @@ export const ConfirmLocationModal = ({ open, handleClose }) => {
 
 ConfirmLocationModal.propTypes = {
   handleClose: PropTypes.func,
+  connectWallet: PropTypes.func,
   open: PropTypes.bool,
 }
 
