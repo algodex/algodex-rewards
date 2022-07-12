@@ -33,7 +33,7 @@ export const WalletDropdown = ({ screen }) => {
   const toggleModal = () => {
     setOpenModal(!openModal)
   }
-  const shortenAddress = (address) => {
+  const shortenAddress = ({ address }) => {
     const list = address.split('')
     const first = list.slice(0, 6)
     const last = list.slice(list.length - 6, list.length)
@@ -79,9 +79,9 @@ export const WalletDropdown = ({ screen }) => {
                   <>
                     {addresses
                       .slice(0, showList ? addressesLength : 1)
-                      .map(({ address }) => (
+                      .map((addr) => (
                         <Typography
-                          key={address}
+                          key={addr.address}
                           fontSize={'1.2rem'}
                           textAlign={'center'}
                           fontWeight={700}
@@ -93,12 +93,12 @@ export const WalletDropdown = ({ screen }) => {
                             borderColor: 'accent.contrastText',
                           }}
                           onClick={() => {
-                            if (activeWallet !== address) {
-                              setActiveWallet(address)
+                            if (activeWallet.address !== addr.address) {
+                              setActiveWallet(addr)
                             }
                           }}
                         >
-                          {shortenAddress(address)}
+                          {shortenAddress(addr)}
                         </Typography>
                       ))}
                   </>
