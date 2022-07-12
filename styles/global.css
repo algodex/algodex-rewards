@@ -1,8 +1,16 @@
 @tailwind components;
 @tailwind utilities;
 
-#__next, html, body {
-    overflow: hidden;
-    height: 100vh;
-    max-height: 100vh;
+#__next,
+html,
+body {
+  overflow: hidden;
+  height: 100vh;
+  max-height: 100vh;
+}
+
+@media (min-width: 1300px) {
+  .css-v2r9g2-MuiContainer-root {
+    max-width: 1200px;
+  }
 }

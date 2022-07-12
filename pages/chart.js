@@ -11,11 +11,10 @@ import Box from '@mui/material/Box'
 // Custom components and hook(s)
 import { WalletDropdown } from '@/components/WalletDropdown'
 import { EarningsChart } from '@/components/Chart/EarningsChart'
-import { AssetTable } from '@/components/Table/AssetTable'
-
+import { AssetTable } from '@/components/Tables/AssetTable'
 
 //context api
-import { WalletContext } from 'contexts/WalletContext'
+import { RewardsAddressesContext } from '@/hooks/useRewardsAddresses'
 
 export async function getServerSideProps({ locale }) {
   return {
@@ -27,8 +26,8 @@ export async function getServerSideProps({ locale }) {
 
 export default function Chart() {
   const { t } = useTranslation('chart')
-  const {formattedAddresses} = useContext(WalletContext)
-  const isConnected = formattedAddresses.length > 0
+  const { addresses } = useContext(RewardsAddressesContext)
+  const isConnected = addresses.length > 0
   // const isConnected = false
 
   return (

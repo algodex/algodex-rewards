@@ -8,24 +8,18 @@ import Container from '@mui/material/Container'
 
 // Custom components and hook(s)
 import { WalletDropdown } from '@/components/WalletDropdown'
-import { CurrentEpochCard } from '@/components/Periods/CurrentEpochCard'
-import { EpochTable } from '@/components/Tables/EpochTable'
-import useRewardsAddresses from '@/hooks/useRewardsAddresses'
-
+import { WalletList } from '@/components/WalletList'
 
 export async function getServerSideProps({ locale }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, [...defaults, 'periods'])),
+      ...(await serverSideTranslations(locale, [...defaults, 'wallet'])),
     },
   }
 }
 
-export default function Periods() {
-  const { t } = useTranslation('periods')
-  const { addresses } = useRewardsAddresses()
-  const isConnected = addresses.length > 0
-  // const isConnected = false
+export default function Wallet() {
+  const { t } = useTranslation('wallet')
 
   return (
     <>
@@ -35,10 +29,8 @@ export default function Periods() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Container maxWidth="md" sx={{ paddingInline: '2rem' }}>
-        <WalletDropdown />
-        <hr />
-        <CurrentEpochCard isConnected={isConnected} />
-        <EpochTable isConnected={isConnected} />
+        <WalletDropdown screen={'wallet'} />
+        <WalletList />
       </Container>
     </>
   )

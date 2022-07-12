@@ -5,16 +5,13 @@ import PropTypes from 'prop-types'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Modal from '@mui/material/Modal'
-import { Button } from '@mui/material'
+import Button from '@mui/material/Button'
 
 // Custom components
 import { ConnectWalletPrompt } from './ConnectWalletPrompt'
 import { SelectCountry } from './SelectCountry'
 
-export const ConfirmLocationModal = ({
-  open,
-  handleClose,
-}) => {
+export const ConfirmLocationModal = ({ open, handleClose, connectWallet }) => {
   const [openSuccessModal, setOpenSuccessModal] = useState(false)
   const [countryValue, setCountryValue] = useState({})
 
@@ -132,7 +129,10 @@ export const ConfirmLocationModal = ({
           <hr />
 
           <ConnectWalletPrompt
-            toggleModal={toggleSuccessModal}
+            connectWallet={(e) => {
+              toggleSuccessModal()
+              connectWallet(e)
+            }}
             countryValue={countryValue}
           />
         </Box>
@@ -143,6 +143,7 @@ export const ConfirmLocationModal = ({
 
 ConfirmLocationModal.propTypes = {
   handleClose: PropTypes.func,
+  connectWallet: PropTypes.func,
   open: PropTypes.bool,
 }
 

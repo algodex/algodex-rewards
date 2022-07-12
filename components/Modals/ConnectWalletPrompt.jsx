@@ -5,21 +5,8 @@ import PropTypes from 'prop-types'
 // Material UI components
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
-import useFormattedAddress from '@/hooks/useFormattedAddress'
 
-
-export const ConnectWalletPrompt = ({ toggleModal }) => {
-  const { connectAlgoWallet } = useFormattedAddress()
-
-  const connectWallet = (type) => {
-    if (toggleModal) {
-      toggleModal()
-    }
-    if (type == 'myalgo') {
-      connectAlgoWallet()
-    }
-  }
-
+export const ConnectWalletPrompt = ({ connectWallet }) => {
   return (
     <>
       <Typography
@@ -87,5 +74,5 @@ export const ConnectWalletPrompt = ({ toggleModal }) => {
 }
 
 ConnectWalletPrompt.propTypes = {
-  toggleModal: PropTypes.func,
+  connectWallet: PropTypes.func,
 }

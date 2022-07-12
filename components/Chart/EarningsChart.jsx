@@ -37,13 +37,12 @@ const styles = {
 }
 
 export const EarningsChart = ({ isConnected }) => {
-
   const [activeCurrency, setActiveCurrency] = useState('ALGX')
   const [activeRange, setActiveRange] = useState('3M')
   const [activeStage, setActiveStage] = useState('Total')
 
   return (
-    <Container sx={{ marginBlock: '1.5rem', padding:'0' }}>
+    <Container sx={{ marginBlock: '1.5rem', padding: '0' }}>
       <Box
         marginBottom={'2rem'}
         sx={{
@@ -103,7 +102,9 @@ export const EarningsChart = ({ isConnected }) => {
             label="Include unvested rewards in chart totals"
             sx={{ color: 'primary.contrastText' }}
           />
-          <Box sx={{marginBlock:'2rem'}}><AreaChart/></Box>
+          <Box sx={{ marginBlock: '2rem' }}>
+            <AreaChart />
+          </Box>
           <Box
             sx={{
               display: 'flex',
@@ -140,10 +141,10 @@ export const EarningsChart = ({ isConnected }) => {
               justifyContent: 'space-between',
               marginBlock: '2rem',
               overflow: 'scroll',
-              ['&::-webkit-scrollbar']:{
-                width:'0',
-                display:'none'
-              }
+              ['&::-webkit-scrollbar']: {
+                width: '0',
+                display: 'none',
+              },
             }}
           >
             {[
@@ -162,8 +163,13 @@ export const EarningsChart = ({ isConnected }) => {
                 sx={[
                   styles.selectorContainer,
                   styles.selector,
-                  { minWidth: '80px', lineHeight: '1rem', marginRight: '13px' },
                   activeStage == item ? styles.activeSelector : {},
+                  {
+                    width: '80px',
+                    lineHeight: '0.8rem',
+                    marginRight: '13px',
+                    height: '35px',
+                  },
                 ]}
               >
                 {item}

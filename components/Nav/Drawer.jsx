@@ -116,7 +116,11 @@ function Drawer({ width, offset, ...props }) {
             <ListSubheader
               component="div"
               id="nested-list-subheader"
-              sx={{ backgroundColor: 'secondary.light', color:'secondary.dark', fontWeight:500 }}
+              sx={{
+                backgroundColor: 'secondary.light',
+                color: 'secondary.dark',
+                fontWeight: 500,
+              }}
             >
               Other Links
             </ListSubheader>

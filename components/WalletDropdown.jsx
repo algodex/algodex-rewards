@@ -1,4 +1,5 @@
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 
 // Material UI components
 import Typography from '@mui/material/Typography'
@@ -6,24 +7,24 @@ import Box from '@mui/material/Box'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Modal from '@mui/material/Modal'
 
-//Custom components
+//Custom components and hooks
 import { ConfirmLocationModal } from '@/components/Modals/ConfirmLocationModal'
-
-//Custom hooks
 import { ConnectWalletPrompt } from './Modals/ConnectWalletPrompt'
+import useRewardsAddresses from '@/hooks/useRewardsAddresses'
 
-
-//context api
-import { WalletContext } from 'contexts/WalletContext'
-
-export const WalletDropdown = () => {
-  const {formattedAddresses} = useContext(WalletContext)
-  const formattedAddressesLength = formattedAddresses.length
-  // const formattedAddressesLength = 0
+export const WalletDropdown = ({ screen }) => {
+  const {
+    addresses,
+    activeWallet,
+    setActiveWallet,
+    myAlgoConnect,
+    peraConnect,
+  } = useRewardsAddresses()
+  const addressesLength = addresses.length
+  // const addressesLength = 0
   const [showList, setShowList] = useState(false)
   const [openModal, setOpenModal] = useState(false)
   const [connectWalletModal, setConnectWalletModal] = useState(false)
-  
 
   const addWallet = () => {
     setConnectWalletModal(!connectWalletModal)
@@ -39,6 +40,14 @@ export const WalletDropdown = () => {
     return `${first.join('')}...${last.join('')}`
   }
 
+  const connectWallet = (type) => {
+    if (type == 'myalgo') {
+      myAlgoConnect()
+    } else {
+      peraConnect()
+    }
+  }
+
   return (
     <>
       <Box
@@ -47,7 +56,7 @@ export const WalletDropdown = () => {
           color: 'accent.contrastText',
           display: 'flex',
           justifyContent: 'center',
-          alignItems: 'center',
+          alignItems: `${showList ? 'baseline' : 'center'}`,
           minHeight: '2.625rem',
           borderRadius: '3px',
           padding: '1rem',
@@ -55,41 +64,52 @@ export const WalletDropdown = () => {
           cursor: 'pointer',
         }}
         onClick={() => {
-          if (formattedAddressesLength < 1) {
+          if (addressesLength < 1) {
             toggleModal()
+          } else if (screen == 'wallet') {
+            addWallet()
           }
         }}
       >
         <>
-          {formattedAddressesLength > 0 ? (
+          {addressesLength > 0 ? (
             <Box flex={1}>
               <>
-                {formattedAddresses
-                  .slice(0, showList ? formattedAddressesLength : 1)
-                  .map((address) => (
-                    <Typography
-                      key={address}
-                      fontSize={'1rem'}
-                      textAlign={'center'}
-                      fontWeight={700}
-                      marginLeft={'auto'}
-                      sx={{
-                        display: 'block',
-                        paddingBlock: `${showList ? '1rem' : '0'}`,
-                        borderBottom: `solid ${showList ? '1px' : '0'}`,
-                        borderColor: 'accent.contrastText',
-                      }}
-                    >
-                      {shortenAddress(address)}
-                    </Typography>
-                  ))}
-                {showList && (
+                {screen !== 'wallet' && (
+                  <>
+                    {addresses
+                      .slice(0, showList ? addressesLength : 1)
+                      .map(({ address }) => (
+                        <Typography
+                          key={address}
+                          fontSize={'1.2rem'}
+                          textAlign={'center'}
+                          fontWeight={700}
+                          marginLeft={'auto'}
+                          sx={{
+                            display: 'block',
+                            paddingBlock: `${showList ? '0.8rem' : '0'}`,
+                            borderBottom: `solid ${showList ? '1px' : '0'}`,
+                            borderColor: 'accent.contrastText',
+                          }}
+                          onClick={() => {
+                            if (activeWallet !== address) {
+                              setActiveWallet(address)
+                            }
+                          }}
+                        >
+                          {shortenAddress(address)}
+                        </Typography>
+                      ))}
+                  </>
+                )}
+                {(showList || screen == 'wallet') && (
                   <Typography
-                    fontSize={'0.85rem'}
+                    fontSize={screen == 'wallet' ? '1rem' : '0.95rem'}
                     textAlign={'center'}
                     fontWeight={700}
                     marginLeft={'auto'}
-                    paddingBlock={'1rem'}
+                    paddingBlock={screen == 'wallet' ? 0 : '1rem'}
                     onClick={addWallet}
                   >
                     Add Another Wallet
@@ -108,16 +128,25 @@ export const WalletDropdown = () => {
             </Typography>
           )}
         </>
-        <ExpandMoreIcon
-          sx={{ marginLeft: 'auto' }}
-          onClick={() => {
-            if (formattedAddressesLength > 0) {
-              setShowList(!showList)
-            }
-          }}
-        />
+        {screen !== 'wallet' && (
+          <ExpandMoreIcon
+            sx={{
+              marginLeft: 'auto',
+              transform: `${showList ? 'rotate(180deg)' : '0'}`,
+            }}
+            onClick={() => {
+              if (addressesLength > 0) {
+                setShowList(!showList)
+              }
+            }}
+          />
+        )}
       </Box>
-      <ConfirmLocationModal open={openModal} handleClose={toggleModal} />
+      <ConfirmLocationModal
+        open={openModal}
+        handleClose={toggleModal}
+        connectWallet={connectWallet}
+      />
       <Modal
         open={connectWalletModal}
         onClose={addWallet}
@@ -141,9 +170,18 @@ export const WalletDropdown = () => {
             borderColor: 'secondary.light2',
           }}
         >
-          <ConnectWalletPrompt toggleModal={addWallet} />
+          <ConnectWalletPrompt
+            connectWallet={(e) => {
+              addWallet()
+              connectWallet(e)
+            }}
+          />
         </Box>
       </Modal>
     </>
   )
+}
+
+WalletDropdown.propTypes = {
+  screen: PropTypes.string,
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 
 // Material UI components
@@ -7,7 +7,6 @@ import TableBody from '@mui/material/TableBody'
 import TableCell, { tableCellClasses } from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
-import TablePagination from '@mui/material/TablePagination'
 import TableRow from '@mui/material/TableRow'
 import { styled } from '@mui/material/styles'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
@@ -95,18 +94,6 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 }))
 
 export const EpochTable = ({ isConnected }) => {
-  const [page, setPage] = useState(0)
-  const [rowsPerPage, setRowsPerPage] = React.useState(10)
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage)
-  }
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value)
-    setPage(0)
-  }
-
   return (
     <>
       {isConnected && (
@@ -130,49 +117,38 @@ export const EpochTable = ({ isConnected }) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row) => {
-                    return (
-                      <TableRow
-                        hover
-                        role="checkbox"
-                        tabIndex={-1}
-                        key={row.epoch}
-                      >
-                        <>
-                          {columns.map((column) => {
-                            const value = row[column.id]
-                            return (
-                              <StyledTableCell
-                                key={column.id}
-                                align={column.align}
-                              >
-                                {column.format && typeof value === 'number'
-                                  ? column.format(value)
-                                  : value}
-                              </StyledTableCell>
-                            )
-                          })}
-                          <StyledTableCell>
-                            <ChevronRightIcon />
-                          </StyledTableCell>
-                        </>
-                      </TableRow>
-                    )
-                  })}
+                {rows.map((row) => {
+                  return (
+                    <TableRow
+                      hover
+                      role="checkbox"
+                      tabIndex={-1}
+                      key={row.epoch}
+                    >
+                      <>
+                        {columns.map((column) => {
+                          const value = row[column.id]
+                          return (
+                            <StyledTableCell
+                              key={column.id}
+                              align={column.align}
+                            >
+                              {column.format && typeof value === 'number'
+                                ? column.format(value)
+                                : value}
+                            </StyledTableCell>
+                          )
+                        })}
+                        <StyledTableCell>
+                          <ChevronRightIcon />
+                        </StyledTableCell>
+                      </>
+                    </TableRow>
+                  )
+                })}
               </TableBody>
             </Table>
           </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={[10, 25, 100]}
-            component="div"
-            count={rows.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
         </>
       )}
     </>
