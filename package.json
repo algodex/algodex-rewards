@@ -14,6 +14,7 @@
     "build-storybook": "build-storybook"
   },
   "dependencies": {
+    "@algodex/algodex-sdk": "^2.0.1",
     "@emotion/cache": "^11.7.1",
     "@emotion/react": "^11.8.1",
     "@emotion/server": "^11.4.0",
@@ -30,7 +31,9 @@
     "lightweight-charts": "^3.8.0",
     "next": "12.1.0",
     "next-i18next": "^10.5.0",
-    "next-pwa": "^5.4.4",
+    "next-pwa": "^5.5.4",
+    "pouchdb": "^7.3.0",
+    "pouchdb-browser": "^7.3.0",
     "prop-types": "^15.8.1",
     "react": "17.0.2",
     "react-country-flag": "^3.0.2",

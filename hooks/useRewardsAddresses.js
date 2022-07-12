@@ -9,6 +9,9 @@ import {
 import PropTypes from 'prop-types'
 import algosdk from 'algosdk'
 
+// PouchDB
+// import DB from 'lib/db'
+
 export const RewardsAddressesContext = createContext(undefined)
 
 export function RewardsAddressesProvider({ children }) {
@@ -63,6 +66,7 @@ const _getEmptyAccountInfo = (wallet) => {
   }
 }
 export default function useRewardsAddresses() {
+  // const db = new DB('algodex_user_wallet_addresses')
   const context = useContext(RewardsAddressesContext)
   if (context === undefined) {
     throw new Error('Must be inside of a Rewards Addresses Provider')
@@ -113,20 +117,24 @@ export default function useRewardsAddresses() {
 
   // Fetch saved and active wallets from storage
   useEffect(() => {
-    const _activeWallet = localStorage.getItem('activeWallet')
-    const _addresses =
-      JSON.parse(localStorage.getItem('algodex_user_wallet_addresses')) || []
-    setAddresses(_addresses)
-    setActiveWallet(_activeWallet)
-    if (_addresses.length > 0) {
-      updateStorage(_addresses, _activeWallet)
+    const getDBData = async () => {
+      //  const _addresses = db.getAddresses()
+      const _activeWallet = JSON.parse(localStorage.getItem('activeWallet'))
+      const _addresses =
+        JSON.parse(localStorage.getItem('algodex_user_wallet_addresses')) || []
+      setAddresses(_addresses)
+      setActiveWallet(_activeWallet)
+      if (_addresses.length > 0) {
+        updateStorage(_addresses, _activeWallet)
+      }
     }
+    getDBData()
   }, [])
 
   //save active wallet when updated
   useEffect(() => {
-    const _activeWallet = localStorage.getItem('activeWallet')
-    if (addresses.length > 0 && _activeWallet !== activeWallet) {
+    const _activeWallet = JSON.parse(localStorage.getItem('activeWallet'))
+    if (addresses.length > 0 && _activeWallet?.address !== activeWallet?.address) {
       updateStorage(addresses, activeWallet)
     }
   }, [activeWallet])
@@ -165,11 +173,11 @@ export default function useRewardsAddresses() {
   // Handle storage
   const updateStorage = async (_addresses, _activeWallet) => {
     const result = await getAccountInfo(_addresses)
-    if (_activeWallet) {
-      const active = _addresses.find(({ address }) => address == _activeWallet)
+    if (_activeWallet?.address) {
+      const active = _addresses.find(({ address }) => address == _activeWallet?.address)
       let _formattedAddresses = [
         active,
-        ...result.filter(({ address }) => address !== _activeWallet),
+        ...result.filter(({ address }) => address !== _activeWallet?.address),
       ]
       setAddresses(_formattedAddresses)
       _setAddresses(_formattedAddresses)
@@ -178,7 +186,7 @@ export default function useRewardsAddresses() {
         'algodex_user_wallet_addresses',
         JSON.stringify(_formattedAddresses)
       )
-      localStorage.setItem('activeWallet', _activeWallet)
+      localStorage.setItem('activeWallet', JSON.stringify(_activeWallet))
     } else {
       setAddresses(result)
       _setAddresses(result)
@@ -187,8 +195,8 @@ export default function useRewardsAddresses() {
         JSON.stringify(result)
       )
       if (result.length > 0) {
-        setActiveWallet(result[0].address)
-        localStorage.setItem('activeWallet', result[0].address)
+        setActiveWallet(result[0])
+        localStorage.setItem('activeWallet', JSON.stringify(result[0]))
       }
     }
   }
@@ -202,7 +210,7 @@ export default function useRewardsAddresses() {
     }
     if (_addresses.length > 1) {
       const remainder = _addresses.filter(({ address }) => address != _address)
-      if (_address == activeWallet) {
+      if (_address == activeWallet?.address) {
         updateStorage(remainder, remainder[0].address)
       } else {
         updateStorage(remainder, activeWallet)

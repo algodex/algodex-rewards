@@ -17,6 +17,8 @@ import { TotalRewardsCard } from '@/components/Periods/TotalRewardsCard'
 //Custom hooks
 import useRewardsAddresses from '@/hooks/useRewardsAddresses'
 
+// Lib files
+import { signUpForRewards } from 'lib/send_transaction'
 
 export async function getServerSideProps({ locale }) {
   return {
@@ -27,7 +29,7 @@ export async function getServerSideProps({ locale }) {
 }
 export default function Home() {
   const { t } = useTranslation('index')
-  const { addresses } = useRewardsAddresses()
+  const { addresses, activeWallet } = useRewardsAddresses()
   const isConnected = addresses.length > 0
   // const isConnected = false
 
@@ -40,6 +42,9 @@ export default function Home() {
       </Head>
       <Container maxWidth="md" sx={{ paddingInline: '2rem' }}>
         <WalletDropdown />
+        <button onClick={() => signUpForRewards(activeWallet)}>
+          Sign Up for rewards
+        </button>
         <TotalRewardsCard isConnected={isConnected} />
         <PendingEpochCard isConnected={isConnected} />
         <hr />
