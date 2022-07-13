@@ -19,6 +19,7 @@
     "@emotion/react": "^11.8.1",
     "@emotion/server": "^11.4.0",
     "@emotion/styled": "^11.8.1",
+    "@json-rpc-tools/utils": "^1.7.6",
     "@mui/icons-material": "^5.4.4",
     "@mui/material": "^5.4.4",
     "@randlabs/myalgo-connect": "^1.2.0",
