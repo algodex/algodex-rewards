@@ -11,6 +11,7 @@ module.exports = {
       '/chart': [...defaults, 'chart'],
       '/periods': [...defaults, 'periods'],
       '/wallet': [...defaults, 'wallet'],
+      '/test': [...defaults, 'test'],
     },
   },
   localePath: path.resolve('./locales'),
