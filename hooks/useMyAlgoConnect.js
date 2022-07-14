@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 const ERROR = {
   FAILED_TO_INIT: 'MyAlgo Wallet failed to initialize.',
-  FAILED_TO_CONNECT: 'MyAlgo Wallet failed to connect.'
+  FAILED_TO_CONNECT: 'MyAlgo Wallet failed to connect.',
 }
 
 /**
