@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, { useEffect } from 'react'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { defaults } from '../next-i18next.config'
@@ -31,15 +31,19 @@ export default function Home() {
   const { t } = useTranslation('index')
   const { addresses, activeWallet, peraConnect } = useRewardsAddresses()
   const isConnected = addresses.length > 0
+  // const isConnected = false
 
-  useEffect(()=>{
-    if(activeWallet?.type === 'wallet-connect' && typeof activeWallet.connector.sendCustomRequest === 'undefined'){
-        peraConnect(activeWallet)
-    }
+  useEffect(() => {
+    // eslint-disable-next-line max-len
     // This useEffect is necessary because when getting the wallet from localStorage the sendCustomRequest method is undefined
     // rerunning peraConnect reAttaches the signing method to the connector.
+    if (
+      activeWallet?.type === 'wallet-connect' &&
+      typeof activeWallet.connector.sendCustomRequest === 'undefined'
+    ) {
+      peraConnect(activeWallet)
+    }
   }, [activeWallet])
-  // const isConnected = false
 
   return (
     <>
