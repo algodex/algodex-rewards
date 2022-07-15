@@ -15,18 +15,22 @@ function _mergeAddresses(a, b) {
   }
   const map = new Map()
   a.forEach((wallet) => map.set(wallet.address, wallet))
-  b.forEach((wallet) => map.set(wallet.address, { ...map.get(wallet.address), ...wallet }))
+  b.forEach((wallet) =>
+    map.set(wallet.address, { ...map.get(wallet.address), ...wallet })
+  )
   return Array.from(map.values())
 }
 export const WalletsContext = createContext()
 export function WalletsProvider({ children }) {
   const [addresses, setAddresses] = useState([])
   return (
-    <WalletsContext.Provider value={[addresses, setAddresses]}>{children}</WalletsContext.Provider>
+    <WalletsContext.Provider value={[addresses, setAddresses]}>
+      {children}
+    </WalletsContext.Provider>
   )
 }
 WalletsProvider.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.node,
 }
 /**
  * Use Wallets Hooks
@@ -51,10 +55,17 @@ function useWallets(updateAddresses) {
         _addresses,
         addresses,
         mergedPrivateAddresses,
-        merge: _mergeAddresses(addresses, _mergeAddresses(_addresses, accounts))
+        merge: _mergeAddresses(
+          addresses,
+          _mergeAddresses(_addresses, accounts)
+        ),
       })
-      setAddresses(_mergeAddresses(addresses, _mergeAddresses(_addresses, accounts)))
-      updateAddresses(_mergeAddresses(addresses, _mergeAddresses(_addresses, accounts)))
+      setAddresses(
+        _mergeAddresses(addresses, _mergeAddresses(_addresses, accounts))
+      )
+      updateAddresses(
+        _mergeAddresses(addresses, _mergeAddresses(_addresses, accounts))
+      )
     },
     [setAddresses, addresses]
   )
@@ -62,13 +73,18 @@ function useWallets(updateAddresses) {
   // Handle any Disconnect
   const handleDisconnect = useCallback((_addresses) => {
     console.error('Handle removing from storage', _addresses)
+    if (_addresses == 'wallet-connect') {
+      const remainder = addresses.filter(
+        (address) => address.type != 'wallet-connect'
+      )
+      setAddresses(remainder)
+      updateAddresses(remainder)
+    }
   }, [])
 
   // My Algo Connect/Disconnect
-  const { connect: myAlgoConnect, disconnect: myAlgoDisconnect } = useMyAlgoConnect(
-    handleConnect,
-    handleDisconnect
-  )
+  const { connect: myAlgoConnect, disconnect: myAlgoDisconnect } =
+    useMyAlgoConnect(handleConnect, handleDisconnect)
   // Pera Connect/Disconnect
   const { connect: peraConnect, disconnect: peraDisconnect } = useWalletConnect(
     handleConnect,
@@ -81,7 +97,7 @@ function useWallets(updateAddresses) {
     myAlgoConnect,
     peraConnect,
     peraDisconnect,
-    myAlgoDisconnect
+    myAlgoDisconnect,
   }
 }
 

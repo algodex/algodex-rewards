@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef } from 'react'
 import QRCodeModal from 'algorand-walletconnect-qrcode-modal'
 const ERROR = {
   FAILED_TO_INIT: 'MyAlgo Wallet failed to initialize.',
-  FAILED_TO_CONNECT: 'MyAlgo Wallet failed to connect.'
+  FAILED_TO_CONNECT: 'MyAlgo Wallet failed to connect.',
 }
 
 /**
@@ -44,7 +44,7 @@ export default function useWalletConnect(onConnect, onDisconnect) {
           name: 'WalletConnect',
           address: acct,
           type: 'wallet-connect',
-          connector: walletConnect.current
+          connector: walletConnect.current,
         }
       })
       // setAddresses(_addresses);
@@ -63,7 +63,7 @@ export default function useWalletConnect(onConnect, onDisconnect) {
       const WalletConnect = (await import('@walletconnect/client')).default
       walletConnect.current = new WalletConnect({
         bridge: 'https://bridge.walletconnect.org', // Required
-        qrcodeModal: QRCodeModal
+        qrcodeModal: QRCodeModal,
       })
       walletConnect.current.connected = false
     }
@@ -74,7 +74,7 @@ export default function useWalletConnect(onConnect, onDisconnect) {
     (err) => {
       console.log('DISCONNECTED')
       if (err) throw err
-      onDisconnect()
+      onDisconnect('wallet-connect')
     },
     [onDisconnect]
   )
@@ -96,7 +96,7 @@ export default function useWalletConnect(onConnect, onDisconnect) {
     const _addresses = accounts.map((acct) => ({
       type: 'wallet-connect',
       connector: walletConnect.current,
-      address: acct
+      address: acct,
     }))
     console.log('connected here')
     onConnect(_addresses)
@@ -118,5 +118,4 @@ export default function useWalletConnect(onConnect, onDisconnect) {
     }
   }, [walletConnect.current])
   return { connect, disconnect, connector: walletConnect.current }
-
 }

@@ -65,6 +65,7 @@ const _getEmptyAccountInfo = (wallet) => {
     ...wallet,
   }
 }
+
 export default function useRewardsAddresses() {
   // const db = new DB('algodex_user_wallet_addresses')
   const context = useContext(RewardsAddressesContext)
@@ -134,7 +135,10 @@ export default function useRewardsAddresses() {
   //save active wallet when updated
   useEffect(() => {
     const _activeWallet = JSON.parse(localStorage.getItem('activeWallet'))
-    if (addresses.length > 0 && _activeWallet?.address !== activeWallet?.address) {
+    if (
+      addresses.length > 0 &&
+      _activeWallet?.address !== activeWallet?.address
+    ) {
       updateStorage(addresses, activeWallet)
     }
   }, [activeWallet])
@@ -174,7 +178,9 @@ export default function useRewardsAddresses() {
   const updateStorage = async (_addresses, _activeWallet) => {
     const result = await getAccountInfo(_addresses)
     if (_activeWallet?.address) {
-      const active = _addresses.find(({ address }) => address == _activeWallet?.address)
+      const active = _addresses.find(
+        ({ address }) => address == _activeWallet?.address
+      )
       let _formattedAddresses = [
         active,
         ...result.filter(({ address }) => address !== _activeWallet?.address),
@@ -204,12 +210,13 @@ export default function useRewardsAddresses() {
   // Handle removing from storage
   const handleDisconnect = (_address, type, _addresses) => {
     if (type == 'wallet-connect') {
-      peraDisconnect()
+      peraDisconnect(_address)
     } else {
-      myAlgoDisconnect()
+      myAlgoDisconnect(_address)
     }
     if (_addresses.length > 1) {
       const remainder = _addresses.filter(({ address }) => address != _address)
+      _setAddresses(remainder)
       if (_address == activeWallet?.address) {
         updateStorage(remainder, remainder[0].address)
       } else {
