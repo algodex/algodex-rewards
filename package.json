@@ -7,7 +7,7 @@
     "build": "next build",
     "docs": "jsdoc -c jsdoc.conf.json",
     "test-jest": "jest",
-    "test-lint": "next lint",
+    "test-lint": "eslint . --quiet",
     "test-cypress": "",
     "start": "next start",
     "lint": "next lint",
@@ -15,6 +15,7 @@
     "build-storybook": "build-storybook"
   },
   "dependencies": {
+    "@algodex/algodex-sdk": "^2.0.2",
     "@emotion/cache": "^11.7.1",
     "@emotion/react": "^11.8.1",
     "@emotion/server": "^11.4.0",
@@ -35,6 +36,7 @@
     "next-pwa": "^5.5.4",
     "pouchdb": "^7.3.0",
     "pouchdb-browser": "^7.3.0",
+    "pouchdb-mapreduce": "^7.3.0",
     "prop-types": "^15.8.1",
     "react": "17.0.2",
     "react-country-flag": "^3.0.2",
@@ -57,7 +59,7 @@
     "babel-jest": "^27.5.1",
     "babel-loader": "^8.2.3",
     "better-docs": "^2.7.2",
-    "eslint": "8.10.0",
+    "eslint": "^8.20.0",
     "eslint-config-next": "12.1.0",
     "eslint-plugin-jest": "^26.1.1",
     "eslint-plugin-storybook": "^0.5.7",
