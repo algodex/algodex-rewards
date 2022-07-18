@@ -34,6 +34,7 @@
     "next-pwa": "^5.5.4",
     "pouchdb": "^7.3.0",
     "pouchdb-browser": "^7.3.0",
+    "pouchdb-mapreduce": "^7.3.0",
     "prop-types": "^15.8.1",
     "react": "17.0.2",
     "react-country-flag": "^3.0.2",
