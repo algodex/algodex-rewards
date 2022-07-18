@@ -11,7 +11,8 @@ import { WalletDropdown } from '@/components/WalletDropdown'
 import { CurrentEpochCard } from '@/components/Periods/CurrentEpochCard'
 import { EpochTable } from '@/components/Tables/EpochTable'
 import useRewardsAddresses from '@/hooks/useRewardsAddresses'
-
+import { useEffect, useState } from 'react'
+import getRewardsData from 'lib/getRewards'
 
 export async function getServerSideProps({ locale }) {
   return {
@@ -23,9 +24,23 @@ export async function getServerSideProps({ locale }) {
 
 export default function Periods() {
   const { t } = useTranslation('periods')
-  const { addresses } = useRewardsAddresses()
+  const { addresses, activeWallet } = useRewardsAddresses()
   const isConnected = addresses.length > 0
+  const [rewards, setRewards] = useState([])
+  const [loading, setLoading] = useState(false)
   // const isConnected = false
+
+  useEffect(() => {
+    const fetchRewards = async (wallet) => {
+      setLoading(true)
+      const rewards = await getRewardsData(wallet)
+      setRewards(rewards.rows)
+      setLoading(false)
+    }
+    if (activeWallet) {
+      fetchRewards(activeWallet.address)
+    }
+  }, [activeWallet])
 
   return (
     <>
@@ -37,8 +52,16 @@ export default function Periods() {
       <Container maxWidth="md" sx={{ paddingInline: '2rem' }}>
         <WalletDropdown />
         <hr />
-        <CurrentEpochCard isConnected={isConnected} />
-        <EpochTable isConnected={isConnected} />
+        <CurrentEpochCard
+          isConnected={isConnected}
+          loading={loading}
+          rewards={rewards}
+        />
+        <EpochTable
+          isConnected={isConnected}
+          loading={loading}
+          rewards={rewards}
+        />
       </Container>
     </>
   )

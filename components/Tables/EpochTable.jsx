@@ -11,6 +11,8 @@ import TableRow from '@mui/material/TableRow'
 import { styled } from '@mui/material/styles'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 
+import { TableLoader } from '../Loaders/TableLoader'
+
 const columns = [
   { id: 'epoch', label: 'Epoch' },
   { id: 'earnedRewards', label: 'Earned Rewards' },
@@ -18,64 +20,6 @@ const columns = [
   {
     id: 'unvestedRewards',
     label: 'Unvested Rewards',
-    format: (value) => value.toFixed(2),
-  },
-]
-
-const rows = [
-  {
-    epoch: 344,
-    earnedRewards: '267 ALGX',
-    vestedRewards: '56.5 ALGX',
-    unvestedRewards: '16.5 ALGX',
-  },
-  {
-    epoch: 324,
-    earnedRewards: '267 ALGX',
-    vestedRewards: '56.5 ALGX',
-    unvestedRewards: '16.5 ALGX',
-  },
-  {
-    epoch: 334,
-    earnedRewards: '267 ALGX',
-    vestedRewards: '56.5 ALGX',
-    unvestedRewards: '16.5 ALGX',
-  },
-  {
-    epoch: 354,
-    earnedRewards: '267 ALGX',
-    vestedRewards: '56.5 ALGX',
-    unvestedRewards: '16.5 ALGX',
-  },
-  {
-    epoch: 444,
-    earnedRewards: '267 ALGX',
-    vestedRewards: '56.5 ALGX',
-    unvestedRewards: '16.5 ALGX',
-  },
-  {
-    epoch: 144,
-    earnedRewards: '267 ALGX',
-    vestedRewards: '56.5 ALGX',
-    unvestedRewards: '16.5 ALGX',
-  },
-  {
-    epoch: 44,
-    earnedRewards: '267 ALGX',
-    vestedRewards: '56.5 ALGX',
-    unvestedRewards: '16.5 ALGX',
-  },
-  {
-    epoch: 34,
-    earnedRewards: '267 ALGX',
-    vestedRewards: '56.5 ALGX',
-    unvestedRewards: '16.5 ALGX',
-  },
-  {
-    epoch: 90,
-    earnedRewards: '267 ALGX',
-    vestedRewards: '56.5 ALGX',
-    unvestedRewards: '16.5 ALGX',
   },
 ]
 
@@ -93,7 +37,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   },
 }))
 
-export const EpochTable = ({ isConnected }) => {
+export const EpochTable = ({ isConnected, loading, rewards }) => {
   return (
     <>
       {isConnected && (
@@ -116,37 +60,39 @@ export const EpochTable = ({ isConnected }) => {
                   <StyledTableCell></StyledTableCell>
                 </TableRow>
               </TableHead>
-              <TableBody>
-                {rows.map((row) => {
-                  return (
-                    <TableRow
-                      hover
-                      role="checkbox"
-                      tabIndex={-1}
-                      key={row.epoch}
-                    >
-                      <>
-                        {columns.map((column) => {
-                          const value = row[column.id]
-                          return (
-                            <StyledTableCell
-                              key={column.id}
-                              align={column.align}
-                            >
-                              {column.format && typeof value === 'number'
-                                ? column.format(value)
-                                : value}
-                            </StyledTableCell>
-                          )
-                        })}
-                        <StyledTableCell>
-                          <ChevronRightIcon />
-                        </StyledTableCell>
-                      </>
-                    </TableRow>
-                  )
-                })}
-              </TableBody>
+              {loading ? (
+                <TableLoader columnCount={5} />
+              ) : (
+                <TableBody>
+                  {rewards.map((row) => {
+                    return (
+                      <TableRow
+                        hover
+                        role="checkbox"
+                        tabIndex={-1}
+                        key={row.id}
+                      >
+                        <>
+                          <StyledTableCell>{row.value.epoch}</StyledTableCell>
+                          <StyledTableCell>
+                            {row.value.earned_rewards.toLocaleString()} ALGX
+                          </StyledTableCell>
+                          <StyledTableCell>
+                            {(0).toLocaleString()} ALGX
+                          </StyledTableCell>
+                          <StyledTableCell>
+                            {(row.value.earned_rewards - 0).toLocaleString()}{' '}
+                            ALGX
+                          </StyledTableCell>
+                          <StyledTableCell>
+                            <ChevronRightIcon />
+                          </StyledTableCell>
+                        </>
+                      </TableRow>
+                    )
+                  })}
+                </TableBody>
+              )}
             </Table>
           </TableContainer>
         </>
@@ -157,8 +103,12 @@ export const EpochTable = ({ isConnected }) => {
 
 EpochTable.propTypes = {
   isConnected: PropTypes.bool,
+  loading: PropTypes.bool,
+  rewards: PropTypes.array,
 }
 
 EpochTable.defaultProps = {
   isConnected: false,
+  loading: true,
+  rewards: [],
 }
