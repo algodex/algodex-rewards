@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { defaults } from '../next-i18next.config'
@@ -18,7 +18,7 @@ import { TotalRewardsCard } from '@/components/Periods/TotalRewardsCard'
 import useRewardsAddresses from '@/hooks/useRewardsAddresses'
 
 // Lib files
-import { signUpForRewards } from 'lib/send_transaction'
+import { signUpForRewards } from '@/lib/send_transaction'
 
 export async function getServerSideProps({ locale }) {
   return {
@@ -29,9 +29,21 @@ export async function getServerSideProps({ locale }) {
 }
 export default function Home() {
   const { t } = useTranslation('index')
-  const { addresses, activeWallet } = useRewardsAddresses()
+  const { addresses, activeWallet, peraConnect } = useRewardsAddresses()
   const isConnected = addresses.length > 0
   // const isConnected = false
+
+  useEffect(() => {
+    // eslint-disable-next-line max-len
+    // This useEffect is necessary because when getting the wallet from localStorage the sendCustomRequest method is undefined
+    // rerunning peraConnect reAttaches the signing method to the connector.
+    if (
+      activeWallet?.type === 'wallet-connect' &&
+      typeof activeWallet.connector.sendCustomRequest === 'undefined'
+    ) {
+      peraConnect(activeWallet)
+    }
+  }, [activeWallet])
 
   return (
     <>

@@ -1,4 +1,4 @@
-import { dummyChartData } from 'lib/dummyChartData'
+import { dummyChartData } from '../../lib/dummyChartData'
 import React, { useEffect, useRef } from 'react'
 
 export default function AreaChart() {

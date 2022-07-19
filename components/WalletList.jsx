@@ -125,7 +125,7 @@ export const WalletList = () => {
                 <Button
                   variant="outlined"
                   sx={{ fontSize: '0.8rem' }}
-                  onClick={() => handleDisconnect(address, type, addresses)}
+                  onClick={() => handleDisconnect(address, type)}
                 >
                   Disconnect {shortenAddress(address)}
                 </Button>

@@ -33,7 +33,8 @@ const styles = {
   },
 }
 
-export const CurrentEpochCard = ({ isConnected }) => {
+export const CurrentEpochCard = ({ isConnected, rewards, loading }) => {
+
   const [activeCurrency, setActiveCurrency] = useState('ALGX')
   return (
     <>
@@ -56,7 +57,7 @@ export const CurrentEpochCard = ({ isConnected }) => {
           }}
         >
           <Typography fontSize={'1.1rem'} fontWeight={600}>
-            Current Epoch 345 Pending:
+            Current Period Pending:
           </Typography>
 
           {isConnected ? (
@@ -96,123 +97,135 @@ export const CurrentEpochCard = ({ isConnected }) => {
         </Box>
         {isConnected && (
           <>
-            <Typography
-              fontSize={'0.85rem'}
-              fontWeight={700}
-              sx={{ color: 'secondary.light', marginBottom: '1rem' }}
-            >
-              June 06, 2022 - June 20, 2022
-            </Typography>
-            <Box
-              marginBottom={'0.5rem'}
-              marginLeft={'0.6rem'}
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}
-            >
-              <Typography fontSize={'0.95rem'} fontWeight={600}>
-                New Earned Rewards:
-              </Typography>
-              <Typography fontSize={'1rem'} fontWeight={600}>
-                1267 ALGX
-              </Typography>
-            </Box>
-            <Box
-              marginBottom={'0.5rem'}
-              marginLeft={'0.6rem'}
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                color: 'secondary.light',
-              }}
-            >
-              <Typography fontSize={'0.95rem'} fontWeight={600}>
-                New Earned Unvested:
-              </Typography>
+            <>
               <Typography
-                fontSize={'1rem'}
-                fontWeight={600}
+                fontSize={'0.85rem'}
+                fontWeight={700}
+                sx={{ color: 'secondary.light', marginBottom: '1rem' }}
+              >
+                June 06, 2022 - June 20, 2022
+              </Typography>
+              <Box
+                marginBottom={'0.5rem'}
+                marginLeft={'0.6rem'}
                 sx={{
                   display: 'flex',
-                  alignItems: 'flex-start',
-                  lineHeight: '1rem',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
                 }}
               >
-                <InfoRoundedIcon
-                  sx={{
-                    fontSize: '1rem',
-                    marginRight: '0.3rem',
-                  }}
-                />
-                320 ALGX
-              </Typography>
-            </Box>
-            <Box
-              marginBottom={'2rem'}
-              marginLeft={'0.6rem'}
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}
-            >
-              <Typography fontSize={'0.95rem'} fontWeight={600}>
-                Vesting Rewards:
-              </Typography>
-              <Box>
-                <Typography fontSize={'1rem'} fontWeight={600}>
-                  545 ALGX
+                <Typography fontSize={'0.95rem'} fontWeight={600}>
+                  New Earned Rewards:
                 </Typography>
-
-                <Typography
-                  fontSize={'0.85rem'}
-                  fontWeight={700}
-                  sx={{ color: 'secondary.light' }}
-                >
-                  $6.98 USD
+                <Typography fontSize={'1rem'} fontWeight={600}>
+                  {loading ? (
+                    <></>
+                  ) : (
+                    <>
+                      {(
+                        rewards[0]?.value?.earned_rewards || 0
+                      ).toLocaleString()}{' '}
+                      ALGX
+                    </>
+                  )}
                 </Typography>
               </Box>
-            </Box>
-          </>
-        )}
-        {isConnected && (
-          <>
-            <Typography
-              variant="p"
-              fontSize={'0.8rem'}
-              fontStyle={'italic'}
-              marginLeft={'0.5rem'}
-            >
-              Rewards will be paid out [time] two days after the end of one-week
-              accrual epochs
-            </Typography>
-
-            <Box textAlign={'center'} marginTop={'1.5rem'}>
-              <Link
-                href="/"
-                target={'_blanc'}
+              <Box
+                marginBottom={'0.5rem'}
+                marginLeft={'0.6rem'}
                 sx={{
-                  textDecoration: 'none',
-                  fontSize: '0.8rem',
-                  fontWeight: 700,
                   display: 'flex',
+                  justifyContent: 'space-between',
                   alignItems: 'center',
-                  justifyContent: 'flex-end',
+                  color: 'secondary.light',
                 }}
               >
-                View on AlgoExplorer
-                <LaunchRoundedIcon
+                <Typography fontSize={'0.95rem'} fontWeight={600}>
+                  New Earned Unvested:
+                </Typography>
+                <Typography
+                  fontSize={'1rem'}
+                  fontWeight={600}
                   sx={{
-                    color: 'primary.contrastText',
-                    fontSize: '0.9rem',
-                    marginLeft: '0.3rem',
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    lineHeight: '1rem',
                   }}
-                />
-              </Link>
-            </Box>
+                >
+                  <InfoRoundedIcon
+                    sx={{
+                      fontSize: '1rem',
+                      marginRight: '0.3rem',
+                    }}
+                  />
+                  {(
+                    rewards[0]?.value?.earned_rewards - 0 || 0
+                  ).toLocaleString()}{' '}
+                  ALGX
+                </Typography>
+              </Box>
+              <Box
+                marginBottom={'2rem'}
+                marginLeft={'0.6rem'}
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
+                <Typography fontSize={'0.95rem'} fontWeight={600}>
+                  Vested Rewards:
+                </Typography>
+                <Box>
+                  <Typography fontSize={'1rem'} fontWeight={600}>
+                    {(0).toLocaleString()} ALGX
+                  </Typography>
+
+                  <Typography
+                    fontSize={'0.85rem'}
+                    fontWeight={700}
+                    sx={{ color: 'secondary.light' }}
+                  >
+                    $6.98 USD
+                  </Typography>
+                </Box>
+              </Box>
+            </>
+            <>
+              <Typography
+                variant="p"
+                fontSize={'0.8rem'}
+                fontStyle={'italic'}
+                marginLeft={'0.5rem'}
+              >
+                Rewards will be paid out two days after the end of one-week
+                accrual periods
+              </Typography>
+
+              <Box textAlign={'center'} marginTop={'1.5rem'}>
+                <Link
+                  href="/"
+                  target={'_blanc'}
+                  sx={{
+                    textDecoration: 'none',
+                    fontSize: '0.8rem',
+                    fontWeight: 700,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'flex-end',
+                  }}
+                >
+                  View on AlgoExplorer
+                  <LaunchRoundedIcon
+                    sx={{
+                      color: 'primary.contrastText',
+                      fontSize: '0.9rem',
+                      marginLeft: '0.3rem',
+                    }}
+                  />
+                </Link>
+              </Box>
+            </>
           </>
         )}
       </Box>
@@ -222,8 +235,12 @@ export const CurrentEpochCard = ({ isConnected }) => {
 
 CurrentEpochCard.propTypes = {
   isConnected: PropTypes.bool,
+  rewards: PropTypes.array,
+  loading: PropTypes.bool,
 }
 
 CurrentEpochCard.defaultProps = {
   isConnected: false,
+  rewards: [],
+  loading: true,
 }

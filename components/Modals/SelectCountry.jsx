@@ -2,7 +2,7 @@ import React from 'react'
 import Flag from 'react-country-flag'
 import PropTypes from 'prop-types'
 
-import { Countries } from 'lib/countries'
+import { Countries } from '@/lib/countries'
 
 // Material UI components
 import TextField from '@mui/material/TextField'
