@@ -18,7 +18,7 @@ import { TotalRewardsCard } from '@/components/Periods/TotalRewardsCard'
 import useRewardsAddresses from '@/hooks/useRewardsAddresses'
 
 // Lib files
-import { signUpForRewards } from 'lib/send_transaction'
+import { signUpForRewards } from '@/lib/send_transaction'
 
 export async function getServerSideProps({ locale }) {
   return {

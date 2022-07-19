@@ -5450,11 +5450,6 @@ big.js@^6.1.1:
   resolved "https://registry.yarnpkg.com/big.js/-/big.js-6.2.1.tgz#7205ce763efb17c2e41f26f121c420c6a7c2744f"
   integrity sha512-bCtHMwL9LeDIozFn+oNhhFoq+yQ3BNdnsLSASUxLciOb1vgvpHsIO1dsENiGMgbb4SkP5TrzWzRiLddn8ahVOQ==
 
-big.js@^6.2.0:
-  version "6.2.0"
-  resolved "https://registry.yarnpkg.com/big.js/-/big.js-6.2.0.tgz#39c60822aecb0f34a1d79a90fe9908a0ddf45e1d"
-  integrity sha512-paIKvJiAaOYdLt6MfnvxkDo64lTOV257XYJyX3oJnJQocIclUn+48k6ZerH/c5FxWE6DGJu1TKDYis7tqHg9kg==
-
 bignumber.js@^9.0.0:
   version "9.0.2"
   resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-9.0.2.tgz#71c6c6bed38de64e24a65ebe16cfcf23ae693673"

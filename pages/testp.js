@@ -1,6 +1,6 @@
-import useWallets from '@/hooks/useWallets'
+import useWallets from '@/hooks/useWallets.js'
 import { useEffect } from 'react'
-import useRewardsAddresses from '@/hooks/useRewardsAddresses'
+import useRewardsAddresses from '@/hooks/useRewardsAddresses.js'
 
 export default function TestPage() {
   const {addresses} = useRewardsAddresses()

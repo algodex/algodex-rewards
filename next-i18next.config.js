@@ -11,8 +11,8 @@ module.exports = {
       '/chart': [...defaults, 'chart'],
       '/periods': [...defaults, 'periods'],
       '/wallet': [...defaults, 'wallet'],
-      '/test': [...defaults, 'test'],
     },
   },
+  react: { useSuspense: false },
   localePath: path.resolve('./locales'),
 }
