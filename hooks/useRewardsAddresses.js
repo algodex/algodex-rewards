@@ -80,33 +80,12 @@ export default function useRewardsAddresses() {
     setActiveWallet,
   } = context
 
-  const updateAddresses = useCallback(
-    (_addresses) => {
-      if (_addresses == null) {
-        return
-      }
-      const filteredAddresses = _addresses.filter((addy) => addy.address)
-      if (filteredAddresses.length > 0) {
-        if (addresses.length > 0) {
-          let finalArray = [...addresses]
-          //Check if the newly connected address exist before updating the address list.
-          for (let index = 0; index < filteredAddresses.length; index++) {
-            const newAddr = filteredAddresses[index]
-            const found = addresses.find(
-              ({ address }) => address == newAddr.address
-            )
-            if (!found) {
-              finalArray.push(newAddr)
-            }
-          }
-          updateStorage(finalArray, activeWallet)
-        } else {
-          updateStorage(filteredAddresses, activeWallet)
-        }
-      }
-    },
-    [setAddresses]
-  )
+  const updateAddresses = useCallback((_addresses) => {
+    if (_addresses == null) {
+      return
+    }
+    updateStorage(_addresses, activeWallet)
+  }, [])
 
   const {
     setAddresses: _setAddresses,
@@ -124,8 +103,9 @@ export default function useRewardsAddresses() {
       const _addresses =
         JSON.parse(localStorage.getItem('algodex_user_wallet_addresses')) || []
       setAddresses(_addresses)
-      setActiveWallet(_activeWallet)
+      // _setAddresses(_addresses)
       if (_addresses.length > 0) {
+        setActiveWallet(_activeWallet)
         updateStorage(_addresses, _activeWallet)
       }
     }
@@ -196,11 +176,11 @@ export default function useRewardsAddresses() {
     } else {
       setAddresses(result)
       _setAddresses(result)
-      localStorage.setItem(
-        'algodex_user_wallet_addresses',
-        JSON.stringify(result)
-      )
       if (result.length > 0) {
+        localStorage.setItem(
+          'algodex_user_wallet_addresses',
+          JSON.stringify(result)
+        )
         setActiveWallet(result[0])
         localStorage.setItem('activeWallet', JSON.stringify(result[0]))
       }
@@ -208,14 +188,14 @@ export default function useRewardsAddresses() {
   }
 
   // Handle removing from storage
-  const handleDisconnect = (_address, type, _addresses) => {
+  const handleDisconnect = (_address, type) => {
     if (type == 'wallet-connect') {
-      peraDisconnect(_address)
+      peraDisconnect(type)
     } else {
       myAlgoDisconnect(_address)
     }
-    if (_addresses.length > 1) {
-      const remainder = _addresses.filter(({ address }) => address != _address)
+    if (addresses.length > 1) {
+      const remainder = addresses.filter(({ address }) => address != _address)
       _setAddresses(remainder)
       if (_address == activeWallet?.address) {
         updateStorage(remainder, remainder[0].address)

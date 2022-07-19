@@ -73,13 +73,13 @@ function useWallets(updateAddresses) {
   // Handle any Disconnect
   const handleDisconnect = useCallback((_addresses) => {
     console.error('Handle removing from storage', _addresses)
-    if (_addresses == 'wallet-connect') {
-      const remainder = addresses.filter(
-        (address) => address.type != 'wallet-connect'
-      )
-      setAddresses(remainder)
-      updateAddresses(remainder)
-    }
+    // if (_addresses == 'wallet-connect') {
+    //   const remainder = addresses.filter(
+    //     (address) => address.type != 'wallet-connect'
+    //   )
+    //   setAddresses(remainder)
+    //   updateAddresses(remainder)
+    // }
   }, [])
 
   // My Algo Connect/Disconnect

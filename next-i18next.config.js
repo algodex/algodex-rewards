@@ -13,6 +13,5 @@ module.exports = {
       '/wallet': [...defaults, 'wallet'],
     },
   },
-  react: { useSuspense: false },
   localePath: path.resolve('./locales'),
 }
