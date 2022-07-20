@@ -33,17 +33,17 @@ export default function Home() {
   const isConnected = addresses.length > 0
   // const isConnected = false
 
-  useEffect(() => {
-    // eslint-disable-next-line max-len
-    // This useEffect is necessary because when getting the wallet from localStorage the sendCustomRequest method is undefined
-    // rerunning peraConnect reAttaches the signing method to the connector.
-    if (
-      activeWallet?.type === 'wallet-connect' &&
-      typeof activeWallet.connector.sendCustomRequest === 'undefined'
-    ) {
-      peraConnect(activeWallet)
-    }
-  }, [activeWallet])
+  // useEffect(() => {
+  //   // eslint-disable-next-line max-len
+  //   // This useEffect is necessary because when getting the wallet from localStorage the sendCustomRequest method is undefined
+  //   // rerunning peraConnect reAttaches the signing method to the connector.
+  //   if (
+  //     activeWallet?.type === 'wallet-connect' &&
+  //     typeof activeWallet.connector.sendCustomRequest === 'undefined'
+  //   ) {
+  //     peraConnect(activeWallet)
+  //   }
+  // }, [activeWallet])
 
   return (
     <>
