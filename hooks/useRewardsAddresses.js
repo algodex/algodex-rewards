@@ -10,7 +10,7 @@ import PropTypes from 'prop-types'
 import algosdk from 'algosdk'
 
 // PouchDB
-// import DB from 'lib/db'
+// import DB from '@/lib/db'
 
 export const RewardsAddressesContext = createContext(undefined)
 
@@ -67,7 +67,8 @@ const _getEmptyAccountInfo = (wallet) => {
 }
 
 export default function useRewardsAddresses() {
-  // const db = new DB('algodex_user_wallet_addresses')
+  // const addressessDb = new DB('algodex_user_wallet_addresses')
+  // const activeWalletDb = new DB('activeWallet')
   const context = useContext(RewardsAddressesContext)
   if (context === undefined) {
     throw new Error('Must be inside of a Rewards Addresses Provider')
@@ -98,12 +99,13 @@ export default function useRewardsAddresses() {
   // Fetch saved and active wallets from storage
   useEffect(() => {
     const getDBData = async () => {
-      //  const _addresses = db.getAddresses()
-      const _activeWallet = JSON.parse(localStorage.getItem('activeWallet'))
+      // const _addresses = await addressessDb.getAddresses()
+      // const _activeWallet = await activeWalletDb.getActiveWallet()
       const _addresses =
         JSON.parse(localStorage.getItem('algodex_user_wallet_addresses')) || []
+      const _activeWallet = JSON.parse(localStorage.getItem('activeWallet'))
+      console.log({ _addresses })
       setAddresses(_addresses)
-      // _setAddresses(_addresses)
       if (_addresses.length > 0) {
         setActiveWallet(_activeWallet)
         updateStorage(_addresses, _activeWallet)
@@ -114,13 +116,17 @@ export default function useRewardsAddresses() {
 
   //save active wallet when updated
   useEffect(() => {
-    const _activeWallet = JSON.parse(localStorage.getItem('activeWallet'))
-    if (
-      addresses.length > 0 &&
-      _activeWallet?.address !== activeWallet?.address
-    ) {
-      updateStorage(addresses, activeWallet)
+    const updateActive = async () => {
+      const _activeWallet = JSON.parse(localStorage.getItem('activeWallet'))
+      // const _activeWallet = await activeWalletDb.getActiveWallet()
+      if (
+        addresses.length > 0 &&
+        _activeWallet?.address !== activeWallet?.address
+      ) {
+        updateStorage(addresses, activeWallet)
+      }
     }
+    updateActive()
   }, [activeWallet])
 
   //Get account info
@@ -173,17 +179,28 @@ export default function useRewardsAddresses() {
         JSON.stringify(_formattedAddresses)
       )
       localStorage.setItem('activeWallet', JSON.stringify(_activeWallet))
+      // _formattedAddresses.forEach((address) => {
+      //   addressessDb.updateAddresses(address)
+      // })
+      // activeWalletDb.updateAddresses(_activeWallet)
     } else {
       setAddresses(result)
       _setAddresses(result)
-      if (result.length > 0) {
-        localStorage.setItem(
-          'algodex_user_wallet_addresses',
-          JSON.stringify(result)
-        )
-        setActiveWallet(result[0])
-        localStorage.setItem('activeWallet', JSON.stringify(result[0]))
-      }
+      localStorage.setItem(
+        'algodex_user_wallet_addresses',
+        JSON.stringify(result)
+      )
+      setActiveWallet(result[0])
+      localStorage.setItem('activeWallet', JSON.stringify(result[0]))
+      // if (result.length > 0) {
+      //   result.forEach((address) => {
+      //     const update = async () => {
+      //       await addressessDb.updateAddresses(address)
+      //     }
+      //     update()
+      //   })
+      // }
+      // activeWalletDb.updateAddresses(result[0])
     }
   }
 
@@ -203,6 +220,8 @@ export default function useRewardsAddresses() {
         updateStorage(remainder, activeWallet)
       }
     } else {
+      // addressessDb.removeAddresses()
+      // activeWalletDb.removeActiveWallet()
       localStorage.removeItem('algodex_user_wallet_addresses')
       localStorage.removeItem('activeWallet')
       setAddresses([])
