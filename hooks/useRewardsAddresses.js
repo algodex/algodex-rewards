@@ -95,13 +95,6 @@ export default function useRewardsAddresses() {
     myAlgoDisconnect,
   } = useWallets(updateAddresses)
 
-  const rehydrate = (wallet) => {
-    return (
-      typeof wallet !== 'undefined' && //activeWallet exists &
-      typeof wallet?.connector?.sign === 'undefined' // does not have a signing method
-    )
-  }
-
   // Fetch saved and active wallets from storage
   useEffect(() => {
     const getDBData = async () => {
@@ -113,12 +106,6 @@ export default function useRewardsAddresses() {
       _setAddresses(_addresses)
       if (_addresses.length > 0) {
         setActiveWallet(_activeWallet)
-        if (
-          _activeWallet.type == 'wallet-connect' &&
-          rehydrate(_activeWallet)
-        ) {
-          peraConnect()
-        }
       }
     }
     getDBData()
@@ -131,12 +118,7 @@ export default function useRewardsAddresses() {
       addresses.length > 0 &&
       _activeWallet?.address !== activeWallet?.address
     ) {
-      if (_activeWallet.type == 'wallet-connect' && rehydrate(_activeWallet)) {
-        setActiveWallet(_activeWallet)
-        peraConnect()
-      } else {
-        updateStorage(addresses, activeWallet)
-      }
+      updateStorage(addresses, activeWallet)
     }
   }, [activeWallet])
 
