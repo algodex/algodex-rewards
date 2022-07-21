@@ -143,4 +143,5 @@ dist
 #misc
 .DS_Store
 algodex_user_wallet_addresses
+activeWallet
 .npmrc

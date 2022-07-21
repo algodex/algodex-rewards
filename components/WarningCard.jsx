@@ -5,8 +5,9 @@ import PropTypes from 'prop-types'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded'
+import Link from './Nav/Link'
 
-export const WarningCard = ({ title, warnings }) => {
+export const WarningCard = ({ title, warnings, link }) => {
   return (
     <Box
       sx={{
@@ -24,11 +25,7 @@ export const WarningCard = ({ title, warnings }) => {
       <WarningRoundedIcon sx={{ marginRight: '5px' }} />
       <Box>
         {title && (
-          <Typography
-            variant="p"
-            fontSize={'0.85rem'}
-            fontWeight={700}
-          >
+          <Typography variant="p" fontSize={'0.85rem'} fontWeight={700}>
             <span>{title} </span>
           </Typography>
         )}
@@ -46,12 +43,22 @@ export const WarningCard = ({ title, warnings }) => {
             </span>
           ))}
         </Typography>
+        {link && (
+          <Link
+            href={link.url}
+            target={'_blanc'}
+            sx={{ color: 'accent.main', marginTop: '1rem', display: 'block' }}
+          >
+            {link.title}
+          </Link>
+        )}
       </Box>
     </Box>
   )
 }
 
 WarningCard.propTypes = {
-  title: PropTypes.string,
-  warnings: PropTypes.array,
+  title: PropTypes.string.isRequired,
+  warnings: PropTypes.arrayOf(PropTypes.string),
+  link: PropTypes.objectOf({ title: PropTypes.string, url: PropTypes.string }),
 }

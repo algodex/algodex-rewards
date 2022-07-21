@@ -28,7 +28,7 @@ function Toolbar({ height, isMobile, onClick, ...rest }) {
       {...rest}
     >
       <Box flex={1} display={'flex'} alignItems={'baseline'}>
-        <Logo />
+        <Logo isMobile={isMobile} />
       </Box>
       <LocaleNavMenu isMobile={isMobile} onClick={onClick} />
       {/* TODO: Make Menu Collapsable*/}

@@ -12,6 +12,7 @@ import { styled } from '@mui/material/styles'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 
 import { TableLoader } from '../Loaders/TableLoader'
+import { WarningCard } from '../WarningCard'
 
 const columns = [
   { id: 'epoch', label: 'Epoch' },
@@ -44,22 +45,24 @@ export const EpochTable = ({ isConnected, loading, rewards }) => {
         <>
           <TableContainer sx={{ maxHeight: 440 }}>
             <Table stickyHeader aria-label="sticky table">
-              <TableHead>
-                <TableRow>
-                  {columns.map((column) => (
-                    <StyledTableCell
-                      key={column.id}
-                      align={column.align}
-                      style={{ minWidth: column.minWidth }}
-                      component="th"
-                      scope="row"
-                    >
-                      {column.label}
-                    </StyledTableCell>
-                  ))}
-                  <StyledTableCell></StyledTableCell>
-                </TableRow>
-              </TableHead>
+              {!loading && rewards.length > 0 && (
+                <TableHead>
+                  <TableRow>
+                    {columns.map((column) => (
+                      <StyledTableCell
+                        key={column.id}
+                        align={column.align}
+                        style={{ minWidth: column.minWidth }}
+                        component="th"
+                        scope="row"
+                      >
+                        {column.label}
+                      </StyledTableCell>
+                    ))}
+                    <StyledTableCell></StyledTableCell>
+                  </TableRow>
+                </TableHead>
+              )}
               {loading ? (
                 <TableLoader columnCount={5} />
               ) : (
@@ -95,6 +98,19 @@ export const EpochTable = ({ isConnected, loading, rewards }) => {
               )}
             </Table>
           </TableContainer>
+          {!loading && rewards.length < 1 && (
+            <WarningCard
+              title="Not enough ALGX in wallet for rewards"
+              warnings={[
+                // eslint-disable-next-line max-len
+                'At least 100 ALGX must be held for a wallet to vest retroactive rewards and/or earn new rewards.',
+              ]}
+              link={{
+                title: 'View info on earning rewards here',
+                url: '/',
+              }}
+            />
+          )}
         </>
       )}
     </>
