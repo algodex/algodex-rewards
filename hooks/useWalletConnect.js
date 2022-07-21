@@ -2,8 +2,8 @@ import { useCallback, useEffect, useRef } from 'react'
 
 import QRCodeModal from 'algorand-walletconnect-qrcode-modal'
 const ERROR = {
-  FAILED_TO_INIT: 'MyAlgo Wallet failed to initialize.',
-  FAILED_TO_CONNECT: 'MyAlgo Wallet failed to connect.',
+  FAILED_TO_INIT: 'WalletConnect Wallet failed to initialize.',
+  FAILED_TO_CONNECT: 'WalletConnect Wallet failed to connect.',
 }
 
 /**
@@ -54,8 +54,8 @@ export default function useWalletConnect(onConnect, onDisconnect) {
     }
   }
   const disconnect = () => {
-    onDisconnect('wallet-connect')
     if (walletConnect.current.connected) {
+      onDisconnect(walletConnect.current.accounts[0])
       walletConnect.current.killSession()
     }
   }

@@ -73,24 +73,14 @@ function useWallets(updateAddresses) {
 
   // Handle any Disconnect
   const handleDisconnect = useCallback((_address) => {
-    debugger;
-    const _activeWallet = JSON.parse(localStorage.getItem('activeWallet'))
-    const _addresses = JSON.parse(localStorage.getItem('algodex_user_wallet_addresses')).filter(wallet => wallet.address!== _address)
-    if(_activeWallet.address === _address) {
-      localStorage.setItem('activeWalletAddress', JSON.stringify('disconnected'))
+    console.debug('Handle removing from storage', _address)
+    if (_address) {
+      const _addresses = JSON.parse(
+        localStorage.getItem('algodex_user_wallet_addresses')
+      ).filter((wallet) => wallet.address !== _address)
+      setAddresses(_addresses)
+      updateAddresses(_addresses)
     }
-    setAddresses(_addresses)
-    localStorage.setItem('algodex_user_wallet_addresses', JSON.stringify(_addresses))
-
-
-    console.error('Handle removing from storage', _addresses)
-    // if (_addresses == 'wallet-connect') {
-    //   const remainder = addresses.filter(
-    //     (address) => address.type != 'wallet-connect'
-    //   )
-    //   setAddresses(remainder)
-    //   updateAddresses(remainder)
-    // }
   }, [])
 
   // My Algo Connect/Disconnect

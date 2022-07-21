@@ -1,5 +1,13 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
+
+import WalletConnect from '@walletconnect/client'
+import QRCodeModal from 'algorand-walletconnect-qrcode-modal'
+
+const connector = new WalletConnect({
+  bridge: 'https://bridge.walletconnect.org', // Required
+  qrcodeModal: QRCodeModal,
+})
 
 // Material UI components
 import Typography from '@mui/material/Typography'
@@ -13,6 +21,7 @@ import { ConnectWalletPrompt } from './Modals/ConnectWalletPrompt'
 import useRewardsAddresses from '@/hooks/useRewardsAddresses'
 
 export const WalletDropdown = ({ screen }) => {
+  const connectorRef = useRef(connector)
   const {
     addresses,
     activeWallet,
@@ -47,6 +56,22 @@ export const WalletDropdown = ({ screen }) => {
       peraConnect()
     }
   }
+
+  useEffect(() => {
+    // eslint-disable-next-line max-len
+    // This useEffect is necessary because when getting the wallet from localStorage the sendCustomRequest method is undefined
+    // rerunning peraConnect reAttaches the signing method to the connector.
+    if (
+      activeWallet?.type === 'wallet-connect' &&
+      typeof activeWallet.connector.sendCustomRequest === 'undefined'
+    ) {
+      console.log('first')
+      setActiveWallet({
+        ...activeWallet,
+        connector: connectorRef.current,
+      })
+    }
+  }, [activeWallet])
 
   return (
     <>
