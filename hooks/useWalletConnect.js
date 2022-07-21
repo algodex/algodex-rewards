@@ -54,8 +54,8 @@ export default function useWalletConnect(onConnect, onDisconnect) {
     }
   }
   const disconnect = () => {
-    onDisconnect('wallet-connect')
     if (walletConnect.current.connected) {
+      onDisconnect(walletConnect.current.accounts[0])
       walletConnect.current.killSession()
     }
   }

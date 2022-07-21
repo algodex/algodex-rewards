@@ -157,7 +157,7 @@ export default function useRewardsAddresses() {
   const updateStorage = async (_addresses, _activeWallet) => {
     const result = await getAccountInfo(_addresses)
     if (_activeWallet?.address) {
-      const active = _addresses.find(
+      const active = result.find(
         ({ address }) => address == _activeWallet?.address
       )
       let _formattedAddresses = [
@@ -189,9 +189,10 @@ export default function useRewardsAddresses() {
   // Handle removing from storage
   const handleDisconnect = (_address, type) => {
     if (type == 'wallet-connect') {
-      peraDisconnect(type)
+      console.log(type)
+      peraDisconnect()
     } else {
-      myAlgoDisconnect(_address)
+      myAlgoDisconnect()
     }
     if (addresses.length > 1) {
       const remainder = addresses.filter(({ address }) => address != _address)
