@@ -28,8 +28,8 @@ export const AssetList = ({ isConnected }) => {
       ) : (
         <>
           <Grid container spacing={2}>
-            {[...Array(3)].map((asset, index) => (
-              <Grid key={index} item xs={12} sm={10} md={6} lg={6} xl={4}>
+            {[...Array(6)].map((asset, index) => (
+              <Grid key={index} item xs={12} sm={10} md={6} lg={4} xl={4}>
                 <Box
                   sx={{
                     backgroundColor: 'secondary.dark',

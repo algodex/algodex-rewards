@@ -6,6 +6,10 @@ import Head from 'next/head'
 
 // Material UI components
 import Container from '@mui/material/Container'
+import Grid from '@mui/material/Grid'
+import Divider from '@mui/material/Divider'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { useTheme } from '@mui/material/styles'
 
 //Custom components
 import { EarningsChart } from '@/components/Chart/EarningsChart'
@@ -31,6 +35,7 @@ export default function Home() {
   const { t } = useTranslation('index')
   const { addresses, activeWallet } = useRewardsAddresses()
   const isConnected = addresses.length > 0
+  const isMobile = useMediaQuery(useTheme().breakpoints.down('sm'))
 
   return (
     <>
@@ -40,15 +45,25 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Container maxWidth="md" sx={{ paddingInline: '2rem' }}>
-        <WalletDropdown />
-        <button onClick={() => signUpForRewards(activeWallet)}>
-          Sign Up for rewards
-        </button>
-        <TotalRewardsCard isConnected={isConnected} />
-        <PendingEpochCard isConnected={isConnected} />
-        <hr />
-        <EarningsChart isConnected={isConnected} />
-        <hr />
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
+            <WalletDropdown />
+            <button onClick={() => signUpForRewards(activeWallet)}>
+              Sign Up for rewards
+            </button>
+            <TotalRewardsCard isConnected={isConnected} />
+            <PendingEpochCard isConnected={isConnected} />
+            {isMobile && (
+              <Divider sx={{ borderColor: 'primary.contrastText' }} />
+            )}
+          </Grid>
+          <Grid item xs={12} sm={12} md={6} lg={8} xl={8}>
+            <EarningsChart isConnected={isConnected} />
+            {isMobile && (
+              <Divider sx={{ borderColor: 'primary.contrastText' }} />
+            )}
+          </Grid>
+        </Grid>
         <AssetList isConnected={isConnected} />
       </Container>
     </>

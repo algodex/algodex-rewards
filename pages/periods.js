@@ -49,7 +49,10 @@ export default function Periods() {
         <meta name="description" content={t('description')} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Container maxWidth="md" sx={{ paddingInline: '2rem' }}>
+      <Container
+        maxWidth="md"
+        sx={{ paddingInline: '2rem', paddingBottom: '2rem' }}
+      >
         <WalletDropdown />
         <hr />
         <CurrentEpochCard
