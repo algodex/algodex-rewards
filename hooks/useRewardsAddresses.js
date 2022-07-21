@@ -104,7 +104,8 @@ export default function useRewardsAddresses() {
         JSON.parse(localStorage.getItem('algodex_user_wallet_addresses')) || []
       setAddresses(_addresses)
       // _setAddresses(_addresses)
-      if (_addresses.length > 0) {
+      if(_activeWallet === 'disconnected') setActiveWallet(null)
+      if (_addresses.length > 0 && _activeWallet !== 'disconnected') {
         setActiveWallet(_activeWallet)
         updateStorage(_addresses, _activeWallet)
       }
