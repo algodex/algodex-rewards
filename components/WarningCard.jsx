@@ -58,7 +58,7 @@ export const WarningCard = ({ title, warnings, link }) => {
 }
 
 WarningCard.propTypes = {
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
   warnings: PropTypes.arrayOf(PropTypes.string),
-  link: PropTypes.objectOf({ title: PropTypes.string, url: PropTypes.string }),
+  link: PropTypes.object,
 }

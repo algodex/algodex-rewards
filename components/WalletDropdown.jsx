@@ -65,7 +65,6 @@ export const WalletDropdown = ({ screen }) => {
       activeWallet?.type === 'wallet-connect' &&
       typeof activeWallet.connector.sendCustomRequest === 'undefined'
     ) {
-      console.log('first')
       setActiveWallet({
         ...activeWallet,
         connector: connectorRef.current,

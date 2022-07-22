@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { defaults } from '../next-i18next.config'
@@ -8,6 +8,7 @@ import Head from 'next/head'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
 import Divider from '@mui/material/Divider'
+import LoadingButton from '@mui/lab/LoadingButton'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { useTheme } from '@mui/material/styles'
 
@@ -20,9 +21,11 @@ import { TotalRewardsCard } from '@/components/Periods/TotalRewardsCard'
 
 //Custom hooks
 import useRewardsAddresses from '@/hooks/useRewardsAddresses'
+import { useSignUpHook } from '@/hooks/useSignUpHook'
 
 // Lib files
-import { signUpForRewards } from '@/lib/send_transaction'
+import { SignUpResponse } from '@/components/Modals/SignUpResponse'
+import { usePeriodsHook } from '@/hooks/usePeriodsHook'
 
 export async function getServerSideProps({ locale }) {
   return {
@@ -35,7 +38,14 @@ export default function Home() {
   const { t } = useTranslation('index')
   const { addresses, activeWallet } = useRewardsAddresses()
   const isConnected = addresses.length > 0
+  const [walletSignedUp, setWalletSignedUp] = useState(activeWallet?.signedUp)
   const isMobile = useMediaQuery(useTheme().breakpoints.down('sm'))
+  const { loading, openModal, setOpenModal, actionStatus, signUp } =
+    useSignUpHook({
+      setWalletSignedUp,
+      activeWallet,
+    })
+  const { rewards, loading: loadingReward } = usePeriodsHook({ activeWallet })
 
   return (
     <>
@@ -48,11 +58,40 @@ export default function Home() {
         <Grid container spacing={2}>
           <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
             <WalletDropdown />
-            <button onClick={() => signUpForRewards(activeWallet)}>
-              Sign Up for rewards
-            </button>
-            <TotalRewardsCard isConnected={isConnected} />
-            <PendingEpochCard isConnected={isConnected} />
+            <SignUpResponse
+              open={openModal}
+              address={activeWallet?.address}
+              actionStatus={actionStatus}
+              handleClose={() => setOpenModal(!openModal)}
+            />
+            {!walletSignedUp && (
+              <LoadingButton
+                variant="outline"
+                sx={{
+                  textDecoration: 'capitalize',
+                  color: 'primary.dark',
+                  fontWeight: '600',
+                  backgroundColor: 'primary.main',
+                  ['&:hover']: {
+                    backgroundColor: 'primary.main',
+                  },
+                }}
+                onClick={signUp}
+                loading={loading}
+              >
+                Sign Up for rewards
+              </LoadingButton>
+            )}
+            <TotalRewardsCard
+              isConnected={isConnected}
+              rewards={rewards}
+              loading={loadingReward}
+            />
+            <PendingEpochCard
+              isConnected={isConnected}
+              rewards={rewards}
+              loading={loadingReward}
+            />
             {isMobile && (
               <Divider sx={{ borderColor: 'primary.contrastText' }} />
             )}

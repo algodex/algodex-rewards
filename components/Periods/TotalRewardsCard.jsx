@@ -1,12 +1,19 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import Image from 'next/image'
 
 // Material UI components
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
-import Image from 'next/image'
+import CircularProgress from '@mui/material/CircularProgress'
 
-export const TotalRewardsCard = ({ isConnected }) => {
+export const TotalRewardsCard = ({ isConnected, rewards, loading }) => {
+  const totalEarned = rewards.reduce((a, b) => {
+    return a + b.value.earned_rewards
+  }, 0)
+  const totalVested = 0
+  const totalUnvested = totalEarned - totalVested
+
   return (
     <>
       {isConnected && (
@@ -46,18 +53,26 @@ export const TotalRewardsCard = ({ isConnected }) => {
                 Total Earned Rewards:
               </Typography>
               <Box>
-                <Typography fontSize={'1rem'} fontWeight={600}>
-                  1267 ALGX
-                </Typography>
+                {loading ? (
+                  <>
+                    <CircularProgress size={'1rem'} />
+                  </>
+                ) : (
+                  <>
+                    <Typography fontSize={'1rem'} fontWeight={600}>
+                      {totalEarned.toLocaleString()} ALGX
+                    </Typography>
 
-                <Typography
-                  fontSize={'0.85rem'}
-                  fontWeight={700}
-                  textAlign={'right'}
-                  sx={{ color: 'secondary.light' }}
-                >
-                  $14.57 USD
-                </Typography>
+                    <Typography
+                      fontSize={'0.85rem'}
+                      fontWeight={700}
+                      textAlign={'right'}
+                      sx={{ color: 'secondary.light' }}
+                    >
+                      $14.57 USD
+                    </Typography>
+                  </>
+                )}
               </Box>
             </Box>
             <Box
@@ -70,18 +85,26 @@ export const TotalRewardsCard = ({ isConnected }) => {
                 Total Unvested Rewards:
               </Typography>
               <Box>
-                <Typography fontSize={'1rem'} fontWeight={600}>
-                  545 ALGX
-                </Typography>
+                {loading ? (
+                  <>
+                    <CircularProgress size={'1rem'} />
+                  </>
+                ) : (
+                  <>
+                    <Typography fontSize={'1rem'} fontWeight={600}>
+                      {totalUnvested.toLocaleString()} ALGX
+                    </Typography>
 
-                <Typography
-                  fontSize={'0.85rem'}
-                  fontWeight={700}
-                  textAlign={'right'}
-                  sx={{ color: 'secondary.light' }}
-                >
-                  $6.98 USD
-                </Typography>
+                    <Typography
+                      fontSize={'0.85rem'}
+                      fontWeight={700}
+                      textAlign={'right'}
+                      sx={{ color: 'secondary.light' }}
+                    >
+                      $6.98 USD
+                    </Typography>
+                  </>
+                )}
               </Box>
             </Box>
           </Box>
@@ -93,6 +116,8 @@ export const TotalRewardsCard = ({ isConnected }) => {
 
 TotalRewardsCard.propTypes = {
   isConnected: PropTypes.bool,
+  rewards: PropTypes.array,
+  loading: PropTypes.bool,
 }
 
 TotalRewardsCard.defaultProps = {
