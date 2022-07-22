@@ -10,6 +10,7 @@ import Box from '@mui/material/Box'
 // Custom Language Selector
 import LocaleNavMenu from '@/components/Nav/LocaleNavMenu'
 import { Logo } from '../Logo'
+import { WalletDropdown } from '../WalletDropdown'
 
 /**
  * Toolbar
@@ -30,6 +31,18 @@ function Toolbar({ height, isMobile, onClick, ...rest }) {
       <Box flex={1} display={'flex'} alignItems={'baseline'}>
         <Logo isMobile={isMobile} />
       </Box>
+      {!isMobile && (
+        <WalletDropdown
+          sx={{
+            marginBlock: '0',
+            padding: '0rem 0.7rem',
+            position: 'absolute',
+            top: '0.7rem',
+            right: '7rem',
+          }}
+          fontSize={'1rem'}
+        />
+      )}
       <LocaleNavMenu isMobile={isMobile} onClick={onClick} />
       {/* TODO: Make Menu Collapsable*/}
       {isMobile && (

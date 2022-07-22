@@ -7,6 +7,8 @@ import { defaults } from 'next-i18next.config'
 // Material UI components
 import Container from '@mui/material/Container'
 import Box from '@mui/material/Box'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { useTheme } from '@mui/material/styles'
 
 // Custom components and hook(s)
 import { WalletDropdown } from '@/components/WalletDropdown'
@@ -29,6 +31,7 @@ export default function Chart() {
   const { addresses } = useContext(RewardsAddressesContext)
   const isConnected = addresses.length > 0
   // const isConnected = false
+  const isMobile = useMediaQuery(useTheme().breakpoints.down('sm'))
 
   return (
     <>
@@ -37,9 +40,13 @@ export default function Chart() {
         <meta name="description" content={t('description')} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Container maxWidth="md" sx={{ paddingInline: '2rem' }}>
-        <WalletDropdown />
-        <hr />
+      <Container maxWidth="md" sx={{ paddingInline: '2rem', paddingBlock:'2rem' }}>
+        {isMobile && (
+          <>
+            <WalletDropdown />
+            <hr />
+          </>
+        )}
         <EarningsChart isConnected={isConnected} />
         <Box sx={{ paddingBlock: '2rem' }}>
           <AssetTable isConnected={isConnected} />

@@ -54,10 +54,10 @@ export default function Home() {
         <meta name="description" content={t('description')} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Container maxWidth="md" sx={{ paddingInline: '2rem' }}>
+      <Container maxWidth="md" sx={{ paddingInline: '2rem', paddingBlock:'2rem' }}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-            <WalletDropdown />
+            {isMobile && <WalletDropdown />}
             <SignUpResponse
               open={openModal}
               address={activeWallet?.address}
