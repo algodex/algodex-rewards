@@ -69,6 +69,7 @@ const _getEmptyAccountInfo = (wallet) => {
 export default function useRewardsAddresses() {
   // const db = new DB('algodex_user_wallet_addresses')
   const context = useContext(RewardsAddressesContext)
+  const minAmount = 1000
   if (context === undefined) {
     throw new Error('Must be inside of a Rewards Addresses Provider')
   }
@@ -219,6 +220,7 @@ export default function useRewardsAddresses() {
     setActiveWallet,
     myAlgoConnect,
     peraConnect,
+    minAmount,
     handleDisconnect,
   }
 }
