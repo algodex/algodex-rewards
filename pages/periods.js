@@ -11,8 +11,7 @@ import { WalletDropdown } from '@/components/WalletDropdown'
 import { CurrentEpochCard } from '@/components/Periods/CurrentEpochCard'
 import { EpochTable } from '@/components/Tables/EpochTable'
 import useRewardsAddresses from '@/hooks/useRewardsAddresses'
-import { useEffect, useState } from 'react'
-import getRewardsData from 'lib/getRewards'
+import { usePeriodsHook } from '@/hooks/usePeriodsHook'
 
 export async function getServerSideProps({ locale }) {
   return {
@@ -26,21 +25,7 @@ export default function Periods() {
   const { t } = useTranslation('periods')
   const { addresses, activeWallet } = useRewardsAddresses()
   const isConnected = addresses.length > 0
-  const [rewards, setRewards] = useState([])
-  const [loading, setLoading] = useState(false)
-  // const isConnected = false
-
-  useEffect(() => {
-    const fetchRewards = async (wallet) => {
-      setLoading(true)
-      const rewards = await getRewardsData(wallet)
-      setRewards(rewards.rows)
-      setLoading(false)
-    }
-    if (activeWallet) {
-      fetchRewards(activeWallet.address)
-    }
-  }, [activeWallet])
+  const { rewards, loading } = usePeriodsHook({ activeWallet })
 
   return (
     <>

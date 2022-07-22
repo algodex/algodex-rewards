@@ -132,10 +132,10 @@ export const EarningsChart = ({ isConnected }) => {
                         styles.selector,
                         activeStage == item ? styles.activeSelector : {},
                         {
-                          width: '80px',
+                          width: '98px',
                           lineHeight: '0.8rem',
                           marginRight: '13px',
-                          height: '35px',
+                          height: '38px',
                         },
                       ]}
                     >
