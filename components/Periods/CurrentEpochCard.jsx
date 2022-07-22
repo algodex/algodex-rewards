@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
+import Link from '../Nav/Link'
 
 // Material UI components
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import LaunchRoundedIcon from '@mui/icons-material/LaunchRounded'
 import InfoRoundedIcon from '@mui/icons-material/InfoRounded'
-import Link from '../Nav/Link'
+import CircularProgress from '@mui/material/CircularProgress'
 
 const styles = {
   selectorContainer: {
@@ -34,7 +35,6 @@ const styles = {
 }
 
 export const CurrentEpochCard = ({ isConnected, rewards, loading }) => {
-
   const [activeCurrency, setActiveCurrency] = useState('ALGX')
   return (
     <>
@@ -119,7 +119,9 @@ export const CurrentEpochCard = ({ isConnected, rewards, loading }) => {
                 </Typography>
                 <Typography fontSize={'1rem'} fontWeight={600}>
                   {loading ? (
-                    <></>
+                    <>
+                      <CircularProgress size={'1rem'} />
+                    </>
                   ) : (
                     <>
                       {(
@@ -158,10 +160,18 @@ export const CurrentEpochCard = ({ isConnected, rewards, loading }) => {
                       marginRight: '0.3rem',
                     }}
                   />
-                  {(
-                    rewards[0]?.value?.earned_rewards - 0 || 0
-                  ).toLocaleString()}{' '}
-                  ALGX
+                  {loading ? (
+                    <>
+                      <CircularProgress size={'1rem'} />
+                    </>
+                  ) : (
+                    <>
+                      {(
+                        rewards[0]?.value?.earned_rewards - 0 || 0
+                      ).toLocaleString()}{' '}
+                      ALGX
+                    </>
+                  )}
                 </Typography>
               </Box>
               <Box
@@ -177,17 +187,25 @@ export const CurrentEpochCard = ({ isConnected, rewards, loading }) => {
                   Vested Rewards:
                 </Typography>
                 <Box>
-                  <Typography fontSize={'1rem'} fontWeight={600}>
-                    {(0).toLocaleString()} ALGX
-                  </Typography>
+                  {loading ? (
+                    <>
+                      <CircularProgress size={'1rem'} />
+                    </>
+                  ) : (
+                    <>
+                      <Typography fontSize={'1rem'} fontWeight={600}>
+                        {(0).toLocaleString()} ALGX
+                      </Typography>
 
-                  <Typography
-                    fontSize={'0.85rem'}
-                    fontWeight={700}
-                    sx={{ color: 'secondary.light' }}
-                  >
-                    $6.98 USD
-                  </Typography>
+                      <Typography
+                        fontSize={'0.85rem'}
+                        fontWeight={700}
+                        sx={{ color: 'secondary.light' }}
+                      >
+                        $6.98 USD
+                      </Typography>
+                    </>
+                  )}
                 </Box>
               </Box>
             </>

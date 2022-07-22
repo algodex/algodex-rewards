@@ -7,6 +7,7 @@ import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Checkbox from '@mui/material/Checkbox'
+import Grid from '@mui/material/Grid'
 
 // Custom components
 import AreaChart from './Area-chart'
@@ -105,77 +106,78 @@ export const EarningsChart = ({ isConnected }) => {
           <Box sx={{ marginBlock: '2rem' }}>
             <AreaChart />
           </Box>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              marginBlock: '2rem',
-            }}
-          >
-            {[...Array('1D', '1W', '1M', '3M', '1Y', '5Y')].map((item) => (
+          <Grid container>
+            <Grid item xs={12} sm={12} md={12} lg={6} xl={6}>
               <Box
-                key={item}
-                onClick={() => {
-                  setActiveRange(item)
-                }}
-                sx={[
-                  styles.selectorContainer,
-                  {
-                    color: 'gray.main',
-                    fontWeight: 700,
-                    fontSize: '0.95rem',
-                    cursor: 'pointer',
-                    background: 'transparent',
-                    padding: '5px',
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  marginBlock: '1rem',
+                  overflow: 'scroll',
+                  ['&::-webkit-scrollbar']: {
+                    width: '0',
+                    display: 'none',
                   },
-                  activeRange == item ? styles.activeSelector : {},
-                ]}
+                }}
               >
-                {item}
+                {[...Array('Total', 'Mainnet Stage 1', 'Mainnet Stage 2')].map(
+                  (item) => (
+                    <Box
+                      key={item}
+                      onClick={() => {
+                        setActiveStage(item)
+                      }}
+                      sx={[
+                        styles.selectorContainer,
+                        styles.selector,
+                        activeStage == item ? styles.activeSelector : {},
+                        {
+                          width: '98px',
+                          lineHeight: '0.8rem',
+                          marginRight: '13px',
+                          height: '38px',
+                        },
+                      ]}
+                    >
+                      {item}
+                    </Box>
+                  )
+                )}
               </Box>
-            ))}
-          </Box>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              marginBlock: '2rem',
-              overflow: 'scroll',
-              ['&::-webkit-scrollbar']: {
-                width: '0',
-                display: 'none',
-              },
-            }}
-          >
-            {[
-              ...Array(
-                'Total',
-                'Testnet',
-                'Mainnet Stage 1',
-                'Mainnet Stage 2'
-              ),
-            ].map((item) => (
+            </Grid>
+            <Grid item xs={12} sm={12} md={12} lg={6} xl={6}>
               <Box
-                key={item}
-                onClick={() => {
-                  setActiveStage(item)
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  marginBlock: '1rem',
                 }}
-                sx={[
-                  styles.selectorContainer,
-                  styles.selector,
-                  activeStage == item ? styles.activeSelector : {},
-                  {
-                    width: '80px',
-                    lineHeight: '0.8rem',
-                    marginRight: '13px',
-                    height: '35px',
-                  },
-                ]}
               >
-                {item}
+                {[...Array('1D', '1W', '1M', '3M', '1Y', '5Y')].map((item) => (
+                  <Box
+                    key={item}
+                    onClick={() => {
+                      setActiveRange(item)
+                    }}
+                    sx={[
+                      styles.selectorContainer,
+                      {
+                        color: 'gray.main',
+                        fontWeight: 700,
+                        fontSize: '0.95rem',
+                        cursor: 'pointer',
+                        background: 'transparent',
+                        padding: '5px',
+                      },
+                      activeRange == item ? styles.activeSelector : {},
+                    ]}
+                  >
+                    {item}
+                  </Box>
+                ))}
               </Box>
-            ))}
-          </Box>
+            </Grid>
+          </Grid>
         </>
       )}
     </Container>

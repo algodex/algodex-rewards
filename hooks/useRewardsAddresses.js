@@ -70,6 +70,7 @@ export default function useRewardsAddresses() {
   // const addressessDb = new DB('algodex_user_wallet_addresses')
   // const activeWalletDb = new DB('activeWallet')
   const context = useContext(RewardsAddressesContext)
+  const minAmount = 1000
   if (context === undefined) {
     throw new Error('Must be inside of a Rewards Addresses Provider')
   }
@@ -106,9 +107,9 @@ export default function useRewardsAddresses() {
       const _activeWallet = JSON.parse(localStorage.getItem('activeWallet'))
       console.log({ _addresses })
       setAddresses(_addresses)
+      _setAddresses(_addresses)
       if (_addresses.length > 0) {
         setActiveWallet(_activeWallet)
-        updateStorage(_addresses, _activeWallet)
       }
     }
     getDBData()
@@ -164,7 +165,7 @@ export default function useRewardsAddresses() {
   const updateStorage = async (_addresses, _activeWallet) => {
     const result = await getAccountInfo(_addresses)
     if (_activeWallet?.address) {
-      const active = _addresses.find(
+      const active = result.find(
         ({ address }) => address == _activeWallet?.address
       )
       let _formattedAddresses = [
@@ -207,9 +208,10 @@ export default function useRewardsAddresses() {
   // Handle removing from storage
   const handleDisconnect = (_address, type) => {
     if (type == 'wallet-connect') {
-      peraDisconnect(type)
+      console.log(type)
+      peraDisconnect()
     } else {
-      myAlgoDisconnect(_address)
+      myAlgoDisconnect()
     }
     if (addresses.length > 1) {
       const remainder = addresses.filter(({ address }) => address != _address)
@@ -238,6 +240,7 @@ export default function useRewardsAddresses() {
     setActiveWallet,
     myAlgoConnect,
     peraConnect,
+    minAmount,
     handleDisconnect,
   }
 }

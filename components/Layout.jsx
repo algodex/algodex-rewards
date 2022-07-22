@@ -3,6 +3,7 @@ import { useTheme } from '@mui/material/styles'
 import AppBar from '@mui/material/AppBar'
 import Paper from '@mui/material/Paper'
 import Box from '@mui/material/Box'
+import Container from '@mui/material/Container'
 import PropTypes from 'prop-types'
 
 // Defaults
@@ -64,7 +65,11 @@ export function Layout({ children, components, componentsProps }) {
           )
         }
         {/* Display the Page Component */}
-        {children}
+        <Container
+          sx={{ padding: '0', width: isMobile ? '100%' : 'calc(100% - 240px)' }}
+        >
+          {children}
+        </Container>
       </Box>
       {
         // Show the Mobile Navigation

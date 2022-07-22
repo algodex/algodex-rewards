@@ -21,6 +21,7 @@
     "@emotion/styled": "^11.8.1",
     "@json-rpc-tools/utils": "^1.7.6",
     "@mui/icons-material": "^5.4.4",
+    "@mui/lab": "^5.0.0-alpha.91",
     "@mui/material": "^5.4.4",
     "@randlabs/myalgo-connect": "^1.2.0",
     "@walletconnect/client": "^1.7.8",

@@ -10,7 +10,7 @@ export default function AreaChart() {
     const { createChart, CrosshairMode } = await import('lightweight-charts')
     chart.current = createChart(chartContainerRef.current, {
       width: chartContainerRef.current.clientWidth,
-      height: 300,
+      height: 350,
       localization: {
         priceFormatter: (price) => {
           return '$' + price.toFixed(2)

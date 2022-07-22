@@ -1,5 +1,13 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
+
+import WalletConnect from '@walletconnect/client'
+import QRCodeModal from 'algorand-walletconnect-qrcode-modal'
+
+const connector = new WalletConnect({
+  bridge: 'https://bridge.walletconnect.org', // Required
+  qrcodeModal: QRCodeModal,
+})
 
 // Material UI components
 import Typography from '@mui/material/Typography'
@@ -12,7 +20,8 @@ import { ConfirmLocationModal } from '@/components/Modals/ConfirmLocationModal'
 import { ConnectWalletPrompt } from './Modals/ConnectWalletPrompt'
 import useRewardsAddresses from '@/hooks/useRewardsAddresses'
 
-export const WalletDropdown = ({ screen }) => {
+export const WalletDropdown = ({ screen, sx, fontSize }) => {
+  const connectorRef = useRef(connector)
   const {
     addresses,
     activeWallet,
@@ -48,6 +57,21 @@ export const WalletDropdown = ({ screen }) => {
     }
   }
 
+  useEffect(() => {
+    // eslint-disable-next-line max-len
+    // This useEffect is necessary because when getting the wallet from localStorage the sendCustomRequest method is undefined
+    // rerunning peraConnect reAttaches the signing method to the connector.
+    if (
+      activeWallet?.type === 'wallet-connect' &&
+      typeof activeWallet.connector.sendCustomRequest === 'undefined'
+    ) {
+      setActiveWallet({
+        ...activeWallet,
+        connector: connectorRef.current,
+      })
+    }
+  }, [activeWallet])
+
   return (
     <>
       <Box
@@ -62,6 +86,7 @@ export const WalletDropdown = ({ screen }) => {
           padding: '1rem',
           marginBlock: '1.2rem',
           cursor: 'pointer',
+          ...sx,
         }}
         onClick={() => {
           if (addressesLength < 1) {
@@ -82,7 +107,7 @@ export const WalletDropdown = ({ screen }) => {
                       .map((addr) => (
                         <Typography
                           key={addr.address}
-                          fontSize={'1.2rem'}
+                          fontSize={fontSize || '1.2rem'}
                           textAlign={'center'}
                           fontWeight={700}
                           marginLeft={'auto'}
@@ -184,4 +209,6 @@ export const WalletDropdown = ({ screen }) => {
 
 WalletDropdown.propTypes = {
   screen: PropTypes.string,
+  sx: PropTypes.object,
+  fontSize: PropTypes.string,
 }

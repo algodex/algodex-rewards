@@ -5,6 +5,7 @@ import PropTypes from 'prop-types'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
+import CircularProgress from '@mui/material/CircularProgress'
 import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded'
 import InfoRoundedIcon from '@mui/icons-material/InfoRounded'
 
@@ -12,7 +13,14 @@ import InfoRoundedIcon from '@mui/icons-material/InfoRounded'
 import Link from '../Nav/Link'
 import { WarningCard } from '../WarningCard'
 
-export const PendingEpochCard = ({ isConnected }) => {
+export const PendingEpochCard = ({
+  isConnected,
+  rewards,
+  loading,
+  isMobile,
+  activeWallet,
+  minAmount,
+}) => {
   return (
     <>
       <Box
@@ -73,18 +81,28 @@ export const PendingEpochCard = ({ isConnected }) => {
                     New Rewards:
                   </Typography>
                   <Box>
-                    <Typography fontSize={'1rem'} fontWeight={600}>
-                      1267 ALGX
-                    </Typography>
-
-                    <Typography
-                      fontSize={'0.85rem'}
-                      fontWeight={700}
-                      textAlign={'right'}
-                      sx={{ color: 'secondary.light' }}
-                    >
-                      $14.57 USD
-                    </Typography>
+                    {loading ? (
+                      <>
+                        <CircularProgress size={'1rem'} />
+                      </>
+                    ) : (
+                      <>
+                        <Typography fontSize={'1rem'} fontWeight={600}>
+                          {(
+                            rewards[0]?.value?.earned_rewards || 0
+                          ).toLocaleString()}{' '}
+                          ALGX
+                        </Typography>
+                        <Typography
+                          fontSize={'0.85rem'}
+                          fontWeight={700}
+                          textAlign={'right'}
+                          sx={{ color: 'secondary.light' }}
+                        >
+                          $14.57 USD
+                        </Typography>{' '}
+                      </>
+                    )}
                   </Box>
                 </Box>
                 <Box
@@ -98,18 +116,29 @@ export const PendingEpochCard = ({ isConnected }) => {
                     Vesting Rewards:
                   </Typography>
                   <Box>
-                    <Typography fontSize={'1rem'} fontWeight={600}>
-                      545 ALGX
-                    </Typography>
+                    {loading ? (
+                      <>
+                        <CircularProgress size={'1rem'} />
+                      </>
+                    ) : (
+                      <>
+                        <Typography fontSize={'1rem'} fontWeight={600}>
+                          {(
+                            rewards[0]?.value?.earned_rewards - 0 || 0
+                          ).toLocaleString()}{' '}
+                          ALGX
+                        </Typography>
 
-                    <Typography
-                      fontSize={'0.85rem'}
-                      fontWeight={700}
-                      textAlign={'right'}
-                      sx={{ color: 'secondary.light' }}
-                    >
-                      $6.98 USD
-                    </Typography>
+                        <Typography
+                          fontSize={'0.85rem'}
+                          fontWeight={700}
+                          textAlign={'right'}
+                          sx={{ color: 'secondary.light' }}
+                        >
+                          $6.98 USD
+                        </Typography>
+                      </>
+                    )}
                   </Box>
                 </Box>
               </>
@@ -154,11 +183,11 @@ export const PendingEpochCard = ({ isConnected }) => {
         )}
       </Box>
 
-      {isConnected && (
+      {isConnected && isMobile && activeWallet.amount < minAmount && (
         <WarningCard
           warnings={[
             // eslint-disable-next-line max-len
-            'At least 100 ALGX must be held for a wallet to vest retroactive rewards and/or earn new rewards.',
+            `At least ${minAmount} ALGX must be held for a wallet to vest retroactive rewards and/or earn new rewards.`,
             'Plan is subject to change as nessesary.',
           ]}
         />
@@ -169,6 +198,11 @@ export const PendingEpochCard = ({ isConnected }) => {
 
 PendingEpochCard.propTypes = {
   isConnected: PropTypes.bool,
+  loading: PropTypes.bool,
+  rewards: PropTypes.array,
+  isMobile: PropTypes.bool,
+  activeWallet: PropTypes.object,
+  minAmount: PropTypes.number,
 }
 
 PendingEpochCard.defaultProps = {

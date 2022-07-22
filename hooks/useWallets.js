@@ -2,6 +2,7 @@ import useMyAlgoConnect from './useMyAlgoConnect'
 import useWalletConnect from './useWalletConnect'
 import { createContext, useCallback, useContext, useState } from 'react'
 import PropTypes from 'prop-types'
+
 /**
  *
  * @param {Array<Wallet>} a
@@ -71,15 +72,15 @@ function useWallets(updateAddresses) {
   )
 
   // Handle any Disconnect
-  const handleDisconnect = useCallback((_addresses) => {
-    console.error('Handle removing from storage', _addresses)
-    // if (_addresses == 'wallet-connect') {
-    //   const remainder = addresses.filter(
-    //     (address) => address.type != 'wallet-connect'
-    //   )
-    //   setAddresses(remainder)
-    //   updateAddresses(remainder)
-    // }
+  const handleDisconnect = useCallback((_address) => {
+    console.debug('Handle removing from storage', _address)
+    if (_address) {
+      const _addresses = JSON.parse(
+        localStorage.getItem('algodex_user_wallet_addresses')
+      ).filter((wallet) => wallet.address !== _address)
+      setAddresses(_addresses)
+      updateAddresses(_addresses)
+    }
   }, [])
 
   // My Algo Connect/Disconnect
