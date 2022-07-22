@@ -13,7 +13,14 @@ import InfoRoundedIcon from '@mui/icons-material/InfoRounded'
 import Link from '../Nav/Link'
 import { WarningCard } from '../WarningCard'
 
-export const PendingEpochCard = ({ isConnected, rewards, loading }) => {
+export const PendingEpochCard = ({
+  isConnected,
+  rewards,
+  loading,
+  isMobile,
+  activeWallet,
+  minAmount,
+}) => {
   return (
     <>
       <Box
@@ -176,11 +183,11 @@ export const PendingEpochCard = ({ isConnected, rewards, loading }) => {
         )}
       </Box>
 
-      {isConnected && (
+      {isConnected && isMobile && activeWallet.amount < minAmount && (
         <WarningCard
           warnings={[
             // eslint-disable-next-line max-len
-            'At least 100 ALGX must be held for a wallet to vest retroactive rewards and/or earn new rewards.',
+            `At least ${minAmount} ALGX must be held for a wallet to vest retroactive rewards and/or earn new rewards.`,
             'Plan is subject to change as nessesary.',
           ]}
         />
@@ -193,6 +200,9 @@ PendingEpochCard.propTypes = {
   isConnected: PropTypes.bool,
   loading: PropTypes.bool,
   rewards: PropTypes.array,
+  isMobile: PropTypes.bool,
+  activeWallet: PropTypes.object,
+  minAmount: PropTypes.number,
 }
 
 PendingEpochCard.defaultProps = {

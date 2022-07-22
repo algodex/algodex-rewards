@@ -25,7 +25,7 @@ const styles = {
 }
 
 export const WalletList = () => {
-  const { addresses, handleDisconnect } = useRewardsAddresses()
+  const { addresses, handleDisconnect, minAmount } = useRewardsAddresses()
 
   const shortenAddress = (address) => {
     const list = address.split('')
@@ -83,11 +83,11 @@ export const WalletList = () => {
               </Typography>
             </AccordionSummary>
             <AccordionDetails>
-              {amount < 1000 ? (
+              {amount < minAmount ? (
                 <WarningCard
                   title="Not enough ALGX in wallet for rewards"
                   warnings={[
-                    'At least 100 ALGX must be held for a wallet to vest retroactive rewards and/or earn new rewards.',
+                    `At least ${minAmount} ALGX must be held for a wallet to vest retroactive rewards and/or earn new rewards.`,
                   ]}
                 />
               ) : (

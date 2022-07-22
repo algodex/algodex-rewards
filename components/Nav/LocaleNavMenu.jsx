@@ -95,6 +95,9 @@ export const LocaleNavMenu = ({ onClick }) => {
         data-testid="dropdown-container-web"
         variant="contained"
         color={'secondary'}
+        sx={{
+          backgroundColor: 'secondary.dark',
+        }}
         ref={anchorRef}
         id="composition-button"
         aria-controls={open ? 'composition-menu' : undefined}

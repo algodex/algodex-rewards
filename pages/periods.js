@@ -5,6 +5,8 @@ import { defaults } from 'next-i18next.config'
 
 // Material UI components
 import Container from '@mui/material/Container'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { useTheme } from '@mui/material/styles'
 
 // Custom components and hook(s)
 import { WalletDropdown } from '@/components/WalletDropdown'
@@ -26,6 +28,7 @@ export default function Periods() {
   const { addresses, activeWallet } = useRewardsAddresses()
   const isConnected = addresses.length > 0
   const { rewards, loading } = usePeriodsHook({ activeWallet })
+  const isMobile = useMediaQuery(useTheme().breakpoints.down('sm'))
 
   return (
     <>
@@ -36,10 +39,14 @@ export default function Periods() {
       </Head>
       <Container
         maxWidth="md"
-        sx={{ paddingInline: '2rem', paddingBottom: '2rem' }}
+        sx={{ paddingInline: '2rem' }}
       >
-        <WalletDropdown />
-        <hr />
+        {isMobile && (
+          <>
+            <WalletDropdown />
+            <hr />
+          </>
+        )}
         <CurrentEpochCard
           isConnected={isConnected}
           loading={loading}
