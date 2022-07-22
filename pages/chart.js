@@ -40,7 +40,7 @@ export default function Chart() {
         <meta name="description" content={t('description')} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Container maxWidth="md" sx={{ paddingInline: '2rem', paddingBlock:'2rem' }}>
+      <Container maxWidth="md" sx={{ paddingInline: '2rem' }}>
         {isMobile && (
           <>
             <WalletDropdown />

@@ -8,6 +8,7 @@ import Head from 'next/head'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
 import Divider from '@mui/material/Divider'
+import Box from '@mui/material/Box'
 import LoadingButton from '@mui/lab/LoadingButton'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { useTheme } from '@mui/material/styles'
@@ -54,16 +55,18 @@ export default function Home() {
         <meta name="description" content={t('description')} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Container maxWidth="md" sx={{ paddingInline: '2rem', paddingBlock:'2rem' }}>
+      <Container maxWidth="md" sx={{ paddingInline: '2rem' }}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
             {isMobile && <WalletDropdown />}
-            <SignUpResponse
-              open={openModal}
-              address={activeWallet?.address}
-              actionStatus={actionStatus}
-              handleClose={() => setOpenModal(!openModal)}
-            />
+            <Box sx={{ paddingTop: !isMobile ? '2rem' : '' }}>
+              <SignUpResponse
+                open={openModal}
+                address={activeWallet?.address}
+                actionStatus={actionStatus}
+                handleClose={() => setOpenModal(!openModal)}
+              />
+            </Box>
             {!walletSignedUp && (
               <LoadingButton
                 variant="outline"
