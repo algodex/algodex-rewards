@@ -10,7 +10,7 @@ import PropTypes from 'prop-types'
 import algosdk from 'algosdk'
 
 // PouchDB
-// import DB from '@/lib/db'
+import DB from '@/lib/db'
 
 export const RewardsAddressesContext = createContext(undefined)
 
@@ -67,8 +67,8 @@ const _getEmptyAccountInfo = (wallet) => {
 }
 
 export default function useRewardsAddresses() {
-  // const addressessDb = new DB('algodex_user_wallet_addresses')
-  // const activeWalletDb = new DB('activeWallet')
+  const addressessDb = new DB('algodex_user_wallet_addresses')
+  const activeWalletDb = new DB('activeWallet')
   const context = useContext(RewardsAddressesContext)
   const minAmount = 1000
   if (context === undefined) {
@@ -175,33 +175,32 @@ export default function useRewardsAddresses() {
       setAddresses(_formattedAddresses)
       _setAddresses(_formattedAddresses)
       setActiveWallet(_activeWallet)
-      localStorage.setItem(
-        'algodex_user_wallet_addresses',
-        JSON.stringify(_formattedAddresses)
-      )
-      localStorage.setItem('activeWallet', JSON.stringify(_activeWallet))
-      // _formattedAddresses.forEach((address) => {
-      //   addressessDb.updateAddresses(address)
-      // })
-      // activeWalletDb.updateAddresses(_activeWallet)
+      // localStorage.setItem(
+      //   'algodex_user_wallet_addresses',
+      //   JSON.stringify(_formattedAddresses)
+      // )
+      // localStorage.setItem('activeWallet', JSON.stringify(_activeWallet))
+
+      _formattedAddresses.forEach((address) => {
+        addressessDb.updateAddresses(address)
+      })
+      activeWalletDb.updateAddresses(_activeWallet)
     } else {
       setAddresses(result)
       _setAddresses(result)
-      localStorage.setItem(
-        'algodex_user_wallet_addresses',
-        JSON.stringify(result)
-      )
       setActiveWallet(result[0])
-      localStorage.setItem('activeWallet', JSON.stringify(result[0]))
-      // if (result.length > 0) {
-      //   result.forEach((address) => {
-      //     const update = async () => {
-      //       await addressessDb.updateAddresses(address)
-      //     }
-      //     update()
-      //   })
-      // }
-      // activeWalletDb.updateAddresses(result[0])
+      // localStorage.setItem(
+      //   'algodex_user_wallet_addresses',
+      //   JSON.stringify(result)
+      // )
+      // localStorage.setItem('activeWallet', JSON.stringify(result[0]))
+
+      if (result.length > 0) {
+        result.forEach((address) => {
+          addressessDb.updateAddresses(address)
+        })
+      }
+      activeWalletDb.updateAddresses(result[0])
     }
   }
 
