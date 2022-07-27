@@ -15,7 +15,6 @@ import DB from '@/lib/db'
 export const RewardsAddressesContext = createContext(undefined)
 
 export function RewardsAddressesProvider({ children }) {
-  const [formattedAddresses, setFormattedAddresses] = useState([])
   const [addresses, setAddresses] = useState([])
   const [activeWallet, setActiveWallet] = useState()
 
@@ -24,8 +23,6 @@ export function RewardsAddressesProvider({ children }) {
       value={{
         addresses,
         setAddresses,
-        formattedAddresses,
-        setFormattedAddresses,
         activeWallet,
         setActiveWallet,
       }}
@@ -74,19 +71,41 @@ export default function useRewardsAddresses() {
   if (context === undefined) {
     throw new Error('Must be inside of a Rewards Addresses Provider')
   }
-  const {
-    formattedAddresses,
-    addresses,
-    setAddresses,
-    activeWallet,
-    setActiveWallet,
-  } = context
+  const { addresses, setAddresses, activeWallet, setActiveWallet } = context
 
   const updateAddresses = useCallback((_addresses) => {
     if (_addresses == null) {
       return
     }
-    updateStorage(_addresses, activeWallet)
+    updateStorage(_addresses)
+  }, [])
+
+  const removeAddress = useCallback(async (_address) => {
+    const _addresses = await addressessDb.getAddresses()
+    const parsedAddresses =
+      _addresses.map(({ doc }) => JSON.parse(doc.wallet)) || []
+    const _activeWallet = (await activeWalletDb.getAddresses())[0]?.doc
+
+    console.log({ _address })
+    console.log({ parsedAddresses })
+    console.log({ _activeWallet })
+    // addressessDb.removeAddress(_address)
+    if (parsedAddresses.length > 1) {
+      const remainder = parsedAddresses.filter(
+        ({ address }) => address != _address
+      )
+      setAddresses(remainder)
+      _setAddresses(remainder)
+      console.log({ remainder })
+      if (_address == _activeWallet?.address) {
+        setActiveWallet(remainder[0].address)
+      }
+    } else {
+      // activeWalletDb.removeAddress(_address)
+      setAddresses([])
+      _setAddresses([])
+      setActiveWallet()
+    }
   }, [])
 
   const {
@@ -95,36 +114,37 @@ export default function useRewardsAddresses() {
     peraConnect,
     peraDisconnect,
     myAlgoDisconnect,
-  } = useWallets(updateAddresses)
+  } = useWallets(updateAddresses, removeAddress)
 
   // Fetch saved and active wallets from storage
   useEffect(() => {
     const getDBData = async () => {
-      // const _addresses = await addressessDb.getAddresses()
-      // const _activeWallet = await activeWalletDb.getActiveWallet()
-      const _addresses =
-        JSON.parse(localStorage.getItem('algodex_user_wallet_addresses')) || []
-      const _activeWallet = JSON.parse(localStorage.getItem('activeWallet'))
-      console.log({ _addresses })
-      setAddresses(_addresses)
-      _setAddresses(_addresses)
-      if (_addresses.length > 0) {
-        setActiveWallet(_activeWallet)
-      }
+      const _addresses = await addressessDb.getAddresses()
+      const _activeWallet = (await activeWalletDb.getAddresses())[0]?.doc
+      console.log({ _activeWallet })
+      const parsedAddresses =
+        _addresses.map(({ doc }) => JSON.parse(doc.wallet)) || []
+      console.log({ parsedAddresses })
+      setActiveWallet(_activeWallet ? JSON.parse(_activeWallet.wallet) : null)
+      updateStorage(parsedAddresses)
     }
     getDBData()
   }, [])
 
-  //save active wallet when updated
+  // Save active wallet when updated
   useEffect(() => {
     const updateActive = async () => {
-      const _activeWallet = JSON.parse(localStorage.getItem('activeWallet'))
-      // const _activeWallet = await activeWalletDb.getActiveWallet()
+      const address = (await activeWalletDb.getAddresses())[0]?.doc
+      const _activeWallet = address ? JSON.parse(address.wallet) : null
       if (
         addresses.length > 0 &&
         _activeWallet?.address !== activeWallet?.address
       ) {
-        updateStorage(addresses, activeWallet)
+        console.log('\'count\'')
+
+        const result = await getAccountInfo([activeWallet])
+        activeWalletDb.updateActiveWallet(result[0])
+        // activeWalletDb.updateActiveWallet(activeWallet)
       }
     }
     updateActive()
@@ -161,78 +181,29 @@ export default function useRewardsAddresses() {
     return result
   }
 
-  // Handle storage
-  const updateStorage = async (_addresses, _activeWallet) => {
+  // Get updated acount details and safe to storage
+  const updateStorage = async (_addresses) => {
     const result = await getAccountInfo(_addresses)
-    if (_activeWallet?.address) {
-      const active = result.find(
-        ({ address }) => address == _activeWallet?.address
-      )
-      let _formattedAddresses = [
-        active,
-        ...result.filter(({ address }) => address !== _activeWallet?.address),
-      ]
-      setAddresses(_formattedAddresses)
-      _setAddresses(_formattedAddresses)
-      setActiveWallet(_activeWallet)
-      // localStorage.setItem(
-      //   'algodex_user_wallet_addresses',
-      //   JSON.stringify(_formattedAddresses)
-      // )
-      // localStorage.setItem('activeWallet', JSON.stringify(_activeWallet))
-
-      _formattedAddresses.forEach((address) => {
-        addressessDb.updateAddresses(address)
-      })
-      activeWalletDb.updateAddresses(_activeWallet)
-    } else {
-      setAddresses(result)
-      _setAddresses(result)
+    // const result = _addresses
+    setAddresses(result)
+    _setAddresses(result)
+    addressessDb.updateAddresses(result)
+    if (addresses.length > 0 && !activeWallet) {
       setActiveWallet(result[0])
-      // localStorage.setItem(
-      //   'algodex_user_wallet_addresses',
-      //   JSON.stringify(result)
-      // )
-      // localStorage.setItem('activeWallet', JSON.stringify(result[0]))
-
-      if (result.length > 0) {
-        result.forEach((address) => {
-          addressessDb.updateAddresses(address)
-        })
-      }
-      activeWalletDb.updateAddresses(result[0])
     }
   }
 
   // Handle removing from storage
   const handleDisconnect = (_address, type) => {
     if (type == 'wallet-connect') {
-      console.log(type)
       peraDisconnect()
     } else {
       myAlgoDisconnect()
     }
-    if (addresses.length > 1) {
-      const remainder = addresses.filter(({ address }) => address != _address)
-      _setAddresses(remainder)
-      if (_address == activeWallet?.address) {
-        updateStorage(remainder, remainder[0].address)
-      } else {
-        updateStorage(remainder, activeWallet)
-      }
-    } else {
-      // addressessDb.removeAddresses()
-      // activeWalletDb.removeActiveWallet()
-      localStorage.removeItem('algodex_user_wallet_addresses')
-      localStorage.removeItem('activeWallet')
-      setAddresses([])
-      _setAddresses([])
-      setActiveWallet()
-    }
+    removeAddress(_address)
   }
 
   return {
-    formattedAddresses,
     addresses,
     setAddresses,
     activeWallet,

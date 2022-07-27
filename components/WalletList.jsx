@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React from 'react'
+import React, { useMemo } from 'react'
 import Image from 'next/image'
 
 //Material UI
@@ -25,7 +25,8 @@ const styles = {
 }
 
 export const WalletList = () => {
-  const { addresses, handleDisconnect, minAmount } = useRewardsAddresses()
+  const { addresses, activeWallet, handleDisconnect, minAmount } =
+    useRewardsAddresses()
 
   const shortenAddress = (address) => {
     const list = address.split('')
@@ -34,10 +35,25 @@ export const WalletList = () => {
     return `${first.join('')}...${last.join('')}`
   }
 
-  // console.log('page', addresses)
+  const formattedAddresses = useMemo(() => {
+    const copy = [...addresses]
+    if (activeWallet) {
+      const index = copy.findIndex(
+        (wallet) => wallet?.address == activeWallet.address
+      )
+      if (index >= 0) {
+        copy.splice(index, 1)
+      }
+      copy.unshift(activeWallet)
+    }
+    return copy
+  }, [addresses, activeWallet])
+  
+  console.log('page', formattedAddresses)
+  console.log('page', activeWallet)
   return (
     <>
-      {addresses.map(({ address, type, assets, amount }) => (
+      {formattedAddresses.map(({ address, type, assets, amount }) => (
         <Box key={address} marginY={'2rem'}>
           <Box
             sx={{

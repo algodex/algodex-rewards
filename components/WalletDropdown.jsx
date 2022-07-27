@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 
 import WalletConnect from '@walletconnect/client'
@@ -34,6 +34,21 @@ export const WalletDropdown = ({ screen, sx, fontSize }) => {
   const [showList, setShowList] = useState(false)
   const [openModal, setOpenModal] = useState(false)
   const [connectWalletModal, setConnectWalletModal] = useState(false)
+
+  const formattedAddresses = useMemo(() => {
+    const copy = [...addresses]
+    if (activeWallet) {
+      const index = copy.findIndex(
+        (wallet) => wallet?.address == activeWallet.address
+      )
+      if (index >= 0) {
+        copy.splice(index, 1)
+      }
+      copy.unshift(activeWallet)
+    }
+    return copy
+  }, [addresses, activeWallet])
+
 
   const addWallet = () => {
     setConnectWalletModal(!connectWalletModal)
@@ -102,7 +117,7 @@ export const WalletDropdown = ({ screen, sx, fontSize }) => {
               <>
                 {screen !== 'wallet' && (
                   <>
-                    {addresses
+                    {formattedAddresses
                       .slice(0, showList ? addressesLength : 1)
                       .map((addr) => (
                         <Typography
@@ -118,7 +133,7 @@ export const WalletDropdown = ({ screen, sx, fontSize }) => {
                             borderColor: 'accent.contrastText',
                           }}
                           onClick={() => {
-                            if (activeWallet.address !== addr.address) {
+                            if (activeWallet?.address !== addr.address) {
                               setActiveWallet(addr)
                             }
                           }}
