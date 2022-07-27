@@ -74,7 +74,7 @@ export default function Home() {
                 handleClose={() => setOpenModal(!openModal)}
               />
             </Box>
-            {!walletSignedUp && (
+            {!walletSignedUp && isConnected && (
               <LoadingButton
                 variant="outline"
                 sx={{
