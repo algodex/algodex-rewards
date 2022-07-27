@@ -13,7 +13,7 @@ export const usePeriodsHook = ({ activeWallet }) => {
       setLoading(false)
     }
     if (activeWallet) {
-      fetchRewards(activeWallet.address)
+      fetchRewards(activeWallet?.address)
     }
   }, [activeWallet])
   return { loading, rewards }

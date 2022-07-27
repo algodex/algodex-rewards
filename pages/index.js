@@ -55,7 +55,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Container maxWidth="md" sx={{ paddingInline: '2rem' }}>
-        {isConnected && !isMobile && activeWallet.amount < minAmount && (
+        {isConnected && !isMobile && activeWallet?.amount < minAmount && (
           <WarningCard
             warnings={[
               // eslint-disable-next-line max-len
@@ -74,7 +74,7 @@ export default function Home() {
                 handleClose={() => setOpenModal(!openModal)}
               />
             </Box>
-            {!walletSignedUp && (
+            {!walletSignedUp && isConnected && (
               <LoadingButton
                 variant="outline"
                 sx={{

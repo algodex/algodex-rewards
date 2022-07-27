@@ -183,7 +183,7 @@ export const PendingEpochCard = ({
         )}
       </Box>
 
-      {isConnected && isMobile && activeWallet.amount < minAmount && (
+      {isConnected && isMobile && activeWallet?.amount < minAmount && (
         <WarningCard
           warnings={[
             // eslint-disable-next-line max-len
