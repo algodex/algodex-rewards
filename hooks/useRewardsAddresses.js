@@ -73,37 +73,43 @@ export default function useRewardsAddresses() {
   }
   const { addresses, setAddresses, activeWallet, setActiveWallet } = context
 
-  const updateAddresses = useCallback((_addresses) => {
-    if (_addresses == null) {
-      return
-    }
-    updateStorage(_addresses)
-  }, [])
-
-  const removeAddress = useCallback(async (_address) => {
-    const _addresses = await addressessDb.getAddresses()
-    const parsedAddresses =
-      _addresses.map(({ doc }) => JSON.parse(doc.wallet)) || []
-    const _activeWallet = (await activeWalletDb.getAddresses())[0]?.doc
-    const parsedActiveWallet = JSON.parse(_activeWallet?.wallet)
-    addressessDb.removeAddress(_address)
-    if (parsedAddresses.length > 1) {
-      const remainder = parsedAddresses.filter(
-        ({ address }) => address != _address
-      )
-      setAddresses(remainder)
-      _setAddresses(remainder)
-      if (_address == parsedActiveWallet?.address) {
-        activeWalletDb.removeAddress(_address)
-        setActiveWallet(remainder[0])
+  const updateAddresses = useCallback(
+    (_addresses) => {
+      if (_addresses == null) {
+        return
       }
-    } else {
-      activeWalletDb.removeAddress(_address)
-      setAddresses([])
-      _setAddresses([])
-      setActiveWallet()
-    }
-  }, [])
+      updateStorage(_addresses)
+    },
+    [addresses]
+  )
+
+  const removeAddress = useCallback(
+    async (_address) => {
+      const _addresses = await addressessDb.getAddresses()
+      const parsedAddresses =
+        _addresses.map(({ doc }) => JSON.parse(doc.wallet)) || []
+      const _activeWallet = (await activeWalletDb.getAddresses())[0]?.doc
+      const parsedActiveWallet = JSON.parse(_activeWallet?.wallet)
+      addressessDb.removeAddress(_address)
+      if (parsedAddresses.length > 1) {
+        const remainder = parsedAddresses.filter(
+          ({ address }) => address != _address
+        )
+        setAddresses(remainder)
+        _setAddresses(remainder)
+        if (_address == parsedActiveWallet?.address) {
+          activeWalletDb.removeAddress(_address)
+          setActiveWallet(remainder[0])
+        }
+      } else {
+        activeWalletDb.removeAddress(_address)
+        setAddresses([])
+        _setAddresses([])
+        setActiveWallet()
+      }
+    },
+    [addresses, activeWallet]
+  )
 
   const {
     setAddresses: _setAddresses,
@@ -177,15 +183,18 @@ export default function useRewardsAddresses() {
   }
 
   // Get updated acount details and safe to storage
-  const updateStorage = async (_addresses) => {
-    const result = await getAccountInfo(_addresses)
-    setAddresses(result)
-    _setAddresses(result)
-    addressessDb.updateAddresses(result)
-    if (result.length > 0 && !activeWallet) {
-      setActiveWallet(result[0])
-    }
-  }
+  const updateStorage = useCallback(
+    async (_addresses) => {
+      const result = await getAccountInfo(_addresses)
+      setAddresses(result)
+      _setAddresses(result)
+      addressessDb.updateAddresses(result)
+      if (result.length > 0 && !activeWallet) {
+        setActiveWallet(result[0])
+      }
+    },
+    [addresses, activeWallet]
+  )
 
   // Handle removing from storage
   const handleDisconnect = (_address, type) => {
