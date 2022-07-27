@@ -22,7 +22,7 @@ export const useSignUpHook = ({ setWalletSignedUp, activeWallet }) => {
       ) {
         setActionStatus({
           message:
-            'You rejected the 0.00 transaction request required to sign you up for reward',
+            'You rejected the 0.00 transaction request required to sign you up for rewards',
           success: false,
         })
       } else if (

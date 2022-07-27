@@ -49,8 +49,6 @@ export const WalletList = () => {
     return copy
   }, [addresses, activeWallet])
   
-  console.log('page', formattedAddresses)
-  console.log('page', activeWallet)
   return (
     <>
       {formattedAddresses.map(({ address, type, assets, amount }) => (

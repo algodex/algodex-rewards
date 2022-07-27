@@ -85,23 +85,20 @@ export default function useRewardsAddresses() {
     const parsedAddresses =
       _addresses.map(({ doc }) => JSON.parse(doc.wallet)) || []
     const _activeWallet = (await activeWalletDb.getAddresses())[0]?.doc
-
-    console.log({ _address })
-    console.log({ parsedAddresses })
-    console.log({ _activeWallet })
-    // addressessDb.removeAddress(_address)
+    const parsedActiveWallet = JSON.parse(_activeWallet?.wallet)
+    addressessDb.removeAddress(_address)
     if (parsedAddresses.length > 1) {
       const remainder = parsedAddresses.filter(
         ({ address }) => address != _address
       )
       setAddresses(remainder)
       _setAddresses(remainder)
-      console.log({ remainder })
-      if (_address == _activeWallet?.address) {
-        setActiveWallet(remainder[0].address)
+      if (_address == parsedActiveWallet?.address) {
+        activeWalletDb.removeAddress(_address)
+        setActiveWallet(remainder[0])
       }
     } else {
-      // activeWalletDb.removeAddress(_address)
+      activeWalletDb.removeAddress(_address)
       setAddresses([])
       _setAddresses([])
       setActiveWallet()
@@ -121,10 +118,8 @@ export default function useRewardsAddresses() {
     const getDBData = async () => {
       const _addresses = await addressessDb.getAddresses()
       const _activeWallet = (await activeWalletDb.getAddresses())[0]?.doc
-      console.log({ _activeWallet })
       const parsedAddresses =
         _addresses.map(({ doc }) => JSON.parse(doc.wallet)) || []
-      console.log({ parsedAddresses })
       setActiveWallet(_activeWallet ? JSON.parse(_activeWallet.wallet) : null)
       updateStorage(parsedAddresses)
     }
@@ -138,13 +133,13 @@ export default function useRewardsAddresses() {
       const _activeWallet = address ? JSON.parse(address.wallet) : null
       if (
         addresses.length > 0 &&
+        activeWallet &&
         _activeWallet?.address !== activeWallet?.address
       ) {
-        console.log('\'count\'')
-
         const result = await getAccountInfo([activeWallet])
-        activeWalletDb.updateActiveWallet(result[0])
-        // activeWalletDb.updateActiveWallet(activeWallet)
+        if (result[0]) {
+          activeWalletDb.updateActiveWallet(result[0])
+        }
       }
     }
     updateActive()
@@ -184,11 +179,10 @@ export default function useRewardsAddresses() {
   // Get updated acount details and safe to storage
   const updateStorage = async (_addresses) => {
     const result = await getAccountInfo(_addresses)
-    // const result = _addresses
     setAddresses(result)
     _setAddresses(result)
     addressessDb.updateAddresses(result)
-    if (addresses.length > 0 && !activeWallet) {
+    if (result.length > 0 && !activeWallet) {
       setActiveWallet(result[0])
     }
   }
