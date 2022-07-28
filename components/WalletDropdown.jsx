@@ -21,6 +21,7 @@ import { ConnectWalletPrompt } from './Modals/ConnectWalletPrompt'
 import useRewardsAddresses from '@/hooks/useRewardsAddresses'
 
 export const WalletDropdown = ({ screen, sx, fontSize }) => {
+  const dropdownRef = useRef(null)
   const connectorRef = useRef(connector)
   const {
     addresses,
@@ -49,7 +50,6 @@ export const WalletDropdown = ({ screen, sx, fontSize }) => {
     return copy
   }, [addresses, activeWallet])
 
-
   const addWallet = () => {
     setConnectWalletModal(!connectWalletModal)
   }
@@ -57,6 +57,7 @@ export const WalletDropdown = ({ screen, sx, fontSize }) => {
   const toggleModal = () => {
     setOpenModal(!openModal)
   }
+
   const shortenAddress = ({ address }) => {
     const list = address.split('')
     const first = list.slice(0, 6)
@@ -87,9 +88,23 @@ export const WalletDropdown = ({ screen, sx, fontSize }) => {
     }
   }, [activeWallet])
 
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setShowList(false)
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside, true)
+    return () => {
+      document.removeEventListener('click', handleClickOutside, true)
+    }
+  }, [])
+
   return (
     <>
       <Box
+        ref={dropdownRef}
         sx={{
           backgroundColor: 'accent.main',
           color: 'accent.contrastText',
