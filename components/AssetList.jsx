@@ -9,10 +9,12 @@ import Grid from '@mui/material/Grid'
 import Divider from '@mui/material/Divider'
 import LaunchRoundedIcon from '@mui/icons-material/LaunchRounded'
 
-//Custom components
+//Custom components and hooks
 import Link from './Nav/Link'
+// import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
 
 export const AssetList = ({ isConnected }) => {
+  // const { conversionRate } = usePriceConversionHook({})
   return (
     <Box sx={{ paddingBlock: '1.5rem' }}>
       {!isConnected ? (
