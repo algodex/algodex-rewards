@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 
 // Material UI components
@@ -9,9 +9,10 @@ import CircularProgress from '@mui/material/CircularProgress'
 import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded'
 import InfoRoundedIcon from '@mui/icons-material/InfoRounded'
 
-// Custom Component
+// Custom Component and hooks
 import Link from '../Nav/Link'
 import { WarningCard } from '../WarningCard'
+import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
 
 export const PendingEpochCard = ({
   isConnected,
@@ -21,6 +22,20 @@ export const PendingEpochCard = ({
   activeWallet,
   minAmount,
 }) => {
+  const newReward = useMemo(() => {
+    return (rewards[0]?.value?.earnedRewards || 0).toLocaleString()
+  }, [rewards])
+
+  const vestingReward = useMemo(() => {
+    return (rewards[0]?.value?.earnedRewards - 0 || 0).toLocaleString()
+  }, [rewards])
+
+  const pendingPeriod = useMemo(() => {
+    return rewards[0]?.value?.epoch || 0
+  }, [rewards])
+
+  const { conversionRate } = usePriceConversionHook({})
+
   return (
     <>
       <Box
@@ -52,7 +67,7 @@ export const PendingEpochCard = ({
               }}
             >
               <Typography fontSize={'1.1rem'} fontWeight={600}>
-                Pending Period {rewards[0]?.value?.epoch || 0}:
+                Pending Period {pendingPeriod}:
               </Typography>
 
               {!isConnected && (
@@ -92,10 +107,7 @@ export const PendingEpochCard = ({
                           fontWeight={600}
                           textAlign={'right'}
                         >
-                          {(
-                            rewards[0]?.value?.earnedRewards || 0
-                          ).toLocaleString()}{' '}
-                          ALGX
+                          {newReward} ALGX
                         </Typography>
                         <Typography
                           fontSize={'0.85rem'}
@@ -103,7 +115,10 @@ export const PendingEpochCard = ({
                           textAlign={'right'}
                           sx={{ color: 'secondary.light' }}
                         >
-                          $14.57 USD
+                          {(
+                            parseInt(newReward) * conversionRate
+                          ).toLocaleString()}{' '}
+                          USD
                         </Typography>{' '}
                       </>
                     )}
@@ -131,10 +146,7 @@ export const PendingEpochCard = ({
                           fontWeight={600}
                           textAlign={'right'}
                         >
-                          {(
-                            rewards[0]?.value?.earnedRewards - 0 || 0
-                          ).toLocaleString()}{' '}
-                          ALGX
+                          {vestingReward} ALGX
                         </Typography>
 
                         <Typography
@@ -143,7 +155,10 @@ export const PendingEpochCard = ({
                           textAlign={'right'}
                           sx={{ color: 'secondary.light' }}
                         >
-                          $6.98 USD
+                          {(
+                            parseInt(vestingReward) * conversionRate
+                          ).toLocaleString()}{' '}
+                          USD
                         </Typography>
                       </>
                     )}

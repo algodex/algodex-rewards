@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import Link from '../Nav/Link'
 
@@ -8,6 +8,9 @@ import Box from '@mui/material/Box'
 import LaunchRoundedIcon from '@mui/icons-material/LaunchRounded'
 import InfoRoundedIcon from '@mui/icons-material/InfoRounded'
 import CircularProgress from '@mui/material/CircularProgress'
+
+// custom hook
+import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
 
 const styles = {
   selectorContainer: {
@@ -36,6 +39,21 @@ const styles = {
 
 export const CurrentEpochCard = ({ isConnected, rewards, loading }) => {
   const [activeCurrency, setActiveCurrency] = useState('ALGX')
+
+  const newEarnedReward = useMemo(() => {
+    return rewards[0]?.value?.earnedRewards || 0
+  }, [rewards])
+
+  const vestedReward = useMemo(() => {
+    return 0
+  }, [rewards])
+
+  const newEarnedUnvestedReward = useMemo(() => {
+    return rewards[0]?.value?.earnedRewards - vestedReward || 0
+  }, [rewards, vestedReward])
+
+  const { conversionRate } = usePriceConversionHook({})
+
   return (
     <>
       <Box
@@ -123,12 +141,7 @@ export const CurrentEpochCard = ({ isConnected, rewards, loading }) => {
                       <CircularProgress size={'1rem'} />
                     </>
                   ) : (
-                    <>
-                      {(
-                        rewards[0]?.value?.earnedRewards || 0
-                      ).toLocaleString()}{' '}
-                      ALGX
-                    </>
+                    <>{newEarnedReward.toLocaleString()} ALGX</>
                   )}
                 </Typography>
               </Box>
@@ -148,6 +161,7 @@ export const CurrentEpochCard = ({ isConnected, rewards, loading }) => {
                 <Typography
                   fontSize={'1rem'}
                   fontWeight={600}
+                  textAlign={'right'}
                   sx={{
                     display: 'flex',
                     alignItems: 'flex-start',
@@ -165,12 +179,7 @@ export const CurrentEpochCard = ({ isConnected, rewards, loading }) => {
                       <CircularProgress size={'1rem'} />
                     </>
                   ) : (
-                    <>
-                      {(
-                        rewards[0]?.value?.earnedRewards - 0 || 0
-                      ).toLocaleString()}{' '}
-                      ALGX
-                    </>
+                    <>{newEarnedUnvestedReward.toLocaleString()} ALGX</>
                   )}
                 </Typography>
               </Box>
@@ -193,16 +202,21 @@ export const CurrentEpochCard = ({ isConnected, rewards, loading }) => {
                     </>
                   ) : (
                     <>
-                      <Typography fontSize={'1rem'} fontWeight={600}>
-                        {(0).toLocaleString()} ALGX
+                      <Typography
+                        fontSize={'1rem'}
+                        textAlign={'right'}
+                        fontWeight={600}
+                      >
+                        {vestedReward.toLocaleString()} ALGX
                       </Typography>
 
                       <Typography
                         fontSize={'0.85rem'}
                         fontWeight={700}
+                        textAlign={'right'}
                         sx={{ color: 'secondary.light' }}
                       >
-                        $6.98 USD
+                        {(vestedReward * conversionRate).toLocaleString()} USD
                       </Typography>
                     </>
                   )}

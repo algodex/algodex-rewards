@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import Image from 'next/image'
 
@@ -7,12 +7,23 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
 
+// Custom Hook
+import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
+
 export const TotalRewardsCard = ({ isConnected, rewards, loading }) => {
-  const totalEarned = rewards.reduce((a, b) => {
-    return a + b.value.earnedRewards
-  }, 0)
+  const totalEarned = useMemo(() => {
+    return rewards.reduce((a, b) => {
+      return a + b.value.earnedRewards
+    }, 0)
+  }, [rewards])
+
   const totalVested = 0
-  const totalUnvested = totalEarned - totalVested
+
+  const totalUnvested = useMemo(() => {
+    return totalEarned - totalVested
+  }, [totalEarned, totalVested])
+
+  const { conversionRate } = usePriceConversionHook({})
 
   return (
     <>
@@ -73,7 +84,7 @@ export const TotalRewardsCard = ({ isConnected, rewards, loading }) => {
                       textAlign={'right'}
                       sx={{ color: 'secondary.light' }}
                     >
-                      $14.57 USD
+                      {(totalEarned * conversionRate).toLocaleString()} USD
                     </Typography>
                   </>
                 )}
@@ -109,7 +120,7 @@ export const TotalRewardsCard = ({ isConnected, rewards, loading }) => {
                       textAlign={'right'}
                       sx={{ color: 'secondary.light' }}
                     >
-                      $6.98 USD
+                      {(totalUnvested * conversionRate).toLocaleString()} USD
                     </Typography>
                   </>
                 )}
