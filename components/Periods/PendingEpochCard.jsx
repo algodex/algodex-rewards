@@ -52,7 +52,7 @@ export const PendingEpochCard = ({
               }}
             >
               <Typography fontSize={'1.1rem'} fontWeight={600}>
-                Pending Period {'{#}'}:
+                Pending Period {rewards[0]?.value?.epoch || 0}:
               </Typography>
 
               {!isConnected && (
@@ -93,7 +93,7 @@ export const PendingEpochCard = ({
                           textAlign={'right'}
                         >
                           {(
-                            rewards[0]?.value?.earned_rewards || 0
+                            rewards[0]?.value?.earnedRewards || 0
                           ).toLocaleString()}{' '}
                           ALGX
                         </Typography>
@@ -132,7 +132,7 @@ export const PendingEpochCard = ({
                           textAlign={'right'}
                         >
                           {(
-                            rewards[0]?.value?.earned_rewards - 0 || 0
+                            rewards[0]?.value?.earnedRewards - 0 || 0
                           ).toLocaleString()}{' '}
                           ALGX
                         </Typography>

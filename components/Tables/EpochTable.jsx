@@ -37,8 +37,8 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     borderColor: theme.palette.secondary.main,
   },
 }))
-
 export const EpochTable = ({ isConnected, loading, rewards }) => {
+  console.log({ rewards })
   return (
     <>
       {isConnected && (
@@ -78,13 +78,13 @@ export const EpochTable = ({ isConnected, loading, rewards }) => {
                         <>
                           <StyledTableCell>{row.value.epoch}</StyledTableCell>
                           <StyledTableCell>
-                            {row.value.earned_rewards.toLocaleString()} ALGX
+                            {row.value?.earnedRewards.toLocaleString()} ALGX
                           </StyledTableCell>
                           <StyledTableCell>
                             {(0).toLocaleString()} ALGX
                           </StyledTableCell>
                           <StyledTableCell>
-                            {(row.value.earned_rewards - 0).toLocaleString()}{' '}
+                            {(row.value?.earnedRewards - 0).toLocaleString()}{' '}
                             ALGX
                           </StyledTableCell>
                           <StyledTableCell>
