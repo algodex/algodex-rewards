@@ -125,7 +125,7 @@ export const CurrentEpochCard = ({ isConnected, rewards, loading }) => {
                   ) : (
                     <>
                       {(
-                        rewards[0]?.value?.earned_rewards || 0
+                        rewards[0]?.value?.earnedRewards || 0
                       ).toLocaleString()}{' '}
                       ALGX
                     </>
@@ -167,7 +167,7 @@ export const CurrentEpochCard = ({ isConnected, rewards, loading }) => {
                   ) : (
                     <>
                       {(
-                        rewards[0]?.value?.earned_rewards - 0 || 0
+                        rewards[0]?.value?.earnedRewards - 0 || 0
                       ).toLocaleString()}{' '}
                       ALGX
                     </>

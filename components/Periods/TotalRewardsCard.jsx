@@ -9,7 +9,7 @@ import CircularProgress from '@mui/material/CircularProgress'
 
 export const TotalRewardsCard = ({ isConnected, rewards, loading }) => {
   const totalEarned = rewards.reduce((a, b) => {
-    return a + b.value.earned_rewards
+    return a + b.value.earnedRewards
   }, 0)
   const totalVested = 0
   const totalUnvested = totalEarned - totalVested
