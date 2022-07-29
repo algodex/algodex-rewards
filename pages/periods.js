@@ -39,7 +39,15 @@ export default function Periods() {
       </Head>
       <Container
         maxWidth="md"
-        sx={{ paddingInline: '2rem' }}
+        sx={{
+          paddingInline: '2rem',
+          ['@media(min-width:1300px)']: {
+            maxWidth: '95%',
+          },
+          ['@media(min-width:1500px)']: {
+            maxWidth: '85%',
+          },
+        }}
       >
         {isMobile && (
           <>

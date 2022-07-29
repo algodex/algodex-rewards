@@ -87,7 +87,11 @@ export const PendingEpochCard = ({
                       </>
                     ) : (
                       <>
-                        <Typography fontSize={'1rem'} fontWeight={600}>
+                        <Typography
+                          fontSize={'1rem'}
+                          fontWeight={600}
+                          textAlign={'right'}
+                        >
                           {(
                             rewards[0]?.value?.earned_rewards || 0
                           ).toLocaleString()}{' '}
@@ -122,7 +126,11 @@ export const PendingEpochCard = ({
                       </>
                     ) : (
                       <>
-                        <Typography fontSize={'1rem'} fontWeight={600}>
+                        <Typography
+                          fontSize={'1rem'}
+                          fontWeight={600}
+                          textAlign={'right'}
+                        >
                           {(
                             rewards[0]?.value?.earned_rewards - 0 || 0
                           ).toLocaleString()}{' '}

@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 // Material UI components
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
-import Container from '@mui/material/Container'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Checkbox from '@mui/material/Checkbox'
 import Grid from '@mui/material/Grid'
@@ -43,7 +42,7 @@ export const EarningsChart = ({ isConnected }) => {
   const [activeStage, setActiveStage] = useState('Total')
 
   return (
-    <Container sx={{ marginBlock: '1.5rem', padding: '0' }}>
+    <Box sx={{ marginBlock: '1.5rem', padding: '0' }}>
       <Box
         marginBottom={'2rem'}
         sx={{
@@ -180,7 +179,7 @@ export const EarningsChart = ({ isConnected }) => {
           </Grid>
         </>
       )}
-    </Container>
+    </Box>
   )
 }
 
