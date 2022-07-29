@@ -144,7 +144,7 @@ export const AssetList = ({ isConnected }) => {
                         textAlign={'right'}
                         sx={{ color: 'secondary.light' }}
                       >
-                        ($14.57 USD)
+                        $14.57 USD
                       </Typography>
                     </Box>
                   </Box>

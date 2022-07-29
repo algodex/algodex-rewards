@@ -59,7 +59,11 @@ export const TotalRewardsCard = ({ isConnected, rewards, loading }) => {
                   </>
                 ) : (
                   <>
-                    <Typography fontSize={'1rem'} fontWeight={600}>
+                    <Typography
+                      fontSize={'1rem'}
+                      fontWeight={600}
+                      textAlign={'right'}
+                    >
                       {totalEarned.toLocaleString()} ALGX
                     </Typography>
 
@@ -91,7 +95,11 @@ export const TotalRewardsCard = ({ isConnected, rewards, loading }) => {
                   </>
                 ) : (
                   <>
-                    <Typography fontSize={'1rem'} fontWeight={600}>
+                    <Typography
+                      fontSize={'1rem'}
+                      fontWeight={600}
+                      textAlign={'right'}
+                    >
                       {totalUnvested.toLocaleString()} ALGX
                     </Typography>
 
