@@ -23,11 +23,11 @@ export const PendingEpochCard = ({
   minAmount,
 }) => {
   const newReward = useMemo(() => {
-    return (rewards[0]?.value?.earnedRewards || 0).toLocaleString()
+    return rewards[0]?.value?.earnedRewards || 0
   }, [rewards])
 
   const vestingReward = useMemo(() => {
-    return (rewards[0]?.value?.earnedRewards - 0 || 0).toLocaleString()
+    return rewards[0]?.value?.earnedRewards - 0 || 0
   }, [rewards])
 
   const pendingPeriod = useMemo(() => {
@@ -107,7 +107,7 @@ export const PendingEpochCard = ({
                           fontWeight={600}
                           textAlign={'right'}
                         >
-                          {newReward} ALGX
+                          {newReward.toLocaleString()} ALGX
                         </Typography>
                         <Typography
                           fontSize={'0.85rem'}
@@ -115,10 +115,7 @@ export const PendingEpochCard = ({
                           textAlign={'right'}
                           sx={{ color: 'secondary.light' }}
                         >
-                          {(
-                            parseInt(newReward) * conversionRate
-                          ).toLocaleString()}{' '}
-                          USD
+                          {(newReward * conversionRate).toLocaleString()} USD
                         </Typography>{' '}
                       </>
                     )}
@@ -146,7 +143,7 @@ export const PendingEpochCard = ({
                           fontWeight={600}
                           textAlign={'right'}
                         >
-                          {vestingReward} ALGX
+                          {vestingReward.toLocaleString()} ALGX
                         </Typography>
 
                         <Typography
@@ -155,9 +152,7 @@ export const PendingEpochCard = ({
                           textAlign={'right'}
                           sx={{ color: 'secondary.light' }}
                         >
-                          {(
-                            parseInt(vestingReward) * conversionRate
-                          ).toLocaleString()}{' '}
+                          {(vestingReward * conversionRate).toLocaleString()}{' '}
                           USD
                         </Typography>
                       </>

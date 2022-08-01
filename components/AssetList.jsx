@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import Image from 'next/image'
 
@@ -11,10 +11,45 @@ import LaunchRoundedIcon from '@mui/icons-material/LaunchRounded'
 
 //Custom components and hooks
 import Link from './Nav/Link'
-// import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
+import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
+import { getAssets } from '@/lib/getTinymanPrice'
 
-export const AssetList = ({ isConnected }) => {
-  // const { conversionRate } = usePriceConversionHook({})
+export const AssetList = ({ isConnected, rewards }) => {
+  const { conversionRate } = usePriceConversionHook({})
+  const [tinymanAssets, setTinymanAssets] = useState(null)
+
+  useEffect(() => {
+    const getAllAssets = async () => {
+      const res = await getAssets()
+      setTinymanAssets(res)
+    }
+    getAllAssets()
+  }, [])
+
+  const assetList = useMemo(() => {
+    if (rewards.length > 0 && tinymanAssets) {
+      const list = []
+      rewards.forEach(({ value, id }) => {
+        list.push({
+          id,
+          algxAvg: value.algxAvg,
+          depthSum: value.depthSum,
+          earnedRewards: value.earnedRewards,
+          epoch: value.epoch,
+          qualityFinal: value.qualityFinal,
+          qualitySum: value.qualitySum,
+          assetId: value.assetId,
+          assetlogo: tinymanAssets[value.assetId]?.logo,
+          assetName: tinymanAssets[value.assetId]?.unit_name,
+          assetDecimals: tinymanAssets[value.assetId]?.decimals,
+        })
+      })
+      return list
+    } else {
+      return []
+    }
+  }, [rewards, tinymanAssets])
+
   return (
     <Box sx={{ paddingBlock: '1.5rem' }}>
       {!isConnected ? (
@@ -30,8 +65,8 @@ export const AssetList = ({ isConnected }) => {
       ) : (
         <>
           <Grid container spacing={2}>
-            {[...Array(6)].map((asset, index) => (
-              <Grid key={index} item xs={12} sm={10} md={6} lg={4} xl={4}>
+            {assetList.map((asset) => (
+              <Grid key={asset.id} item xs={12} sm={10} md={6} lg={4} xl={4}>
                 <Box
                   sx={{
                     backgroundColor: 'secondary.dark',
@@ -60,14 +95,14 @@ export const AssetList = ({ isConnected }) => {
                     }}
                   >
                     <Image
-                      src={'/btc-logo.png'}
-                      alt="BTC logo"
+                      src={asset.assetlogo.svg}
+                      alt={`${asset.assetName} logo`}
                       width="28"
                       height="28"
                     />
                     <Box marginLeft={'0.5rem'}>
                       <Typography fontSize={'1.1rem'} fontWeight={600}>
-                        goBTC
+                        {asset.assetName}
                       </Typography>
 
                       <Typography
@@ -75,11 +110,14 @@ export const AssetList = ({ isConnected }) => {
                         fontWeight={700}
                         sx={{ color: 'secondary.light3' }}
                       >
-                        Asset ID: 386192725
+                        Asset ID: {asset.assetId}
                       </Typography>
                     </Box>
                     <Box sx={{ marginLeft: 'auto', alignSelf: 'flex-start' }}>
-                      <Link href="/" target={'_blanc'}>
+                      <Link
+                        href={`https://algoexplorer.io/asset/${asset.assetId}`}
+                        target={'_blanc'}
+                      >
                         <LaunchRoundedIcon
                           sx={{
                             color: 'secondary.contrastText',
@@ -137,7 +175,7 @@ export const AssetList = ({ isConnected }) => {
                         fontWeight={600}
                         textAlign={'right'}
                       >
-                        1267 ALGX
+                        {asset.earnedRewards.toLocaleString()} ALGX
                       </Typography>
 
                       <Typography
@@ -146,7 +184,10 @@ export const AssetList = ({ isConnected }) => {
                         textAlign={'right'}
                         sx={{ color: 'secondary.light' }}
                       >
-                        $14.57 USD
+                        {(
+                          asset.earnedRewards * conversionRate
+                        ).toLocaleString()}{' '}
+                        USD
                       </Typography>
                     </Box>
                   </Box>
@@ -162,8 +203,10 @@ export const AssetList = ({ isConnected }) => {
 
 AssetList.propTypes = {
   isConnected: PropTypes.bool,
+  rewards: PropTypes.array,
 }
 
 AssetList.defaultProps = {
   isConnected: false,
+  rewards: [],
 }
