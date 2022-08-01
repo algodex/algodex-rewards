@@ -13,6 +13,7 @@ import InfoRoundedIcon from '@mui/icons-material/InfoRounded'
 import Link from '../Nav/Link'
 import { WarningCard } from '../WarningCard'
 import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
+import { getEpochEnd } from '@/lib/getRewards'
 
 export const PendingEpochCard = ({
   isConnected,
@@ -22,12 +23,27 @@ export const PendingEpochCard = ({
   activeWallet,
   minAmount,
 }) => {
+  const getLastWeekEpoch = () => {
+    const now = new Date()
+    return Date.parse(
+      new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7)
+    )
+  }
+
   const newReward = useMemo(() => {
-    return rewards[0]?.value?.earnedRewards || 0
+    // Find a reward whose epoch is not over a week
+    const newR = rewards.find(
+      ({ value }) => getLastWeekEpoch() > getEpochEnd(value.epoch)
+    )
+    return newR?.value?.earnedRewards || 0
   }, [rewards])
 
   const vestingReward = useMemo(() => {
-    return rewards[0]?.value?.earnedRewards - 0 || 0
+    // return rewards[0]?.value?.earnedRewards - 0 || 0
+    const newR = rewards.find(
+      ({ value }) => getLastWeekEpoch() > getEpochEnd(value.epoch)
+    )
+    return newR?.value?.earnedRewards || 0
   }, [rewards])
 
   const pendingPeriod = useMemo(() => {

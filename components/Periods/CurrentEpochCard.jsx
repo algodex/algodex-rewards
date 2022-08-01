@@ -11,6 +11,7 @@ import CircularProgress from '@mui/material/CircularProgress'
 
 // custom hook
 import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
+import { getEpochEnd } from '@/lib/getRewards'
 
 const styles = {
   selectorContainer: {
@@ -45,8 +46,17 @@ export const CurrentEpochCard = ({
 }) => {
   const [activeCurrency, setActiveCurrency] = useState('ALGX')
 
+  const getLastWeekEpoch = () => {
+    const now = new Date()
+    return Date.parse(
+      new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7)
+    )
+  }
+
   const newEarnedReward = useMemo(() => {
-    return rewards[0]?.value?.earnedRewards || 0
+    // Find a reward whose epoch is not over a week
+    const newR = rewards.find(({ value }) => getLastWeekEpoch() > getEpochEnd(value.epoch))
+    return newR?.value?.earnedRewards || 0
   }, [rewards])
 
   const sumVestedRewards = useMemo(() => {
@@ -60,6 +70,7 @@ export const CurrentEpochCard = ({
   }, [vestedRewards])
 
   const { conversionRate } = usePriceConversionHook({})
+  console.log({ rewards })
   // console.log({ vestedRewards })
   // console.log({ sumVestedRewards })
   return (
