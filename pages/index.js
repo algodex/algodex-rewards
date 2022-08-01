@@ -45,7 +45,11 @@ export default function Home() {
       setWalletSignedUp,
       activeWallet,
     })
-  const { rewards, loading: loadingReward, vestedRewards } = usePeriodsHook({ activeWallet })
+  const {
+    rewards,
+    loading: loadingReward,
+    vestedRewards,
+  } = usePeriodsHook({ activeWallet })
 
   return (
     <>
@@ -128,7 +132,7 @@ export default function Home() {
             )}
           </Grid>
         </Grid>
-        <AssetList isConnected={isConnected} />
+        <AssetList isConnected={isConnected} rewards={rewards} />
       </Container>
     </>
   )

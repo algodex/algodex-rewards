@@ -20,6 +20,9 @@ const nextConfig = {
     dest: 'public',
     disable: process.env.NODE_ENV === 'development',
   },
+  images: {
+    domains: ['asa-list.tinyman.org'],
+  },
 }
 
 module.exports = withPWA(nextConfig)
