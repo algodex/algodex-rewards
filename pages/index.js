@@ -45,7 +45,7 @@ export default function Home() {
       setWalletSignedUp,
       activeWallet,
     })
-  const { rewards, loading: loadingReward } = usePeriodsHook({ activeWallet })
+  const { rewards, loading: loadingReward, vestedRewards } = usePeriodsHook({ activeWallet })
 
   return (
     <>
@@ -107,6 +107,7 @@ export default function Home() {
               isConnected={isConnected}
               rewards={rewards}
               loading={loadingReward}
+              vestedRewards={vestedRewards}
             />
             <PendingEpochCard
               isConnected={isConnected}

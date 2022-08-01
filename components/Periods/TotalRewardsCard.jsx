@@ -10,14 +10,23 @@ import CircularProgress from '@mui/material/CircularProgress'
 // Custom Hook
 import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
 
-export const TotalRewardsCard = ({ isConnected, rewards, loading }) => {
+export const TotalRewardsCard = ({
+  isConnected,
+  rewards,
+  vestedRewards,
+  loading,
+}) => {
   const totalEarned = useMemo(() => {
     return rewards.reduce((a, b) => {
       return a + b.value.earnedRewards
     }, 0)
   }, [rewards])
 
-  const totalVested = 0
+  const totalVested = useMemo(() => {
+    return vestedRewards.reduce((a, b) => {
+      return a + b.value.vestedRewards
+    }, 0)
+  }, [vestedRewards])
 
   const totalUnvested = useMemo(() => {
     return totalEarned - totalVested
@@ -136,9 +145,11 @@ export const TotalRewardsCard = ({ isConnected, rewards, loading }) => {
 TotalRewardsCard.propTypes = {
   isConnected: PropTypes.bool,
   rewards: PropTypes.array,
+  vestedRewards: PropTypes.array,
   loading: PropTypes.bool,
 }
 
 TotalRewardsCard.defaultProps = {
   isConnected: false,
+  vestedRewards: [],
 }
