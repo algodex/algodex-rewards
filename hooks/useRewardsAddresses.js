@@ -194,7 +194,7 @@ export default function useRewardsAddresses() {
     return Array.from(map.values())
   }
 
-  // Get updated acount details and safe to storage
+  // Get updated acount details and save to storage
   const updateStorage = useCallback(
     async (_addresses) => {
       const result = await getAccountInfo(_addresses)
