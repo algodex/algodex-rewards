@@ -27,7 +27,7 @@ export default function Periods() {
   const { t } = useTranslation('periods')
   const { addresses, activeWallet } = useRewardsAddresses()
   const isConnected = addresses.length > 0
-  const { rewards, loading } = usePeriodsHook({ activeWallet })
+  const { rewards, vestedRewards, loading } = usePeriodsHook({ activeWallet })
   const isMobile = useMediaQuery(useTheme().breakpoints.down('sm'))
 
   return (
@@ -59,11 +59,13 @@ export default function Periods() {
           isConnected={isConnected}
           loading={loading}
           rewards={rewards}
+          vestedRewards={vestedRewards}
         />
         <EpochTable
           isConnected={isConnected}
           loading={loading}
           rewards={rewards}
+          vestedRewards={vestedRewards}
         />
       </Container>
     </>

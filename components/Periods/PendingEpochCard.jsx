@@ -230,4 +230,5 @@ PendingEpochCard.propTypes = {
 
 PendingEpochCard.defaultProps = {
   isConnected: false,
+  rewards: [],
 }

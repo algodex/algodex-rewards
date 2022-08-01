@@ -38,7 +38,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   },
 }))
 export const EpochTable = ({ isConnected, loading, rewards }) => {
-  console.log({ rewards })
+
   return (
     <>
       {isConnected && (

@@ -37,23 +37,31 @@ const styles = {
   },
 }
 
-export const CurrentEpochCard = ({ isConnected, rewards, loading }) => {
+export const CurrentEpochCard = ({
+  isConnected,
+  rewards,
+  vestedRewards,
+  loading,
+}) => {
   const [activeCurrency, setActiveCurrency] = useState('ALGX')
 
   const newEarnedReward = useMemo(() => {
     return rewards[0]?.value?.earnedRewards || 0
   }, [rewards])
 
-  const vestedReward = useMemo(() => {
-    return 0
-  }, [rewards])
+  const sumVestedRewards = useMemo(() => {
+    return vestedRewards.reduce((a, b) => {
+      return a + b.value.vestedRewards
+    }, 0)
+  }, [vestedRewards])
 
-  const newEarnedUnvestedReward = useMemo(() => {
-    return rewards[0]?.value?.earnedRewards - vestedReward || 0
-  }, [rewards, vestedReward])
+  const newEarnedVestedReward = useMemo(() => {
+    return vestedRewards[0]?.value?.vestedRewards || 0
+  }, [vestedRewards])
 
   const { conversionRate } = usePriceConversionHook({})
-
+  // console.log({ vestedRewards })
+  // console.log({ sumVestedRewards })
   return (
     <>
       <Box
@@ -156,7 +164,7 @@ export const CurrentEpochCard = ({ isConnected, rewards, loading }) => {
                 }}
               >
                 <Typography fontSize={'0.95rem'} fontWeight={600}>
-                  New Earned Unvested:
+                  New Earned Vested:
                 </Typography>
                 <Typography
                   fontSize={'1rem'}
@@ -179,7 +187,7 @@ export const CurrentEpochCard = ({ isConnected, rewards, loading }) => {
                       <CircularProgress size={'1rem'} />
                     </>
                   ) : (
-                    <>{newEarnedUnvestedReward.toLocaleString()} ALGX</>
+                    <>{newEarnedVestedReward.toLocaleString()} ALGX</>
                   )}
                 </Typography>
               </Box>
@@ -207,7 +215,7 @@ export const CurrentEpochCard = ({ isConnected, rewards, loading }) => {
                         textAlign={'right'}
                         fontWeight={600}
                       >
-                        {vestedReward.toLocaleString()} ALGX
+                        {sumVestedRewards.toLocaleString()} ALGX
                       </Typography>
 
                       <Typography
@@ -216,7 +224,8 @@ export const CurrentEpochCard = ({ isConnected, rewards, loading }) => {
                         textAlign={'right'}
                         sx={{ color: 'secondary.light' }}
                       >
-                        {(vestedReward * conversionRate).toLocaleString()} USD
+                        {(sumVestedRewards * conversionRate).toLocaleString()}{' '}
+                        USD
                       </Typography>
                     </>
                   )}
@@ -268,11 +277,13 @@ export const CurrentEpochCard = ({ isConnected, rewards, loading }) => {
 CurrentEpochCard.propTypes = {
   isConnected: PropTypes.bool,
   rewards: PropTypes.array,
+  vestedRewards: PropTypes.array,
   loading: PropTypes.bool,
 }
 
 CurrentEpochCard.defaultProps = {
   isConnected: false,
   rewards: [],
+  vestedRewards: [],
   loading: true,
 }
