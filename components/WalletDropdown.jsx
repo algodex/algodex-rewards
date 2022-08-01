@@ -123,6 +123,8 @@ export const WalletDropdown = ({ screen, sx, fontSize }) => {
             toggleModal()
           } else if (screen == 'wallet') {
             addWallet()
+          } else {
+            setShowList(!showList)
           }
         }}
       >
@@ -188,11 +190,6 @@ export const WalletDropdown = ({ screen, sx, fontSize }) => {
             sx={{
               marginLeft: 'auto',
               transform: `${showList ? 'rotate(180deg)' : '0'}`,
-            }}
-            onClick={() => {
-              if (addressesLength > 0) {
-                setShowList(!showList)
-              }
             }}
           />
         )}
