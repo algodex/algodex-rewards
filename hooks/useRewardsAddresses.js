@@ -182,12 +182,27 @@ export default function useRewardsAddresses() {
     return result
   }
 
+  const _mergeAddresses = (a, b) => {
+    if (!Array.isArray(a) || !Array.isArray(b)) {
+      throw new TypeError('Must be an array of addresses!')
+    }
+    const map = new Map()
+    a.forEach((wallet) => map.set(wallet.address, wallet))
+    b.forEach((wallet) =>
+      map.set(wallet.address, { ...map.get(wallet.address), ...wallet })
+    )
+    return Array.from(map.values())
+  }
+
   // Get updated acount details and safe to storage
   const updateStorage = useCallback(
     async (_addresses) => {
       const result = await getAccountInfo(_addresses)
-      setAddresses(result)
-      _setAddresses(result)
+      const DBaddresses = await addressessDb.getAddresses()
+      const parsedAddresses =
+        DBaddresses.map(({ doc }) => JSON.parse(doc.wallet)) || []
+      setAddresses(_mergeAddresses(parsedAddresses, result))
+      _setAddresses(_mergeAddresses(parsedAddresses, result))
       addressessDb.updateAddresses(result)
       if (result.length > 0 && !activeWallet) {
         setActiveWallet(result[0])
