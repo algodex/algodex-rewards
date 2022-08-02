@@ -19,7 +19,8 @@ import createEmotionCache from '@/utils/createEmotionCache'
 import { Layout } from '@/components/Layout'
 
 import { WalletsProvider } from '@/hooks/useWallets'
-import {RewardsAddressesProvider} from '@/hooks/useRewardsAddresses'
+import { RewardsAddressesProvider } from '@/hooks/useRewardsAddresses'
+import { ChartDataProvider } from 'context/chartContext'
 
 const theme = getTheme('dark')
 // Client-side cache, shared for the whole session of the user in the browser.
@@ -69,9 +70,11 @@ export function App(props) {
         <CssBaseline />
         <WalletsProvider>
           <RewardsAddressesProvider>
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
+            <ChartDataProvider>
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+            </ChartDataProvider>
           </RewardsAddressesProvider>
         </WalletsProvider>
       </ThemeProvider>

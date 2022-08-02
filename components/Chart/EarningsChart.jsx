@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import PropTypes from 'prop-types'
 
 // Material UI components
@@ -10,6 +10,7 @@ import Grid from '@mui/material/Grid'
 
 // Custom components
 import AreaChart from './Area-chart'
+import { ChartDataContext } from 'context/chartContext'
 
 const styles = {
   selectorContainer: {
@@ -38,8 +39,11 @@ const styles = {
 
 export const EarningsChart = ({ isConnected }) => {
   const [activeCurrency, setActiveCurrency] = useState('ALGX')
-  const [activeRange, setActiveRange] = useState('3M')
-  const [activeStage, setActiveStage] = useState('Total')
+  const context = useContext(ChartDataContext)
+  if (context === undefined) {
+    throw new Error('Must be inside of a Chart Provider')
+  }
+  const { activeRange, setActiveRange, activeStage, setActiveStage } = context
 
   return (
     <Box sx={{ marginBlock: '1.5rem', padding: '0' }}>
@@ -177,7 +181,7 @@ export const EarningsChart = ({ isConnected }) => {
                   marginBlock: '1rem',
                 }}
               >
-                {[...Array('1D', '1W', '1M', '3M', '1Y', '5Y')].map((item) => (
+                {[...Array('1D', '1Wk', '1M', '3M', '1Y')].map((item) => (
                   <Box
                     key={item}
                     onClick={() => {
@@ -210,6 +214,7 @@ export const EarningsChart = ({ isConnected }) => {
 
 EarningsChart.propTypes = {
   isConnected: PropTypes.bool,
+  updateRange: PropTypes.func,
 }
 
 EarningsChart.defaultProps = {
