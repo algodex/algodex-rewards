@@ -85,136 +85,147 @@ export const PendingEpochCard = ({
               <Typography fontSize={'1.1rem'} fontWeight={600}>
                 Pending Period {pendingPeriod}:
               </Typography>
+            </Box>
+            {isConnected && (
+              <Typography
+                fontSize={'0.85rem'}
+                fontWeight={700}
+                sx={{ color: 'secondary.light' }}
+              >
+                June 06, 2022 - June 20, 2022
+              </Typography>
+            )}
+            <Box
+              marginBottom={'0.5rem'}
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+              }}
+            >
+              <Typography fontSize={'0.95rem'} fontWeight={600}>
+                New Rewards:
+              </Typography>
 
-              {!isConnected && (
-                <Typography fontSize={'0.95rem'} fontStyle={'italic'}>
-                  Connect Wallet
+              {isConnected && (
+                <Box>
+                  {loading ? (
+                    <>
+                      <CircularProgress size={'1rem'} />
+                    </>
+                  ) : (
+                    <>
+                      <Typography
+                        fontSize={'1rem'}
+                        fontWeight={600}
+                        textAlign={'right'}
+                      >
+                        {newReward.toLocaleString()} ALGX
+                      </Typography>
+                      <Typography
+                        fontSize={'0.85rem'}
+                        fontWeight={700}
+                        textAlign={'right'}
+                        sx={{ color: 'secondary.light' }}
+                      >
+                        {(newReward * conversionRate).toLocaleString()} USD
+                      </Typography>{' '}
+                    </>
+                  )}
+                </Box>
+              )}
+            </Box>
+            <Box
+              marginBottom={'2rem'}
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+              }}
+            >
+              <Typography fontSize={'0.95rem'} fontWeight={600}>
+                Vesting Rewards:
+              </Typography>
+
+              {isConnected ? (
+                <Box>
+                  {loading ? (
+                    <>
+                      <CircularProgress size={'1rem'} />
+                    </>
+                  ) : (
+                    <>
+                      <Typography
+                        fontSize={'1rem'}
+                        fontWeight={600}
+                        textAlign={'right'}
+                      >
+                        {vestingReward.toLocaleString()} ALGX
+                      </Typography>
+
+                      <Typography
+                        fontSize={'0.85rem'}
+                        fontWeight={700}
+                        textAlign={'right'}
+                        sx={{ color: 'secondary.light' }}
+                      >
+                        {(vestingReward * conversionRate).toLocaleString()} USD
+                      </Typography>
+                    </>
+                  )}
+                </Box>
+              ) : (
+                <Typography
+                  fontSize={'0.85rem'}
+                  fontWeight={500}
+                  textAlign={'right'}
+                  sx={{
+                    color: 'secondary.light',
+                    width: '7rem',
+                    textAlign: 'center',
+                    marginTop: '-2rem',
+                  }}
+                >
+                  Connect a wallet to see your pending rewards for each period
                 </Typography>
               )}
             </Box>
-            {isConnected && (
-              <>
-                <Typography
-                  fontSize={'0.85rem'}
-                  fontWeight={700}
-                  sx={{ color: 'secondary.light' }}
-                >
-                  June 06, 2022 - June 20, 2022
-                </Typography>
-                <Box
-                  marginBottom={'0.5rem'}
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <Typography fontSize={'0.95rem'} fontWeight={600}>
-                    New Rewards:
-                  </Typography>
-                  <Box>
-                    {loading ? (
-                      <>
-                        <CircularProgress size={'1rem'} />
-                      </>
-                    ) : (
-                      <>
-                        <Typography
-                          fontSize={'1rem'}
-                          fontWeight={600}
-                          textAlign={'right'}
-                        >
-                          {newReward.toLocaleString()} ALGX
-                        </Typography>
-                        <Typography
-                          fontSize={'0.85rem'}
-                          fontWeight={700}
-                          textAlign={'right'}
-                          sx={{ color: 'secondary.light' }}
-                        >
-                          {(newReward * conversionRate).toLocaleString()} USD
-                        </Typography>{' '}
-                      </>
-                    )}
-                  </Box>
-                </Box>
-                <Box
-                  marginBottom={'2rem'}
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <Typography fontSize={'0.95rem'} fontWeight={600}>
-                    Vesting Rewards:
-                  </Typography>
-                  <Box>
-                    {loading ? (
-                      <>
-                        <CircularProgress size={'1rem'} />
-                      </>
-                    ) : (
-                      <>
-                        <Typography
-                          fontSize={'1rem'}
-                          fontWeight={600}
-                          textAlign={'right'}
-                        >
-                          {vestingReward.toLocaleString()} ALGX
-                        </Typography>
-
-                        <Typography
-                          fontSize={'0.85rem'}
-                          fontWeight={700}
-                          textAlign={'right'}
-                          sx={{ color: 'secondary.light' }}
-                        >
-                          {(vestingReward * conversionRate).toLocaleString()}{' '}
-                          USD
-                        </Typography>
-                      </>
-                    )}
-                  </Box>
-                </Box>
-              </>
-            )}
           </Box>
         </Box>
-        {isConnected && (
-          <>
-            <Box sx={{ display: 'flex' }}>
-              <InfoRoundedIcon
-                sx={{
-                  marginRight: '6px',
-                  fontSize: '1.2rem',
-                  marginTop: '2px',
-                }}
-              />
-              <Typography
-                variant="p"
-                fontSize={'0.9rem'}
-                fontWeight={600}
-                sx={{ textDecoration: 'underline', marginBottom: '0.7rem' }}
-              >
-                How are Rewards Calculated?
-              </Typography>
-            </Box>
+        <>
+          <Box sx={{ display: 'flex' }}>
+            <InfoRoundedIcon
+              sx={{
+                marginRight: '6px',
+                fontSize: '1.2rem',
+                marginTop: '2px',
+              }}
+            />
             <Typography
               variant="p"
-              fontSize={'0.8rem'}
-              fontStyle={'italic'}
-              marginLeft={'0.5rem'}
+              fontSize={'0.9rem'}
+              fontWeight={600}
+              sx={{ textDecoration: 'underline', marginBottom: '0.7rem' }}
             >
-              Rewards will be paid out within two days after the end of one-week
-              accrual periods
+              How are Rewards Calculated?
             </Typography>
+          </Box>
+          <Typography
+            variant="p"
+            fontSize={'0.8rem'}
+            fontStyle={'italic'}
+            marginLeft={'0.5rem'}
+          >
+            Rewards will be paid out within two days after the end of one-week
+            accrual periods
+          </Typography>
 
-            <Box textAlign={'center'} marginTop={'1.5rem'}>
-              <Link href="/periods" sx={{ textDecoration: 'none' }}>
-                <Button variant="outlined">View Past Periods</Button>
-              </Link>
-            </Box>
-          </>
-        )}
+          <Box textAlign={'center'} marginTop={'1.5rem'}>
+            <Link href="/periods" sx={{ textDecoration: 'none' }}>
+              <Button variant="outlined" disabled={!isConnected}>
+                View Past Periods
+              </Button>
+            </Link>
+          </Box>
+        </>
       </Box>
 
       {isConnected && isMobile && activeWallet?.amount < minAmount && (

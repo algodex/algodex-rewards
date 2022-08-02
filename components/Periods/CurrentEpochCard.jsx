@@ -55,7 +55,9 @@ export const CurrentEpochCard = ({
 
   const newEarnedReward = useMemo(() => {
     // Find a reward whose epoch is not over a week
-    const newR = rewards.find(({ value }) => getLastWeekEpoch() > getEpochEnd(value.epoch))
+    const newR = rewards.find(
+      ({ value }) => getLastWeekEpoch() > getEpochEnd(value.epoch)
+    )
     return newR?.value?.earnedRewards || 0
   }, [rewards])
 
@@ -97,189 +99,196 @@ export const CurrentEpochCard = ({
             Current Period Pending:
           </Typography>
 
-          {isConnected ? (
-            <>
-              <Box sx={styles.selectorContainer}>
-                <Typography
-                  variant="p"
-                  sx={[
-                    styles.selector,
-                    activeCurrency == 'ALGX' ? styles.activeSelector : {},
-                  ]}
-                  onClick={() => {
-                    setActiveCurrency('ALGX')
-                  }}
-                >
-                  ALGX
-                </Typography>
-                <Typography
-                  variant="p"
-                  sx={[
-                    styles.selector,
-                    activeCurrency == 'USD' ? styles.activeSelector : {},
-                  ]}
-                  onClick={() => {
-                    setActiveCurrency('USD')
-                  }}
-                >
-                  USD
-                </Typography>
-              </Box>
-            </>
-          ) : (
-            <Typography fontSize={'0.95rem'} fontStyle={'italic'}>
-              Connect Wallet
+          <Box sx={styles.selectorContainer}>
+            <Typography
+              variant="p"
+              sx={[
+                styles.selector,
+                activeCurrency == 'ALGX' ? styles.activeSelector : {},
+              ]}
+              onClick={() => {
+                setActiveCurrency('ALGX')
+              }}
+            >
+              ALGX
+            </Typography>
+            <Typography
+              variant="p"
+              sx={[
+                styles.selector,
+                activeCurrency == 'USD' ? styles.activeSelector : {},
+              ]}
+              onClick={() => {
+                setActiveCurrency('USD')
+              }}
+            >
+              USD
+            </Typography>
+          </Box>
+        </Box>
+        {isConnected && (
+          <Typography
+            fontSize={'0.85rem'}
+            fontWeight={700}
+            sx={{ color: 'secondary.light', marginBottom: '1rem' }}
+          >
+            June 06, 2022 - June 20, 2022
+          </Typography>
+        )}
+        <Box
+          marginBottom={'0.5rem'}
+          marginLeft={'0.6rem'}
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <Typography fontSize={'0.95rem'} fontWeight={600}>
+            New Earned Rewards:
+          </Typography>
+          {isConnected && (
+            <Typography fontSize={'1rem'} fontWeight={600}>
+              {loading ? (
+                <>
+                  <CircularProgress size={'1rem'} />
+                </>
+              ) : (
+                <>{newEarnedReward.toLocaleString()} ALGX</>
+              )}
             </Typography>
           )}
         </Box>
-        {isConnected && (
-          <>
-            <>
-              <Typography
-                fontSize={'0.85rem'}
-                fontWeight={700}
-                sx={{ color: 'secondary.light', marginBottom: '1rem' }}
-              >
-                June 06, 2022 - June 20, 2022
-              </Typography>
-              <Box
-                marginBottom={'0.5rem'}
-                marginLeft={'0.6rem'}
+        <Box
+          marginBottom={'0.5rem'}
+          marginLeft={'0.6rem'}
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            color: 'secondary.light',
+          }}
+        >
+          <Typography fontSize={'0.95rem'} fontWeight={600}>
+            New Earned Vested:
+          </Typography>
+          {isConnected && (
+            <Typography
+              fontSize={'1rem'}
+              fontWeight={600}
+              textAlign={'right'}
+              sx={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                lineHeight: '1rem',
+              }}
+            >
+              <InfoRoundedIcon
                 sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
+                  fontSize: '1rem',
+                  marginRight: '0.3rem',
                 }}
-              >
-                <Typography fontSize={'0.95rem'} fontWeight={600}>
-                  New Earned Rewards:
-                </Typography>
-                <Typography fontSize={'1rem'} fontWeight={600}>
-                  {loading ? (
-                    <>
-                      <CircularProgress size={'1rem'} />
-                    </>
-                  ) : (
-                    <>{newEarnedReward.toLocaleString()} ALGX</>
-                  )}
-                </Typography>
-              </Box>
-              <Box
-                marginBottom={'0.5rem'}
-                marginLeft={'0.6rem'}
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  color: 'secondary.light',
-                }}
-              >
-                <Typography fontSize={'0.95rem'} fontWeight={600}>
-                  New Earned Vested:
-                </Typography>
-                <Typography
-                  fontSize={'1rem'}
-                  fontWeight={600}
-                  textAlign={'right'}
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    lineHeight: '1rem',
-                  }}
-                >
-                  <InfoRoundedIcon
-                    sx={{
-                      fontSize: '1rem',
-                      marginRight: '0.3rem',
-                    }}
-                  />
-                  {loading ? (
-                    <>
-                      <CircularProgress size={'1rem'} />
-                    </>
-                  ) : (
-                    <>{newEarnedVestedReward.toLocaleString()} ALGX</>
-                  )}
-                </Typography>
-              </Box>
-              <Box
-                marginBottom={'2rem'}
-                marginLeft={'0.6rem'}
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}
-              >
-                <Typography fontSize={'0.95rem'} fontWeight={600}>
-                  Vested Rewards:
-                </Typography>
-                <Box>
-                  {loading ? (
-                    <>
-                      <CircularProgress size={'1rem'} />
-                    </>
-                  ) : (
-                    <>
-                      <Typography
-                        fontSize={'1rem'}
-                        textAlign={'right'}
-                        fontWeight={600}
-                      >
-                        {sumVestedRewards.toLocaleString()} ALGX
-                      </Typography>
+              />
+              {loading ? (
+                <>
+                  <CircularProgress size={'1rem'} />
+                </>
+              ) : (
+                <>{newEarnedVestedReward.toLocaleString()} ALGX</>
+              )}
+            </Typography>
+          )}
+        </Box>
+        <Box
+          marginBottom={'2rem'}
+          marginLeft={'0.6rem'}
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <Typography fontSize={'0.95rem'} fontWeight={600}>
+            Vested Rewards:
+          </Typography>
+          {isConnected ? (
+            <Box>
+              {loading ? (
+                <>
+                  <CircularProgress size={'1rem'} />
+                </>
+              ) : (
+                <>
+                  <Typography
+                    fontSize={'1rem'}
+                    textAlign={'right'}
+                    fontWeight={600}
+                  >
+                    {sumVestedRewards.toLocaleString()} ALGX
+                  </Typography>
 
-                      <Typography
-                        fontSize={'0.85rem'}
-                        fontWeight={700}
-                        textAlign={'right'}
-                        sx={{ color: 'secondary.light' }}
-                      >
-                        {(sumVestedRewards * conversionRate).toLocaleString()}{' '}
-                        USD
-                      </Typography>
-                    </>
-                  )}
-                </Box>
-              </Box>
-            </>
-            <>
-              <Typography
-                variant="p"
-                fontSize={'0.8rem'}
-                fontStyle={'italic'}
-                marginLeft={'0.5rem'}
-              >
-                Rewards will be paid out two days after the end of one-week
-                accrual periods
-              </Typography>
+                  <Typography
+                    fontSize={'0.85rem'}
+                    fontWeight={700}
+                    textAlign={'right'}
+                    sx={{ color: 'secondary.light' }}
+                  >
+                    {(sumVestedRewards * conversionRate).toLocaleString()} USD
+                  </Typography>
+                </>
+              )}
+            </Box>
+          ) : (
+            <Typography
+              fontSize={'0.85rem'}
+              fontWeight={500}
+              textAlign={'right'}
+              sx={{
+                color: 'secondary.light',
+                width: '7rem',
+                textAlign: 'center',
+                marginTop: '-2rem',
+              }}
+            >
+              Connect a wallet to see your current pending rewards
+            </Typography>
+          )}
+        </Box>
+        <>
+          <Typography
+            variant="p"
+            fontSize={'0.8rem'}
+            fontStyle={'italic'}
+            marginLeft={'0.5rem'}
+          >
+            Rewards will be paid out two days after the end of one-week accrual
+            periods
+          </Typography>
 
-              <Box textAlign={'center'} marginTop={'1.5rem'}>
-                <Link
-                  href="/"
-                  target={'_blanc'}
-                  sx={{
-                    textDecoration: 'none',
-                    fontSize: '0.8rem',
-                    fontWeight: 700,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'flex-end',
-                  }}
-                >
-                  View on AlgoExplorer
-                  <LaunchRoundedIcon
-                    sx={{
-                      color: 'primary.contrastText',
-                      fontSize: '0.9rem',
-                      marginLeft: '0.3rem',
-                    }}
-                  />
-                </Link>
-              </Box>
-            </>
-          </>
-        )}
+          <Box textAlign={'center'} marginTop={'1.5rem'}>
+            <Link
+              href="http://algoexplorer.io/"
+              target={'_blanc'}
+              sx={{
+                textDecoration: 'none',
+                fontSize: '0.8rem',
+                fontWeight: 700,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'flex-end',
+              }}
+            >
+              View on AlgoExplorer
+              <LaunchRoundedIcon
+                sx={{
+                  color: 'primary.contrastText',
+                  fontSize: '0.9rem',
+                  marginLeft: '0.3rem',
+                }}
+              />
+            </Link>
+          </Box>
+        </>
       </Box>
     </>
   )

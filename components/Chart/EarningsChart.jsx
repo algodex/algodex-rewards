@@ -85,28 +85,45 @@ export const EarningsChart = ({ isConnected }) => {
           </Typography>
         </Box>
       </Box>
-      {!isConnected ? (
-        <Typography
-          fontSize={'0.95rem'}
-          fontStyle={'italic'}
-          color={'primary.contrastText'}
-          marginBlock={'10vh'}
-          textAlign={'center'}
+
+      <Box
+        sx={{
+          position: 'relative',
+        }}
+      >
+        {!isConnected && (
+          <Box
+            sx={{
+              color: 'primary.contrastText',
+              position: 'absolute',
+              bottom: '30vh',
+              right: 0,
+              width: '9.5rem',
+              fontSize: '1rem',
+              fontWeight: 600,
+              textAlign: 'center',
+            }}
+          >
+            Connect a wallet to view rewards over time with an interactive chart
+          </Box>
+        )}
+        <FormControlLabel
+          control={<Checkbox sx={{ color: 'primary.contrastText' }} />}
+          disabled={!isConnected}
+          label="Include unvested rewards in chart totals"
+          sx={{ color: 'primary.contrastText' }}
+        />
+        <Box
+          sx={{
+            opacity: `${isConnected ? '1' : '.6'}`,
+            pointerEvents: `${isConnected ? 'all' : 'none'}`,
+          }}
         >
-          Connect Wallet to View Charts
-        </Typography>
-      ) : (
-        <>
-          <FormControlLabel
-            control={<Checkbox sx={{ color: 'primary.contrastText' }} />}
-            label="Include unvested rewards in chart totals"
-            sx={{ color: 'primary.contrastText' }}
-          />
           <Box sx={{ marginBlock: '2rem' }}>
             <AreaChart />
           </Box>
           <Grid container>
-            <Grid item xs={12} sm={12} md={12} lg={6} xl={6}>
+            <Grid item xs={12} sm={12} md={12} lg={5} xl={5}>
               <Box
                 sx={{
                   display: 'flex',
@@ -144,7 +161,15 @@ export const EarningsChart = ({ isConnected }) => {
                 )}
               </Box>
             </Grid>
-            <Grid item xs={12} sm={12} md={12} lg={6} xl={6}>
+            <Grid
+              item
+              xs={12}
+              sm={12}
+              md={12}
+              lg={5}
+              xl={5}
+              marginLeft={'auto'}
+            >
               <Box
                 sx={{
                   display: 'flex',
@@ -177,8 +202,8 @@ export const EarningsChart = ({ isConnected }) => {
               </Box>
             </Grid>
           </Grid>
-        </>
-      )}
+        </Box>
+      </Box>
     </Box>
   )
 }
