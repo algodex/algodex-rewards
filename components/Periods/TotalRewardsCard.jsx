@@ -36,42 +36,43 @@ export const TotalRewardsCard = ({
 
   return (
     <>
-      {isConnected && (
-        <Box
-          sx={{
-            backgroundColor: 'secondary.dark',
-            color: 'primary.contrastText',
-            borderRadius: '3px',
-            padding: '1rem',
-            marginBlock: '1.2rem',
-            border: '1px solid',
-            borderColor: 'secondary.light2',
-            display: 'flex',
-            alignItems: 'flex-start',
-          }}
-        >
-          <Box marginRight={'7px'} marginTop={'3px'}>
-            <Image
-              src={'/algo-rounded-icon.png'}
-              alt="algodex_icon"
-              height="16"
-              width="16"
-            />
-          </Box>
-          <Box sx={{ width: '100%' }}>
-            <Typography variant="p" fontSize={'1.1rem'} fontWeight={600}>
-              Total Rewards Earned:
+      <Box
+        sx={{
+          backgroundColor: 'secondary.dark',
+          color: 'primary.contrastText',
+          borderRadius: '3px',
+          padding: '1rem',
+          marginBlock: '1.2rem',
+          border: '1px solid',
+          borderColor: 'secondary.light2',
+          display: 'flex',
+          alignItems: 'flex-start',
+        }}
+      >
+        <Box marginRight={'7px'} marginTop={'3px'}>
+          <Image
+            src={'/algo-rounded-icon.png'}
+            alt="algodex_icon"
+            height="16"
+            width="16"
+          />
+        </Box>
+        <Box sx={{ width: '100%' }}>
+          <Typography variant="p" fontSize={'1.1rem'} fontWeight={600}>
+            Total Rewards Earned:
+          </Typography>
+          <Box
+            marginBottom={'0.5rem'}
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
+            <Typography fontSize={'0.95rem'} fontWeight={600}>
+              Total Earned Rewards:
             </Typography>
-            <Box
-              marginBottom={'0.5rem'}
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Typography fontSize={'0.95rem'} fontWeight={600}>
-                Total Earned Rewards:
-              </Typography>
+
+            {isConnected && (
               <Box>
                 {loading ? (
                   <>
@@ -98,16 +99,18 @@ export const TotalRewardsCard = ({
                   </>
                 )}
               </Box>
-            </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Typography fontSize={'0.95rem'} fontWeight={600}>
-                Total Unvested Rewards:
-              </Typography>
+            )}
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
+            <Typography fontSize={'0.95rem'} fontWeight={600}>
+              Total Unvested Rewards:
+            </Typography>
+            {isConnected ? (
               <Box>
                 {loading ? (
                   <>
@@ -134,10 +137,24 @@ export const TotalRewardsCard = ({
                   </>
                 )}
               </Box>
-            </Box>
+            ) : (
+              <Typography
+                fontSize={'0.85rem'}
+                fontWeight={500}
+                textAlign={'right'}
+                sx={{
+                  color: 'secondary.light',
+                  width: '8rem',
+                  textAlign: 'center',
+                  marginTop: '-2rem',
+                }}
+              >
+                Connect a wallet to see your total rewards add up here
+              </Typography>
+            )}
           </Box>
         </Box>
-      )}
+      </Box>
     </>
   )
 }
