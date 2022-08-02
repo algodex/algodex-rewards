@@ -137,6 +137,7 @@ export default function useRewardsAddresses() {
     const updateActive = async () => {
       const address = (await activeWalletDb.getAddresses())[0]?.doc
       const _activeWallet = address ? JSON.parse(address.wallet) : null
+
       if (
         addresses.length > 0 &&
         activeWallet &&
@@ -144,6 +145,7 @@ export default function useRewardsAddresses() {
       ) {
         const result = await getAccountInfo([activeWallet])
         if (result[0]) {
+          activeWalletDb.removeAddress(_activeWallet?.address)
           activeWalletDb.updateActiveWallet(result[0])
         }
       }
@@ -204,7 +206,8 @@ export default function useRewardsAddresses() {
       setAddresses(_mergeAddresses(parsedAddresses, result))
       _setAddresses(_mergeAddresses(parsedAddresses, result))
       addressessDb.updateAddresses(result)
-      if (result.length > 0 && !activeWallet) {
+      const _activeWallet = (await activeWalletDb.getAddresses())[0]?.doc
+      if (result.length > 0 && !_activeWallet) {
         setActiveWallet(result[0])
       }
     },
