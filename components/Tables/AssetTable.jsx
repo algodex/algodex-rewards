@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import PropTypes from 'prop-types'
 
 //MUI components
@@ -10,20 +10,7 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Checkbox from '@mui/material/Checkbox'
 import { styled } from '@mui/material/styles'
-
-const columns = [
-  { id: 'asset', label: 'Asset' },
-  {
-    id: 'EDRewards',
-    label: 'Est Daily Rewards',
-    format: (value) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'total',
-    label: 'Total (3 Months)',
-    format: (value) => value.toLocaleString('en-US'),
-  },
-]
+import { ChartDataContext } from 'context/chartContext'
 
 const rows = [
   {
@@ -59,6 +46,25 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
 export const AssetTable = ({ isConnected }) => {
   const [selected, setSelected] = useState([])
+  const context = useContext(ChartDataContext)
+  if (context === undefined) {
+    throw new Error('Must be inside of a Chart Provider')
+  }
+  const { activeRange } = context
+
+  const columns = [
+    { id: 'asset', label: 'Asset' },
+    {
+      id: 'EDRewards',
+      label: 'Est Daily Rewards',
+      format: (value) => value.toLocaleString('en-US'),
+    },
+    {
+      id: 'total',
+      label: `Total (${activeRange == '1D' ? '1wk' : activeRange})`,
+      format: (value) => value.toLocaleString('en-US'),
+    },
+  ]
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
