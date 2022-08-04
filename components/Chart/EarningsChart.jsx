@@ -142,7 +142,7 @@ export const EarningsChart = ({ isConnected }) => {
           }}
         >
           <Box sx={{ marginBlock: '2rem' }}>
-            <AreaChart />
+            <AreaChart isConnected={isConnected} />
           </Box>
           <Grid container>
             <Grid item xs={12} sm={12} md={12} lg={5} xl={5}>

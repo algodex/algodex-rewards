@@ -4,7 +4,6 @@ import { usePeriodsHook } from '@/hooks/usePeriodsHook'
 import useRewardsAddresses from '@/hooks/useRewardsAddresses'
 import { getEpochEnd } from '@/lib/getRewards'
 import { DateTime } from 'luxon'
-import { dummyChartData } from '@/lib/dummyChartData'
 import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
 import { getAssets } from '@/lib/getTinymanPrice'
 
@@ -20,7 +19,8 @@ export function ChartDataProvider({ children }) {
   const timeRangeEnum = {
     '1D': {
       value: '1D',
-      epoch: Date.parse( // Using the same epoch for 1WK
+      epoch: Date.parse(
+        // Using the same epoch for 1WK
         new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7)
       ),
     },
@@ -76,28 +76,24 @@ export function ChartDataProvider({ children }) {
 
   const vestedChartData = useMemo(() => {
     const data = []
-    if (vestedRewards.length > 0) {
-      const rewardsCopy = [
-        ...vestedRewards.filter(
-          ({ value: { epoch, vestedUnixTime } }) =>
-            withinStageData(epoch) && withinTimeRange(vestedUnixTime)
-        ),
-      ]
+    const rewardsCopy = [
+      ...vestedRewards.filter(
+        ({ value: { epoch, vestedUnixTime } }) =>
+          withinStageData(epoch) && withinTimeRange(vestedUnixTime)
+      ),
+    ]
 
-      rewardsCopy.sort((a, b) => a.value.epoch - b.value.epoch)
-      rewardsCopy.forEach(({ value }) => {
-        data.push({
-          time: DateTime.fromJSDate(
-            new Date(value.vestedUnixTime * 1000)
-          ).toFormat('yyyy-LL-dd'),
-          value: value.vestedRewards,
-        })
+    rewardsCopy.sort((a, b) => a.value.epoch - b.value.epoch)
+    rewardsCopy.forEach(({ value }) => {
+      data.push({
+        time: DateTime.fromJSDate(
+          new Date(value.vestedUnixTime * 1000)
+        ).toFormat('yyyy-LL-dd'),
+        value: value.vestedRewards,
       })
+    })
 
-      return data
-    } else {
-      return dummyChartData
-    }
+    return data
   }, [vestedRewards, activeStage, activeRange])
 
   const earnedChartData = useMemo(() => {

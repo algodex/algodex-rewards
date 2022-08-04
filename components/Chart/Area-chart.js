@@ -5,12 +5,13 @@ import React, {
   useRef,
   useState,
 } from 'react'
+import { dummyChartData } from '@/lib/dummyChartData'
 
 //Context
 import { ChartDataContext } from 'context/chartContext'
 import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
 
-export default function AreaChart() {
+export default function AreaChart({ isConnected }) {
   const { conversionRate } = usePriceConversionHook({})
   const [areaSeries, setAreaSeries] = useState()
   const context = useContext(ChartDataContext)
@@ -87,17 +88,21 @@ export default function AreaChart() {
   }, [])
 
   const updateChart = useCallback(async () => {
-    areaSeries.vested.setData(vestedChartData)
-    areaSeries.earned.setData(earnedChartData)
-    chart.current.applyOptions({
-      localization: {
-        priceFormatter: (price) => {
-          return activeCurrency == 'USD'
-            ? `$ ${(price * conversionRate).toFixed(2)}`
-            : `ALGX ${price.toFixed(2)}`
+    if (isConnected) {
+      areaSeries.vested.setData(vestedChartData)
+      areaSeries.earned.setData(earnedChartData)
+      chart.current.applyOptions({
+        localization: {
+          priceFormatter: (price) => {
+            return activeCurrency == 'USD'
+              ? `$ ${(price * conversionRate).toFixed(2)}`
+              : `ALGX ${price.toFixed(2)}`
+          },
         },
-      },
-    })
+      })
+    } else {
+      areaSeries.vested.setData(dummyChartData)
+    }
   }, [
     vestedChartData,
     earnedChartData,
