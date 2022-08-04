@@ -12,24 +12,6 @@ import Checkbox from '@mui/material/Checkbox'
 import { styled } from '@mui/material/styles'
 import { ChartDataContext } from 'context/chartContext'
 
-const rows = [
-  {
-    asset: 'ALL',
-    EDRewards: '267 ALGX',
-    total: '56.5 ALGX',
-  },
-  {
-    asset: 'goBTC',
-    EDRewards: '267 ALGX',
-    total: '56.5 ALGX',
-  },
-  {
-    asset: 'ACORN',
-    EDRewards: '37.8 ALGX',
-    total: '265.8 ALGX',
-  },
-]
-
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     color: theme.palette.primary.light,
@@ -50,7 +32,8 @@ export const AssetTable = ({ isConnected }) => {
   if (context === undefined) {
     throw new Error('Must be inside of a Chart Provider')
   }
-  const { activeRange } = context
+  const { activeRange, assetTableData } = context
+  // console.log({ assetTableData })
 
   const columns = [
     { id: 'asset', label: 'Asset' },
@@ -61,14 +44,14 @@ export const AssetTable = ({ isConnected }) => {
     },
     {
       id: 'total',
-      label: `Total (${activeRange == '1D' ? '1wk' : activeRange})`,
+      label: `Total (${activeRange === '1D' ? '1Wk' : activeRange})`,
       format: (value) => value.toLocaleString('en-US'),
     },
   ]
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.asset)
+      const newSelecteds = assetTableData.map((n) => n.asset)
       setSelected(newSelecteds)
       return
     }
@@ -114,7 +97,7 @@ export const AssetTable = ({ isConnected }) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.map((row, index) => {
+                {assetTableData.map((row, index) => {
                   const isItemSelected = isSelected(row.asset)
                   const labelId = `enhanced-table-checkbox-${index}`
                   return (
@@ -133,10 +116,11 @@ export const AssetTable = ({ isConnected }) => {
                             sx={{ color: 'secondary.contrastText' }}
                             indeterminate={
                               selected.length > 0 &&
-                              selected.length < rows.length
+                              selected.length < assetTableData.length
                             }
                             checked={
-                              rows.length > 0 && selected.length === rows.length
+                              assetTableData.length > 0 &&
+                              selected.length === assetTableData.length
                             }
                             onChange={handleSelectAllClick}
                             inputProps={{
