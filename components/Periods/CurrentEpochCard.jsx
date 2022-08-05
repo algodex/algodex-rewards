@@ -1,6 +1,7 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import Link from '../Nav/Link'
+import { DateTime } from 'luxon'
 
 // Material UI components
 import Typography from '@mui/material/Typography'
@@ -9,9 +10,9 @@ import LaunchRoundedIcon from '@mui/icons-material/LaunchRounded'
 import InfoRoundedIcon from '@mui/icons-material/InfoRounded'
 import CircularProgress from '@mui/material/CircularProgress'
 
-// custom hook
+// custom hook and libs
 import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
-import { getEpochEnd } from '@/lib/getRewards'
+import { getEpochEnd, getEpochStart } from '@/lib/getRewards'
 
 const styles = {
   selectorContainer: {
@@ -43,9 +44,9 @@ export const CurrentEpochCard = ({
   rewards,
   vestedRewards,
   loading,
+  activeCurrency,
+  setActiveCurrency,
 }) => {
-  const [activeCurrency, setActiveCurrency] = useState('ALGX')
-
   const getLastWeekEpoch = () => {
     const now = new Date()
     return Date.parse(
@@ -54,11 +55,36 @@ export const CurrentEpochCard = ({
   }
 
   const newEarnedReward = useMemo(() => {
-    // Find a reward whose epoch is not over a week
+    // Find a reward whose epoch is not over a week from now
     const newR = rewards.find(
-      ({ value }) => getLastWeekEpoch() > getEpochEnd(value.epoch)
+      ({ value: { epoch } }) => getEpochEnd(epoch) * 1000 > getLastWeekEpoch()
     )
     return newR?.value?.earnedRewards || 0
+  }, [rewards])
+
+  const pendingPeriods = useMemo(() => {
+    // Find a reward whose epoch is not over a week from now
+    const newR = rewards.find(
+      ({ value: { epoch } }) => getEpochEnd(epoch) * 1000 > getLastWeekEpoch()
+    )
+    // const newR = vestedRewards.find(
+    //   ({ value: { vestedUnixTime } }) =>
+    //     vestedUnixTime * 1000 > getLastWeekEpoch()
+    // )
+    if (newR) {
+      const { epoch } = newR.value
+
+      const start = DateTime.fromJSDate(
+        new Date(getEpochStart(epoch) * 1000)
+      ).toLocaleString(DateTime.DATE_FULL)
+
+      const end = DateTime.fromJSDate(
+        new Date(getEpochEnd(epoch) * 1000)
+      ).toLocaleString(DateTime.DATE_FULL)
+
+      return `${start} - ${end}`
+    }
+    return '--'
   }, [rewards])
 
   const sumVestedRewards = useMemo(() => {
@@ -68,13 +94,23 @@ export const CurrentEpochCard = ({
   }, [vestedRewards])
 
   const newEarnedVestedReward = useMemo(() => {
-    return vestedRewards[0]?.value?.vestedRewards || 0
+    // Find a vested reward whose unix time is not over a week from now
+    const newR = vestedRewards.find(
+      ({ value: { vestedUnixTime } }) =>
+        vestedUnixTime * 1000 >= getLastWeekEpoch()
+    )
+    return newR?.value?.vestedRewards || 0
   }, [vestedRewards])
 
   const { conversionRate } = usePriceConversionHook({})
-  console.log({ rewards })
-  // console.log({ vestedRewards })
-  // console.log({ sumVestedRewards })
+
+  const attachCurrency = (price) => {
+    return `${(activeCurrency === 'ALGX'
+      ? price
+      : price * conversionRate
+    ).toLocaleString()} ${activeCurrency}`
+  }
+
   return (
     <>
       <Box
@@ -132,7 +168,7 @@ export const CurrentEpochCard = ({
             fontWeight={700}
             sx={{ color: 'secondary.light', marginBottom: '1rem' }}
           >
-            June 06, 2022 - June 20, 2022
+            {pendingPeriods}
           </Typography>
         )}
         <Box
@@ -154,7 +190,7 @@ export const CurrentEpochCard = ({
                   <CircularProgress size={'1rem'} />
                 </>
               ) : (
-                <>{newEarnedReward.toLocaleString()} ALGX</>
+                <>{attachCurrency(newEarnedReward)}</>
               )}
             </Typography>
           )}
@@ -194,7 +230,7 @@ export const CurrentEpochCard = ({
                   <CircularProgress size={'1rem'} />
                 </>
               ) : (
-                <>{newEarnedVestedReward.toLocaleString()} ALGX</>
+                <>{attachCurrency(newEarnedVestedReward)}</>
               )}
             </Typography>
           )}

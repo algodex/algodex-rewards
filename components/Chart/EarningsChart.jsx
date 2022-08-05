@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
 
 // Material UI components
@@ -38,12 +38,22 @@ const styles = {
 }
 
 export const EarningsChart = ({ isConnected }) => {
-  const [activeCurrency, setActiveCurrency] = useState('ALGX')
   const context = useContext(ChartDataContext)
   if (context === undefined) {
     throw new Error('Must be inside of a Chart Provider')
   }
-  const { activeRange, setActiveRange, activeStage, setActiveStage } = context
+  const {
+    timeRangeEnum,
+    stagesEnum,
+    activeRange,
+    setActiveRange,
+    activeStage,
+    setActiveStage,
+    activeCurrency,
+    setActiveCurrency,
+    includeUnvested,
+    setIncludeUnvested,
+  } = context
 
   return (
     <Box sx={{ marginBlock: '1.5rem', padding: '0' }}>
@@ -112,7 +122,15 @@ export const EarningsChart = ({ isConnected }) => {
           </Box>
         )}
         <FormControlLabel
-          control={<Checkbox sx={{ color: 'primary.contrastText' }} />}
+          control={
+            <Checkbox
+              checked={includeUnvested}
+              sx={{ color: 'primary.contrastText' }}
+              onChange={({ target: { checked } }) =>
+                setIncludeUnvested(checked)
+              }
+            />
+          }
           disabled={!isConnected}
           label="Include unvested rewards in chart totals"
           sx={{ color: 'primary.contrastText' }}
@@ -124,7 +142,7 @@ export const EarningsChart = ({ isConnected }) => {
           }}
         >
           <Box sx={{ marginBlock: '2rem' }}>
-            <AreaChart />
+            <AreaChart isConnected={isConnected} />
           </Box>
           <Grid container>
             <Grid item xs={12} sm={12} md={12} lg={5} xl={5}>
@@ -140,29 +158,27 @@ export const EarningsChart = ({ isConnected }) => {
                   },
                 }}
               >
-                {[...Array('Total', 'Mainnet Stage 1', 'Mainnet Stage 2')].map(
-                  (item) => (
-                    <Box
-                      key={item}
-                      onClick={() => {
-                        setActiveStage(item)
-                      }}
-                      sx={[
-                        styles.selectorContainer,
-                        styles.selector,
-                        activeStage == item ? styles.activeSelector : {},
-                        {
-                          width: '98px',
-                          lineHeight: '0.8rem',
-                          marginRight: '13px',
-                          height: '38px',
-                        },
-                      ]}
-                    >
-                      {item}
-                    </Box>
-                  )
-                )}
+                {Object.values(stagesEnum).map((item) => (
+                  <Box
+                    key={item}
+                    onClick={() => {
+                      setActiveStage(item)
+                    }}
+                    sx={[
+                      styles.selectorContainer,
+                      styles.selector,
+                      activeStage == item ? styles.activeSelector : {},
+                      {
+                        width: '98px',
+                        lineHeight: '0.8rem',
+                        marginRight: '13px',
+                        height: '38px',
+                      },
+                    ]}
+                  >
+                    {item}
+                  </Box>
+                ))}
               </Box>
             </Grid>
             <Grid
@@ -181,7 +197,7 @@ export const EarningsChart = ({ isConnected }) => {
                   marginBlock: '1rem',
                 }}
               >
-                {[...Array('1D', '1Wk', '1M', '3M', '1Y')].map((item) => (
+                {Object.keys(timeRangeEnum).map((item) => (
                   <Box
                     key={item}
                     onClick={() => {

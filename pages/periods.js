@@ -14,6 +14,7 @@ import { CurrentEpochCard } from '@/components/Periods/CurrentEpochCard'
 import { EpochTable } from '@/components/Tables/EpochTable'
 import useRewardsAddresses from '@/hooks/useRewardsAddresses'
 import { usePeriodsHook } from '@/hooks/usePeriodsHook'
+import { useState } from 'react'
 
 export async function getServerSideProps({ locale }) {
   return {
@@ -29,6 +30,7 @@ export default function Periods() {
   const isConnected = addresses.length > 0
   const { rewards, vestedRewards, loading } = usePeriodsHook({ activeWallet })
   const isMobile = useMediaQuery(useTheme().breakpoints.down('sm'))
+  const [activeCurrency, setActiveCurrency] = useState('ALGX')
 
   return (
     <>
@@ -60,12 +62,15 @@ export default function Periods() {
           loading={loading}
           rewards={rewards}
           vestedRewards={vestedRewards}
+          activeCurrency={activeCurrency}
+          setActiveCurrency={setActiveCurrency}
         />
         <EpochTable
           isConnected={isConnected}
           loading={loading}
           rewards={rewards}
           vestedRewards={vestedRewards}
+          activeCurrency={activeCurrency}
         />
       </Container>
     </>

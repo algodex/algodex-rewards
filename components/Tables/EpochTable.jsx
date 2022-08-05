@@ -13,6 +13,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 
 import { TableLoader } from '../Loaders/TableLoader'
 import { WarningCard } from '../WarningCard'
+import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
 
 const columns = [
   { id: 'epoch', label: 'Epoch' },
@@ -37,7 +38,20 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     borderColor: theme.palette.secondary.main,
   },
 }))
-export const EpochTable = ({ isConnected, loading, rewards }) => {
+export const EpochTable = ({
+  isConnected,
+  loading,
+  rewards,
+  activeCurrency,
+}) => {
+  const { conversionRate } = usePriceConversionHook({})
+
+  const attachCurrency = (price) => {
+    return `${(activeCurrency === 'ALGX'
+      ? price
+      : price * conversionRate
+    ).toLocaleString()} ${activeCurrency}`
+  }
 
   return (
     <>
@@ -78,14 +92,11 @@ export const EpochTable = ({ isConnected, loading, rewards }) => {
                         <>
                           <StyledTableCell>{row.value.epoch}</StyledTableCell>
                           <StyledTableCell>
-                            {row.value?.earnedRewards.toLocaleString()} ALGX
+                            {attachCurrency(row.value?.earnedRewards)}
                           </StyledTableCell>
+                          <StyledTableCell>{attachCurrency(0)}</StyledTableCell>
                           <StyledTableCell>
-                            {(0).toLocaleString()} ALGX
-                          </StyledTableCell>
-                          <StyledTableCell>
-                            {(row.value?.earnedRewards - 0).toLocaleString()}{' '}
-                            ALGX
+                            {attachCurrency(row.value?.earnedRewards - 0)}
                           </StyledTableCell>
                           <StyledTableCell>
                             <ChevronRightIcon />
