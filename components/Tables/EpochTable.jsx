@@ -16,7 +16,7 @@ import { WarningCard } from '../WarningCard'
 import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
 
 const columns = [
-  { id: 'epoch', label: 'Epoch' },
+  { id: 'period', label: 'Period' },
   { id: 'earnedRewards', label: 'Earned Rewards' },
   { id: 'vestedRewards', label: 'Vested Rewards' },
   {
@@ -90,7 +90,7 @@ export const EpochTable = ({
                         key={row.id}
                       >
                         <>
-                          <StyledTableCell>{row.value.epoch}</StyledTableCell>
+                          <StyledTableCell>{row.value.period}</StyledTableCell>
                           <StyledTableCell>
                             {attachCurrency(row.value?.earnedRewards)}
                           </StyledTableCell>
