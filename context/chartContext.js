@@ -17,13 +17,6 @@ export function ChartDataProvider({ children }) {
   }
   const now = new Date()
   const timeRangeEnum = {
-    '1D': {
-      value: '1D',
-      epoch: Date.parse(
-        // Using the same epoch for 1WK
-        new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7)
-      ),
-    },
     '1Wk': {
       value: '1Wk',
       epoch: Date.parse(

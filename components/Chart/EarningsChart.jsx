@@ -145,7 +145,7 @@ export const EarningsChart = ({ isConnected }) => {
             <AreaChart isConnected={isConnected} />
           </Box>
           <Grid container>
-            <Grid item xs={12} sm={12} md={12} lg={5} xl={5}>
+            <Grid item xs={12} sm={12} md={6} lg={5} xl={5}>
               <Box
                 sx={{
                   display: 'flex',
@@ -185,7 +185,7 @@ export const EarningsChart = ({ isConnected }) => {
               item
               xs={12}
               sm={12}
-              md={12}
+              md={5}
               lg={5}
               xl={5}
               marginLeft={'auto'}
