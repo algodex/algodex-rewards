@@ -181,7 +181,7 @@ export const WalletDropdown = ({ screen, sx, fontSize }) => {
               flex={1}
               textAlign={'center'}
             >
-              Sign Up for Rewards
+              Connect Wallet
             </Typography>
           )}
         </>
