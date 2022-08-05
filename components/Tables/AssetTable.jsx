@@ -44,7 +44,7 @@ export const AssetTable = ({ isConnected }) => {
     },
     {
       id: 'total',
-      label: `Total (${activeRange === '1D' ? '1Wk' : activeRange})`,
+      label: `Total (${activeRange})`,
       format: (value) => value.toLocaleString('en-US'),
     },
   ]
