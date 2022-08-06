@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import Image from 'next/image'
 
@@ -12,43 +12,42 @@ import LaunchRoundedIcon from '@mui/icons-material/LaunchRounded'
 //Custom components and hooks
 import Link from './Nav/Link'
 import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
-import { getAssets } from '@/lib/getTinymanPrice'
+import { ChartDataContext } from 'context/chartContext'
+import { getAlgoPrice } from '@/lib/getTinymanPrice'
 
-export const AssetList = ({ isConnected, rewards }) => {
+export const AssetList = ({ isConnected }) => {
   const { conversionRate } = usePriceConversionHook({})
-  const [tinymanAssets, setTinymanAssets] = useState(null)
+  const [algoPrices, setAlgoPrices] = useState({})
+  const context = useContext(ChartDataContext)
+  if (context === undefined) {
+    throw new Error('Must be inside of a Chart Provider')
+  }
+  const { earnedAssetData } = context
+
+  const convertToAlgo = useCallback(
+    async (assetId) => {
+      const prices = {}
+      const res = await getAlgoPrice(assetId)
+      if (!prices[assetId]) {
+        prices[assetId] = res
+        setAlgoPrices((prevState) => {
+          return {
+            ...prevState,
+            ...prices,
+          }
+        })
+      }
+    },
+    [earnedAssetData]
+  )
 
   useEffect(() => {
-    const getAllAssets = async () => {
-      const res = await getAssets()
-      setTinymanAssets(res)
-    }
-    getAllAssets()
-  }, [])
-
-  const assetList = useMemo(() => {
-    if (rewards.length > 0 && tinymanAssets) {
-      const list = []
-      rewards.forEach(({ value, id }) => {
-        list.push({
-          id,
-          algxAvg: value.algxAvg,
-          depthSum: value.depthSum,
-          earnedRewards: value.earnedRewards,
-          epoch: value.epoch,
-          qualityFinal: value.qualityFinal,
-          qualitySum: value.qualitySum,
-          assetId: value.assetId,
-          assetlogo: tinymanAssets[value.assetId]?.logo,
-          assetName: tinymanAssets[value.assetId]?.unit_name,
-          assetDecimals: tinymanAssets[value.assetId]?.decimals,
-        })
+    if (earnedAssetData.length > 0) {
+      earnedAssetData.forEach(({ assetId }) => {
+        convertToAlgo(assetId)
       })
-      return list
-    } else {
-      return []
     }
-  }, [rewards, tinymanAssets])
+  }, [earnedAssetData])
 
   return (
     <Box sx={{ paddingBlock: '1.5rem' }}>
@@ -65,8 +64,16 @@ export const AssetList = ({ isConnected, rewards }) => {
       ) : (
         <>
           <Grid container spacing={2}>
-            {assetList.map((asset) => (
-              <Grid key={asset.id} item xs={12} sm={10} md={6} lg={4} xl={4}>
+            {earnedAssetData.map((asset) => (
+              <Grid
+                key={asset.assetId}
+                item
+                xs={12}
+                sm={10}
+                md={6}
+                lg={4}
+                xl={4}
+              >
                 <Box
                   sx={{
                     backgroundColor: 'secondary.dark',
@@ -95,7 +102,7 @@ export const AssetList = ({ isConnected, rewards }) => {
                     }}
                   >
                     <Image
-                      src={asset.assetlogo.svg}
+                      src={asset.assetLogo}
                       alt={`${asset.assetName} logo`}
                       width="28"
                       height="28"
@@ -144,14 +151,18 @@ export const AssetList = ({ isConnected, rewards }) => {
                         color={'secondary.light'}
                         marginBottom={'0.5rem'}
                       >
-                        Amount Supplied
+                        Avg Amount Supplied
                       </Typography>
                       <Typography
                         fontSize={'0.95rem'}
                         fontWeight={600}
                         lineHeight={'1.5rem'}
                       >
-                        10.89 goBTC <br /> 42,989.976 ALGO
+                        {asset.depthSum.toFixed(2)} goBTC <br />
+                        {(
+                          algoPrices[asset.assetId] * asset.depthSum || 0
+                        ).toFixed(2)}{' '}
+                        ALGO
                       </Typography>
                     </Box>
                     <Divider
@@ -175,7 +186,7 @@ export const AssetList = ({ isConnected, rewards }) => {
                         fontWeight={600}
                         textAlign={'right'}
                       >
-                        {asset.earnedRewards.toLocaleString()} ALGX
+                        {asset.dailyRwd.toLocaleString()} ALGX
                       </Typography>
 
                       <Typography
@@ -184,10 +195,7 @@ export const AssetList = ({ isConnected, rewards }) => {
                         textAlign={'right'}
                         sx={{ color: 'secondary.light' }}
                       >
-                        {(
-                          asset.earnedRewards * conversionRate
-                        ).toLocaleString()}{' '}
-                        USD
+                        {(asset.dailyRwd * conversionRate).toLocaleString()} USD
                       </Typography>
                     </Box>
                   </Box>
