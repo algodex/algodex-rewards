@@ -89,7 +89,6 @@ export default function AreaChart({ isConnected }) {
 
   const updateChart = useCallback(async () => {
     if (isConnected) {
-      // console.debug({ earnedChartData, vestedChartData })
       areaSeries.vested.setData(vestedChartData)
       areaSeries.earned.setData(earnedChartData)
       chart.current.applyOptions({

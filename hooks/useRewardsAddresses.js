@@ -218,10 +218,11 @@ export default function useRewardsAddresses() {
   // Get updated acount details and save to storage
   const updateStorage = useCallback(
     async (_addresses) => {
-      const result = await getAccountInfo(_addresses)
       const DBaddresses = await addressessDb.getAddresses()
       const parsedAddresses =
         DBaddresses.map(({ doc }) => JSON.parse(doc.wallet)) || []
+      setAddresses(_mergeAddresses(parsedAddresses, _addresses))
+      const result = await getAccountInfo(_addresses)
       setAddresses(_mergeAddresses(parsedAddresses, result))
       _setAddresses(_mergeAddresses(parsedAddresses, result))
       addressessDb.updateAddresses(result)
