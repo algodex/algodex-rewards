@@ -139,9 +139,9 @@ export default function useRewardsAddresses() {
 
   // Look out for the URL Search params
   useEffect(() => {
-    if (viewAsWallet && process.env.NEXT_PUBLIC_ENVIRONMENT === 'development') {
-      activateWalletTemp(viewAsWallet)
-    }
+    // if (viewAsWallet && process.env.NEXT_PUBLIC_ENVIRONMENT === 'development') {
+    //   activateWalletTemp(viewAsWallet)
+    // }
   }, [viewAsWallet])
 
   const activateWalletTemp = async (address) => {
@@ -155,7 +155,10 @@ export default function useRewardsAddresses() {
     const updateActive = async () => {
       const address = (await activeWalletDb.getAddresses())[0]?.doc
       const _activeWallet = address ? JSON.parse(address.wallet) : null
-
+      console.log('here')
+      console.log({ addresses })
+      console.log({ _activeWallet })
+      console.log({ activeWallet })
       if (
         addresses.length > 0 &&
         activeWallet &&
@@ -227,7 +230,12 @@ export default function useRewardsAddresses() {
       _setAddresses(_mergeAddresses(parsedAddresses, result))
       addressessDb.updateAddresses(result)
       const _activeWallet = (await activeWalletDb.getAddresses())[0]?.doc
+      if (viewAsWallet && process.env.NEXT_PUBLIC_ENVIRONMENT === 'development') {
+        activateWalletTemp(viewAsWallet)
+        return
+      }
       if (result.length > 0 && !_activeWallet) {
+        console.log('setacive 1')
         setActiveWallet(result[0])
       }
     },
