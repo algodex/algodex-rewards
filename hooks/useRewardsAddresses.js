@@ -65,7 +65,9 @@ const _getEmptyAccountInfo = (wallet) => {
 }
 
 export default function useRewardsAddresses() {
-  const { query: routerQuery } = useRouter()
+  const {
+    query: { viewAsWallet },
+  } = useRouter()
   const addressessDb = new DB('algodex_user_wallet_addresses')
   const activeWalletDb = new DB('activeWallet')
   const context = useContext(RewardsAddressesContext)
@@ -137,13 +139,10 @@ export default function useRewardsAddresses() {
 
   // Look out for the URL Search params
   useEffect(() => {
-    if (
-      routerQuery.viewAsWallet &&
-      process.env.NEXT_PUBLIC_ENVIRONMENT === 'development'
-    ) {
-      activateWalletTemp(routerQuery.viewAsWallet)
+    if (viewAsWallet && process.env.NEXT_PUBLIC_ENVIRONMENT === 'development') {
+      activateWalletTemp(viewAsWallet)
     }
-  }, [routerQuery])
+  }, [viewAsWallet])
 
   const activateWalletTemp = async (address) => {
     setTemporaryWalletMode(true)
