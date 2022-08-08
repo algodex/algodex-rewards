@@ -199,6 +199,42 @@ export function ChartDataProvider({ children }) {
     activeRange,
   ])
 
+  const earnedAssetData = useMemo(() => {
+    const rewardsCopy = [...rewards]
+    const data = []
+    const assets = {}
+
+    if (rewardsCopy.length > 0) {
+      rewardsCopy.forEach(({ value }) => {
+        if (assets[value.assetId]) {
+          assets[value.assetId] = [...assets[value.assetId], value]
+        } else {
+          assets[value.assetId] = [value]
+        }
+      })
+    }
+
+    for (const assetId in assets) {
+      const list = assets[assetId]
+      const max = Math.max(...list.map(({ epoch }) => epoch))
+      const maxRwd = list.find(({ epoch }) => epoch == max)
+      let dailyRwd = 0
+      if (maxRwd) {
+        dailyRwd = maxRwd.earnedRewards / 7
+      }
+
+      data.push({
+        assetId,
+        dailyRwd: dailyRwd.toFixed(2),
+        depthSum: list.reduce((a, b) => a + b.depthSum, 0) / 10080,
+        assetName: tinymanAssets[assetId].name,
+        assetLogo: tinymanAssets[assetId].logo?.svg,
+      })
+    }
+
+    return data
+  }, [rewards, tinymanAssets])
+
   return (
     <ChartDataContext.Provider
       value={{
@@ -211,6 +247,7 @@ export function ChartDataProvider({ children }) {
         setActiveStage,
         vestedChartData,
         earnedChartData,
+        earnedAssetData,
         activeCurrency,
         setActiveCurrency,
         includeUnvested,

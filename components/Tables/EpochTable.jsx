@@ -90,7 +90,7 @@ export const EpochTable = ({
                         key={row.id}
                       >
                         <>
-                          <StyledTableCell>{row.value.period}</StyledTableCell>
+                          <StyledTableCell>{row.value.epoch}</StyledTableCell>
                           <StyledTableCell>
                             {attachCurrency(row.value?.earnedRewards)}
                           </StyledTableCell>
