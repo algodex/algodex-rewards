@@ -11,6 +11,7 @@ import algosdk from 'algosdk'
 
 // PouchDB
 import DB from '@/lib/db'
+import { useRouter } from 'next/router'
 
 export const RewardsAddressesContext = createContext(undefined)
 
@@ -64,6 +65,7 @@ const _getEmptyAccountInfo = (wallet) => {
 }
 
 export default function useRewardsAddresses() {
+  const { query: routerQuery } = useRouter()
   const addressessDb = new DB('algodex_user_wallet_addresses')
   const activeWalletDb = new DB('activeWallet')
   const context = useContext(RewardsAddressesContext)
@@ -72,6 +74,7 @@ export default function useRewardsAddresses() {
     throw new Error('Must be inside of a Rewards Addresses Provider')
   }
   const { addresses, setAddresses, activeWallet, setActiveWallet } = context
+  const [temporaryWalletMode, setTemporaryWalletMode] = useState(false)
 
   const updateAddresses = useCallback(
     (_addresses) => {
@@ -132,6 +135,22 @@ export default function useRewardsAddresses() {
     getDBData()
   }, [])
 
+  // Look out for the URL Search params
+  useEffect(() => {
+    if (
+      routerQuery.viewAsWallet &&
+      process.env.NEXT_PUBLIC_ENVIRONMENT === 'development'
+    ) {
+      activateWalletTemp(routerQuery.viewAsWallet)
+    }
+  }, [routerQuery])
+
+  const activateWalletTemp = async (address) => {
+    setTemporaryWalletMode(true)
+    const result = await getAccountInfo([{ address }])
+    setActiveWallet(result[0])
+  }
+
   // Save active wallet when updated
   useEffect(() => {
     const updateActive = async () => {
@@ -141,7 +160,8 @@ export default function useRewardsAddresses() {
       if (
         addresses.length > 0 &&
         activeWallet &&
-        _activeWallet?.address !== activeWallet?.address
+        _activeWallet?.address !== activeWallet?.address &&
+        temporaryWalletMode === false
       ) {
         const result = await getAccountInfo([activeWallet])
         if (result[0]) {

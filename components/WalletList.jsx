@@ -108,33 +108,39 @@ export const WalletList = () => {
                     />
                   ) : (
                     <>
-                      {assets.map((asset) => (
-                        <Box
-                          key={asset['asset-id']}
-                          sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            marginBottom: '5px',
-                          }}
-                        >
-                          <Typography
-                            color={'primary.main'}
-                            fontSize={'0.8rem'}
-                            fontWeight={600}
+                      {assets
+                        .filter(
+                          (asset) =>
+                            asset['asset-id'] == 724480511 ||
+                            asset['asset-id'] == 31566704
+                        )
+                        .map((asset) => (
+                          <Box
+                            key={asset['asset-id']}
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              marginBottom: '5px',
+                            }}
                           >
-                            {asset['asset-id'] == 724480511 && 'ALGX'}
-                            {asset['asset-id'] == 31566704 && 'ALGO'}
-                          </Typography>
-                          <Typography
-                            color={'primary.light2'}
-                            fontSize={'0.8rem'}
-                            textAlign={'right'}
-                          >
-                            {asset.amount / 1000000}
-                          </Typography>
-                        </Box>
-                      ))}
+                            <Typography
+                              color={'primary.main'}
+                              fontSize={'0.8rem'}
+                              fontWeight={600}
+                            >
+                              {asset['asset-id'] == 724480511 && 'ALGX'}
+                              {asset['asset-id'] == 31566704 && 'ALGO'}
+                            </Typography>
+                            <Typography
+                              color={'primary.light2'}
+                              fontSize={'0.8rem'}
+                              textAlign={'right'}
+                            >
+                              {asset.amount / 1000000}
+                            </Typography>
+                          </Box>
+                        ))}
                     </>
                   )}
                   <Box sx={{ marginBlock: '1.5rem', textAlign: 'center' }}>
