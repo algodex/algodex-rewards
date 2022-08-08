@@ -109,13 +109,14 @@ export default function AreaChart({ isConnected }) {
     activeCurrency,
     areaSeries,
     conversionRate,
+    isConnected
   ])
 
   useEffect(() => {
     if (areaSeries) {
       updateChart()
     }
-  }, [vestedChartData, earnedChartData, activeCurrency, areaSeries])
+  }, [vestedChartData, earnedChartData, activeCurrency, areaSeries, isConnected])
 
   // Resize chart on container resizes.
   useEffect(() => {

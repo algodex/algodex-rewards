@@ -155,10 +155,6 @@ export default function useRewardsAddresses() {
     const updateActive = async () => {
       const address = (await activeWalletDb.getAddresses())[0]?.doc
       const _activeWallet = address ? JSON.parse(address.wallet) : null
-      console.log('here')
-      console.log({ addresses })
-      console.log({ _activeWallet })
-      console.log({ activeWallet })
       if (
         addresses.length > 0 &&
         activeWallet &&
@@ -235,7 +231,6 @@ export default function useRewardsAddresses() {
         return
       }
       if (result.length > 0 && !_activeWallet) {
-        console.log('setacive 1')
         setActiveWallet(result[0])
       }
     },
