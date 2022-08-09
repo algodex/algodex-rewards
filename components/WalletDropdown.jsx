@@ -176,6 +176,9 @@ export const WalletDropdown = ({ screen, sx, fontSize }) => {
                                 ['&:hover']: {
                                   opacity: 1,
                                 },
+                                ['@media(max-width:600px)']: {
+                                  fontSize: '1.5rem',
+                                },
                               }}
                               onClick={() => {
                                 copyAddress(addr.address)
@@ -186,7 +189,7 @@ export const WalletDropdown = ({ screen, sx, fontSize }) => {
                             fontSize={fontSize || '1.2rem'}
                             textAlign={'center'}
                             fontWeight={700}
-                            marginLeft={'auto'}
+                            marginInline={'auto'}
                             sx={{
                               display: 'block',
                               paddingBlock: `${showList ? '0.8rem' : '0'}`,
@@ -208,7 +211,7 @@ export const WalletDropdown = ({ screen, sx, fontSize }) => {
                     fontSize={screen == 'wallet' ? '1rem' : '0.95rem'}
                     textAlign={'center'}
                     fontWeight={700}
-                    marginLeft={'auto'}
+                    // marginLeft={'auto'}
                     paddingBlock={screen == 'wallet' ? 0 : '1rem'}
                     onClick={addWallet}
                   >
