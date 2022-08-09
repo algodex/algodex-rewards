@@ -2,5 +2,19 @@
   "home": "HOME",
   "chart": "CHART",
   "wallet": "WALLET",
-  "periods": "PERIODS"
+  "periods": "PERIODS",
+  "View Rewards": "View Rewards",
+  "Try Again": "Try Again",
+  "Connected Address": "Connected Address",
+  "Sign Up for rewards": "Sign Up for rewards",
+  "How are Rewards Calculated?": "How are Rewards Calculated?",
+  "Rewards will be paid out within two days after the end of one-week accrual periods": "Rewards will be paid out within two days after the end of one-week accrual periods",
+  "Earnings Over Time": "Earnings Over Time",
+  "Connect a wallet to view rewards over time with an interactive chart": "Connect a wallet to view rewards over time with an interactive chart",
+  "Include unvested rewards in chart totals": "Include unvested rewards in chart totals",
+  "Connect Wallet to View Assets": "Connect Wallet to View Assets",
+  "Asset": "Asset",
+  "Asset ID": "Asset ID",
+  "Avg Amount Supplied": "Avg Amount Supplied",
+  "Est. Daily Rewards": "Est. Daily Rewards"
 }

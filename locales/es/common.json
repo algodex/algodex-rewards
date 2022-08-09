@@ -1,4 +1,20 @@
 {
   "home": "Casa",
-  "favorites": "Favoritos"
+  "chart": "CUADRO",
+  "wallet": "CARTERA",
+  "periods": "PERÍODOS",
+  "View Rewards": "Ver recompensas",
+  "Try Again": "Intentar otra vez",
+  "Connected Address": "Dirección conectada",
+  "Sign Up for rewards": "Regístrese para recibir recompensas",
+  "How are Rewards Calculated?": "¿Cómo se calculan las recompensas?",
+  "Rewards will be paid out within two days after the end of one-week accrual periods": "Las recompensas se pagarán dentro de los dos días posteriores al final de los períodos de acumulación de una semana.",
+  "Earnings Over Time": "Ganancias a lo largo del tiempo",
+  "Connect a wallet to view rewards over time with an interactive chart": "Conecte una billetera para ver las recompensas a lo largo del tiempo con un gráfico interactivo",
+  "Include unvested rewards in chart totals": "Incluir recompensas no otorgadas en los totales del gráfico",
+  "Connect Wallet to View Assets": "Conectar Wallet para ver activos",
+  "Asset": "Activo",
+  "Asset ID": "ID de activo",
+  "Avg Amount Supplied": "Importe medio suministrado",
+  "Est. Daily Rewards": "Est. Recompensas diarias"
 }

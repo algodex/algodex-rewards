@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { useTranslation } from 'next-i18next'
 
 // Material UI components
 import Typography from '@mui/material/Typography'
@@ -14,6 +15,8 @@ export const SignUpResponse = ({
   actionStatus,
   handleClose,
 }) => {
+  const { t } = useTranslation('common')
+
   const shortenAddress = (address) => {
     const list = address.split('')
     const first = list.slice(0, 6)
@@ -52,7 +55,7 @@ export const SignUpResponse = ({
             fontSize="1.1rem"
             marginBottom={'1rem'}
           >
-            Connected Address:
+            {t('Connected Address')}:
           </Typography>
           {address && (
             <Button
@@ -93,7 +96,7 @@ export const SignUpResponse = ({
             }}
             onClick={handleClose}
           >
-            {actionStatus.success ? 'View Rewards' : 'Try Again'}
+            {actionStatus.success ? `${t('View Rewards')}` : `${t('Try Again')}`}
           </Button>
         </Box>
       </Modal>
