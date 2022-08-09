@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
 
 //MUI components
@@ -27,13 +27,11 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 }))
 
 export const AssetTable = ({ isConnected }) => {
-  const [selected, setSelected] = useState([])
   const context = useContext(ChartDataContext)
   if (context === undefined) {
     throw new Error('Must be inside of a Chart Provider')
   }
-  const { activeRange, assetTableData } = context
-  // console.log({ assetTableData })
+  const { activeRange, assetTableData, selected, setSelected } = context
 
   const columns = [
     { id: 'asset', label: 'Asset' },

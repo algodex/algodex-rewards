@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 
 // Material UI components
@@ -42,6 +42,7 @@ export const EpochTable = ({
   isConnected,
   loading,
   rewards,
+  vestedRewards,
   activeCurrency,
 }) => {
   const { conversionRate } = usePriceConversionHook({})
@@ -52,6 +53,30 @@ export const EpochTable = ({
       : price * conversionRate
     ).toLocaleString()} ${activeCurrency}`
   }
+
+  const mergedRewards = useMemo(() => {
+    const x = {}
+    const list = rewards.concat(vestedRewards)
+    list.forEach(({ value }) => {
+      if (x[value.epoch]) {
+        x[value.epoch] = {
+          ...x[value.epoch],
+          ...value,
+          assetId: x[value.epoch].assetId.includes(value.assetId)
+            ? x[value.epoch].assetId
+            : [...x[value.epoch].assetId, value.assetId],
+        }
+      } else {
+        x[value.epoch] = {
+          ...value,
+          assetId: [value.assetId],
+        }
+      }
+    })
+    return Object.entries(x)
+  }, [rewards, vestedRewards])
+
+  console.log({ mergedRewards })
 
   return (
     <>
@@ -81,22 +106,26 @@ export const EpochTable = ({
                 <TableLoader columnCount={5} />
               ) : (
                 <TableBody>
-                  {rewards.map((row) => {
+                  {mergedRewards.map((row) => {
                     return (
                       <TableRow
                         hover
                         role="checkbox"
                         tabIndex={-1}
-                        key={row.id}
+                        key={row[0]}
                       >
                         <>
-                          <StyledTableCell>{row.value.epoch}</StyledTableCell>
+                          <StyledTableCell>{row[0]}</StyledTableCell>
                           <StyledTableCell>
-                            {attachCurrency(row.value?.earnedRewards)}
+                            {attachCurrency(row[1].earnedRewards)}
                           </StyledTableCell>
-                          <StyledTableCell>{attachCurrency(0)}</StyledTableCell>
                           <StyledTableCell>
-                            {attachCurrency(row.value?.earnedRewards - 0)}
+                            {attachCurrency(row[1].vestedRewards || 0)}
+                          </StyledTableCell>
+                          <StyledTableCell>
+                            {attachCurrency(
+                              row[1].earnedRewards - (row[1].vestedRewards || 0)
+                            )}
                           </StyledTableCell>
                           <StyledTableCell>
                             <ChevronRightIcon />
@@ -132,10 +161,12 @@ EpochTable.propTypes = {
   isConnected: PropTypes.bool,
   loading: PropTypes.bool,
   rewards: PropTypes.array,
+  vestedRewards: PropTypes.array,
 }
 
 EpochTable.defaultProps = {
   isConnected: false,
   loading: true,
   rewards: [],
+  vestedRewards: [],
 }
