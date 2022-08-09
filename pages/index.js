@@ -75,7 +75,12 @@ export default function Home() {
               />
             </Box>
             {!walletSignedUp && (
-              <LoadingButton
+              <LoadingButton   warnings={[
+                // eslint-disable-next-line max-len
+                `${t('At least')} ${minAmount} ${t(
+                  'ALGX must be held for a wallet to vest retroactive rewards and/or earn new rewards'
+                )}.${t('Plan is subject to change as nessesary')}.`,
+              ]}
                 variant="outline"
                 sx={{
                   textDecoration: 'capitalize',
