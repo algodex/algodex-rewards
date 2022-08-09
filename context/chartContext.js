@@ -44,6 +44,7 @@ export function ChartDataProvider({ children }) {
   const { activeWallet } = useRewardsAddresses()
   const { rewards, vestedRewards } = usePeriodsHook({ activeWallet })
   const [tinymanAssets, setTinymanAssets] = useState(null)
+  const [selected, setSelected] = useState(['ALL'])
 
   useEffect(() => {
     const getAllAssets = async () => {
@@ -67,12 +68,24 @@ export function ChartDataProvider({ children }) {
     }
   }
 
+  const amoungSelected = (assetId) => {
+    if (
+      selected.includes('ALL') ||
+      selected.includes(tinymanAssets[assetId].name)
+    ) {
+      return true
+    } else {
+      return false
+    }
+  }
   const vestedChartData = useMemo(() => {
     const data = []
     const rewardsCopy = [
       ...vestedRewards.filter(
-        ({ value: { epoch, vestedUnixTime } }) =>
-          withinStageData(epoch) && withinTimeRange(vestedUnixTime)
+        ({ value: { epoch, vestedUnixTime, assetId } }) =>
+          withinStageData(epoch) &&
+          withinTimeRange(vestedUnixTime) &&
+          amoungSelected(assetId)
       ),
     ]
 
@@ -87,15 +100,17 @@ export function ChartDataProvider({ children }) {
     })
 
     return data
-  }, [vestedRewards, activeStage, activeRange])
+  }, [vestedRewards, activeStage, activeRange, selected])
 
   const earnedChartData = useMemo(() => {
     const data = []
     if (includeUnvested) {
       const rewardsCopy = [
         ...rewards.filter(
-          ({ value: { epoch } }) =>
-            withinStageData(epoch) && withinTimeRange(getEpochEnd(epoch))
+          ({ value: { epoch, assetId } }) =>
+            withinStageData(epoch) &&
+            withinTimeRange(getEpochEnd(epoch)) &&
+            amoungSelected(assetId)
         ),
       ]
 
@@ -111,7 +126,7 @@ export function ChartDataProvider({ children }) {
       })
     }
     return data
-  }, [rewards, includeUnvested, activeStage, activeRange])
+  }, [rewards, includeUnvested, activeStage, activeRange, selected])
 
   const attachCurrency = (price) => {
     return `${
@@ -149,7 +164,7 @@ export function ChartDataProvider({ children }) {
     }
     const data = [
       {
-        asset: 'All',
+        asset: 'ALL',
         EDRewards: attachCurrency(totalDailyRwd),
         total: attachCurrency(
           includeUnvested
@@ -252,6 +267,8 @@ export function ChartDataProvider({ children }) {
         setActiveCurrency,
         includeUnvested,
         setIncludeUnvested,
+        selected,
+        setSelected,
       }}
     >
       {children}
