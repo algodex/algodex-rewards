@@ -14,6 +14,8 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Modal from '@mui/material/Modal'
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
+import Tooltip from '@mui/material/Tooltip'
 
 //Custom components and hooks
 import { ConfirmLocationModal } from '@/components/Modals/ConfirmLocationModal'
@@ -35,6 +37,7 @@ export const WalletDropdown = ({ screen, sx, fontSize }) => {
   const [showList, setShowList] = useState(false)
   const [openModal, setOpenModal] = useState(false)
   const [connectWalletModal, setConnectWalletModal] = useState(false)
+  const [tooltiptext, setTooltiptext] = useState('Click to Copy')
 
   const formattedAddresses = useMemo(() => {
     const copy = [...addresses]
@@ -101,6 +104,15 @@ export const WalletDropdown = ({ screen, sx, fontSize }) => {
     }
   }, [])
 
+  const copyAddress = (address) => {
+    document.querySelector('.copyToClipboard')
+    navigator.clipboard.writeText(address)
+    setTooltiptext(`Copied: ${address}`)
+    setTimeout(() => {
+      setTooltiptext('Click to Copy')
+    }, 500)
+  }
+
   return (
     <>
       <Box
@@ -137,26 +149,60 @@ export const WalletDropdown = ({ screen, sx, fontSize }) => {
                     {formattedAddresses
                       .slice(0, showList ? addressesLength : 1)
                       .map((addr) => (
-                        <Typography
+                        <Box
                           key={addr.address}
-                          fontSize={fontSize || '1.2rem'}
-                          textAlign={'center'}
-                          fontWeight={700}
-                          marginLeft={'auto'}
                           sx={{
-                            display: 'block',
-                            paddingBlock: `${showList ? '0.8rem' : '0'}`,
+                            display: 'flex',
+                            alignItems: 'center',
                             borderBottom: `solid ${showList ? '1px' : '0'}`,
                             borderColor: 'accent.contrastText',
                           }}
-                          onClick={() => {
-                            if (activeWallet?.address !== addr.address) {
-                              setActiveWallet(addr)
-                            }
-                          }}
                         >
-                          {shortenAddress(addr)}
-                        </Typography>
+                          <Tooltip
+                            title={tooltiptext}
+                            placement="top"
+                            arrow
+                            sx={{
+                              cursor: 'pointer',
+                              marginLeft: '0.5rem',
+                            }}
+                          >
+                            <ContentCopyIcon
+                              sx={{
+                                marginRight: '0.4rem',
+                                fontSize: '0.9rem',
+                                opacity: 0.7,
+                                transition: 'all .3s ease',
+                                ['&:hover']: {
+                                  opacity: 1,
+                                },
+                                ['@media(max-width:600px)']: {
+                                  fontSize: '1.5rem',
+                                },
+                              }}
+                              onClick={() => {
+                                copyAddress(addr.address)
+                              }}
+                            />
+                          </Tooltip>
+                          <Typography
+                            fontSize={fontSize || '1.2rem'}
+                            textAlign={'center'}
+                            fontWeight={700}
+                            marginInline={'auto'}
+                            sx={{
+                              display: 'block',
+                              paddingBlock: `${showList ? '0.8rem' : '0'}`,
+                            }}
+                            onClick={() => {
+                              if (activeWallet?.address !== addr.address) {
+                                setActiveWallet(addr)
+                              }
+                            }}
+                          >
+                            {shortenAddress(addr)}
+                          </Typography>
+                        </Box>
                       ))}
                   </>
                 )}
@@ -165,7 +211,7 @@ export const WalletDropdown = ({ screen, sx, fontSize }) => {
                     fontSize={screen == 'wallet' ? '1rem' : '0.95rem'}
                     textAlign={'center'}
                     fontWeight={700}
-                    marginLeft={'auto'}
+                    // marginLeft={'auto'}
                     paddingBlock={screen == 'wallet' ? 0 : '1rem'}
                     onClick={addWallet}
                   >
