@@ -45,7 +45,11 @@ export default function Home() {
       setWalletSignedUp,
       activeWallet,
     })
-  const { rewards, loading: loadingReward } = usePeriodsHook({ activeWallet })
+  const {
+    rewards,
+    loading: loadingReward,
+    vestedRewards,
+  } = usePeriodsHook({ activeWallet })
 
   return (
     <>
@@ -54,8 +58,19 @@ export default function Home() {
         <meta name="description" content={t('description')} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Container maxWidth="md" sx={{ paddingInline: '2rem' }}>
-        {isConnected && !isMobile && activeWallet.amount < minAmount && (
+      <Container
+        maxWidth="md"
+        sx={{
+          paddingInline: '2rem',
+          ['@media(min-width:1300px)']: {
+            maxWidth: '95%',
+          },
+          ['@media(min-width:1500px)']: {
+            maxWidth: '85%',
+          },
+        }}
+      >
+        {isConnected && !isMobile && activeWallet?.amount < minAmount && (
           <WarningCard
             warnings={[
               // eslint-disable-next-line max-len
@@ -74,7 +89,7 @@ export default function Home() {
                 handleClose={() => setOpenModal(!openModal)}
               />
             </Box>
-            {!walletSignedUp && (
+            {!walletSignedUp && isConnected && (
               <LoadingButton
                 variant="outline"
                 sx={{
@@ -96,6 +111,7 @@ export default function Home() {
               isConnected={isConnected}
               rewards={rewards}
               loading={loadingReward}
+              vestedRewards={vestedRewards}
             />
             <PendingEpochCard
               isConnected={isConnected}
@@ -116,7 +132,7 @@ export default function Home() {
             )}
           </Grid>
         </Grid>
-        <AssetList isConnected={isConnected} />
+        <AssetList isConnected={isConnected} rewards={rewards} />
       </Container>
     </>
   )

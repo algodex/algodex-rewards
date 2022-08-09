@@ -1,7 +1,25 @@
-import { dummyChartData } from '../../lib/dummyChartData'
-import React, { useEffect, useRef } from 'react'
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
+import { dummyChartData } from '@/lib/dummyChartData'
 
-export default function AreaChart() {
+//Context
+import { ChartDataContext } from 'context/chartContext'
+import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
+
+export default function AreaChart({ isConnected }) {
+  const { conversionRate } = usePriceConversionHook({})
+  const [areaSeries, setAreaSeries] = useState()
+  const context = useContext(ChartDataContext)
+  if (context === undefined) {
+    throw new Error('Must be inside of a Chart Provider')
+  }
+  const { vestedChartData, earnedChartData, activeCurrency } = context
+
   const chartContainerRef = useRef()
   const chart = useRef()
   const resizeObserver = useRef()
@@ -50,20 +68,55 @@ export default function AreaChart() {
         borderColor: '#485c7b',
       },
     })
-
-    const areaSeries = chart.current.addAreaSeries({
+    const vested = chart.current.addAreaSeries({
       topColor: 'rgba(38,198,218, 0.56)',
       bottomColor: 'rgba(38,198,218, 0.04)',
       lineColor: 'rgba(38,198,218, 1)',
       lineWidth: 2,
     })
-
-    areaSeries.setData(dummyChartData)
+    const earned = chart.current.addAreaSeries({
+      topColor: 'rgba(67, 83, 254, 0.7)',
+      bottomColor: 'rgba(67, 83, 254, 0.3)',
+      lineColor: 'rgba(67, 83, 254, 1)',
+      lineWidth: 2,
+    })
+    setAreaSeries({ vested, earned })
   }
 
   useEffect(() => {
     initializeChart()
   }, [])
+
+  const updateChart = useCallback(async () => {
+    if (isConnected) {
+      areaSeries.vested.setData(vestedChartData)
+      areaSeries.earned.setData(earnedChartData)
+      chart.current.applyOptions({
+        localization: {
+          priceFormatter: (price) => {
+            return activeCurrency == 'USD'
+              ? `$ ${(price * conversionRate).toFixed(2)}`
+              : `ALGX ${price.toFixed(2)}`
+          },
+        },
+      })
+    } else {
+      areaSeries.vested.setData(dummyChartData)
+    }
+  }, [
+    vestedChartData,
+    earnedChartData,
+    activeCurrency,
+    areaSeries,
+    conversionRate,
+    isConnected
+  ])
+
+  useEffect(() => {
+    if (areaSeries) {
+      updateChart()
+    }
+  }, [vestedChartData, earnedChartData, activeCurrency, areaSeries, isConnected])
 
   // Resize chart on container resizes.
   useEffect(() => {
@@ -78,7 +131,7 @@ export default function AreaChart() {
     resizeObserver.current.observe(chartContainerRef.current)
 
     return () => resizeObserver.current.disconnect()
-  }, [])
+  }, [vestedChartData, earnedChartData])
 
   return (
     <>

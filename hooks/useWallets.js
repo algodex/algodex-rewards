@@ -38,7 +38,7 @@ WalletsProvider.propTypes = {
  * @param {Object} initialState Wallet Initial State
  * @return {*}
  */
-function useWallets(updateAddresses) {
+function useWallets(updateAddresses, removeAddress) {
   const context = useContext(WalletsContext)
   if (context === undefined) {
     throw new Error('Must be inside of a Wallets Provider')
@@ -75,11 +75,7 @@ function useWallets(updateAddresses) {
   const handleDisconnect = useCallback((_address) => {
     console.debug('Handle removing from storage', _address)
     if (_address) {
-      const _addresses = JSON.parse(
-        localStorage.getItem('algodex_user_wallet_addresses')
-      ).filter((wallet) => wallet.address !== _address)
-      setAddresses(_addresses)
-      updateAddresses(_addresses)
+      removeAddress(_address)
     }
   }, [])
 

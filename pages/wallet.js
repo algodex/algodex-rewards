@@ -31,7 +31,18 @@ export default function Wallet() {
         <meta name="description" content={t('description')} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Container maxWidth="md" sx={{ paddingInline: '2rem' }}>
+      <Container
+        maxWidth="md"
+        sx={{
+          paddingInline: '2rem',
+          ['@media(min-width:1300px)']: {
+            maxWidth: '95%',
+          },
+          ['@media(min-width:1500px)']: {
+            maxWidth: '85%',
+          },
+        }}
+      >
         {isMobile && <WalletDropdown screen={'wallet'} />}
         <WalletList />
       </Container>

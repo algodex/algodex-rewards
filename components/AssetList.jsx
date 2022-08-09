@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import Image from 'next/image'
 
@@ -9,10 +9,46 @@ import Grid from '@mui/material/Grid'
 import Divider from '@mui/material/Divider'
 import LaunchRoundedIcon from '@mui/icons-material/LaunchRounded'
 
-//Custom components
+//Custom components and hooks
 import Link from './Nav/Link'
+import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
+import { ChartDataContext } from 'context/chartContext'
+import { getAlgoPrice } from '@/lib/getTinymanPrice'
 
 export const AssetList = ({ isConnected }) => {
+  const { conversionRate } = usePriceConversionHook({})
+  const [algoPrices, setAlgoPrices] = useState({})
+  const context = useContext(ChartDataContext)
+  if (context === undefined) {
+    throw new Error('Must be inside of a Chart Provider')
+  }
+  const { earnedAssetData } = context
+
+  const convertToAlgo = useCallback(
+    async (assetId) => {
+      const prices = {}
+      const res = await getAlgoPrice(assetId)
+      if (!prices[assetId]) {
+        prices[assetId] = res
+        setAlgoPrices((prevState) => {
+          return {
+            ...prevState,
+            ...prices,
+          }
+        })
+      }
+    },
+    [earnedAssetData]
+  )
+
+  useEffect(() => {
+    if (earnedAssetData.length > 0) {
+      earnedAssetData.forEach(({ assetId }) => {
+        convertToAlgo(assetId)
+      })
+    }
+  }, [earnedAssetData])
+
   return (
     <Box sx={{ paddingBlock: '1.5rem' }}>
       {!isConnected ? (
@@ -28,8 +64,16 @@ export const AssetList = ({ isConnected }) => {
       ) : (
         <>
           <Grid container spacing={2}>
-            {[...Array(6)].map((asset, index) => (
-              <Grid key={index} item xs={12} sm={10} md={6} lg={4} xl={4}>
+            {earnedAssetData.map((asset) => (
+              <Grid
+                key={asset.assetId}
+                item
+                xs={12}
+                sm={10}
+                md={6}
+                lg={4}
+                xl={4}
+              >
                 <Box
                   sx={{
                     backgroundColor: 'secondary.dark',
@@ -58,14 +102,14 @@ export const AssetList = ({ isConnected }) => {
                     }}
                   >
                     <Image
-                      src={'/btc-logo.png'}
-                      alt="BTC logo"
+                      src={asset.assetLogo}
+                      alt={`${asset.assetName} logo`}
                       width="28"
                       height="28"
                     />
                     <Box marginLeft={'0.5rem'}>
                       <Typography fontSize={'1.1rem'} fontWeight={600}>
-                        goBTC
+                        {asset.assetName}
                       </Typography>
 
                       <Typography
@@ -73,11 +117,14 @@ export const AssetList = ({ isConnected }) => {
                         fontWeight={700}
                         sx={{ color: 'secondary.light3' }}
                       >
-                        Asset ID: 386192725
+                        Asset ID: {asset.assetId}
                       </Typography>
                     </Box>
                     <Box sx={{ marginLeft: 'auto', alignSelf: 'flex-start' }}>
-                      <Link href="/" target={'_blanc'}>
+                      <Link
+                        href={`https://algoexplorer.io/asset/${asset.assetId}`}
+                        target={'_blanc'}
+                      >
                         <LaunchRoundedIcon
                           sx={{
                             color: 'secondary.contrastText',
@@ -104,14 +151,18 @@ export const AssetList = ({ isConnected }) => {
                         color={'secondary.light'}
                         marginBottom={'0.5rem'}
                       >
-                        Amount Supplied
+                        Avg Amount Supplied
                       </Typography>
                       <Typography
                         fontSize={'0.95rem'}
                         fontWeight={600}
                         lineHeight={'1.5rem'}
                       >
-                        10.89 goBTC <br /> 42,989.976 ALGO
+                        {asset.depthSum.toFixed(2)} goBTC <br />
+                        {(
+                          algoPrices[asset.assetId] * asset.depthSum || 0
+                        ).toFixed(2)}{' '}
+                        ALGO
                       </Typography>
                     </Box>
                     <Divider
@@ -135,7 +186,7 @@ export const AssetList = ({ isConnected }) => {
                         fontWeight={600}
                         textAlign={'right'}
                       >
-                        1267 ALGX
+                        {asset.dailyRwd.toLocaleString()} ALGX
                       </Typography>
 
                       <Typography
@@ -144,7 +195,7 @@ export const AssetList = ({ isConnected }) => {
                         textAlign={'right'}
                         sx={{ color: 'secondary.light' }}
                       >
-                        ($14.57 USD)
+                        {(asset.dailyRwd * conversionRate).toLocaleString()} USD
                       </Typography>
                     </Box>
                   </Box>
@@ -160,8 +211,10 @@ export const AssetList = ({ isConnected }) => {
 
 AssetList.propTypes = {
   isConnected: PropTypes.bool,
+  rewards: PropTypes.array,
 }
 
 AssetList.defaultProps = {
   isConnected: false,
+  rewards: [],
 }

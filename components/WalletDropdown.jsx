@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 
 import WalletConnect from '@walletconnect/client'
@@ -14,6 +14,8 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Modal from '@mui/material/Modal'
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
+import Tooltip from '@mui/material/Tooltip'
 
 //Custom components and hooks
 import { ConfirmLocationModal } from '@/components/Modals/ConfirmLocationModal'
@@ -21,6 +23,7 @@ import { ConnectWalletPrompt } from './Modals/ConnectWalletPrompt'
 import useRewardsAddresses from '@/hooks/useRewardsAddresses'
 
 export const WalletDropdown = ({ screen, sx, fontSize }) => {
+  const dropdownRef = useRef(null)
   const connectorRef = useRef(connector)
   const {
     addresses,
@@ -34,6 +37,21 @@ export const WalletDropdown = ({ screen, sx, fontSize }) => {
   const [showList, setShowList] = useState(false)
   const [openModal, setOpenModal] = useState(false)
   const [connectWalletModal, setConnectWalletModal] = useState(false)
+  const [tooltiptext, setTooltiptext] = useState('Click to Copy')
+
+  const formattedAddresses = useMemo(() => {
+    const copy = [...addresses]
+    if (activeWallet) {
+      const index = copy.findIndex(
+        (wallet) => wallet?.address == activeWallet.address
+      )
+      if (index >= 0) {
+        copy.splice(index, 1)
+      }
+      copy.unshift(activeWallet)
+    }
+    return copy
+  }, [addresses, activeWallet])
 
   const addWallet = () => {
     setConnectWalletModal(!connectWalletModal)
@@ -42,6 +60,7 @@ export const WalletDropdown = ({ screen, sx, fontSize }) => {
   const toggleModal = () => {
     setOpenModal(!openModal)
   }
+
   const shortenAddress = ({ address }) => {
     const list = address.split('')
     const first = list.slice(0, 6)
@@ -72,9 +91,32 @@ export const WalletDropdown = ({ screen, sx, fontSize }) => {
     }
   }, [activeWallet])
 
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setShowList(false)
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside, true)
+    return () => {
+      document.removeEventListener('click', handleClickOutside, true)
+    }
+  }, [])
+
+  const copyAddress = (address) => {
+    document.querySelector('.copyToClipboard')
+    navigator.clipboard.writeText(address)
+    setTooltiptext(`Copied: ${address}`)
+    setTimeout(() => {
+      setTooltiptext('Click to Copy')
+    }, 500)
+  }
+
   return (
     <>
       <Box
+        ref={dropdownRef}
         sx={{
           backgroundColor: 'accent.main',
           color: 'accent.contrastText',
@@ -93,6 +135,8 @@ export const WalletDropdown = ({ screen, sx, fontSize }) => {
             toggleModal()
           } else if (screen == 'wallet') {
             addWallet()
+          } else {
+            setShowList(!showList)
           }
         }}
       >
@@ -102,29 +146,63 @@ export const WalletDropdown = ({ screen, sx, fontSize }) => {
               <>
                 {screen !== 'wallet' && (
                   <>
-                    {addresses
+                    {formattedAddresses
                       .slice(0, showList ? addressesLength : 1)
                       .map((addr) => (
-                        <Typography
+                        <Box
                           key={addr.address}
-                          fontSize={fontSize || '1.2rem'}
-                          textAlign={'center'}
-                          fontWeight={700}
-                          marginLeft={'auto'}
                           sx={{
-                            display: 'block',
-                            paddingBlock: `${showList ? '0.8rem' : '0'}`,
+                            display: 'flex',
+                            alignItems: 'center',
                             borderBottom: `solid ${showList ? '1px' : '0'}`,
                             borderColor: 'accent.contrastText',
                           }}
-                          onClick={() => {
-                            if (activeWallet.address !== addr.address) {
-                              setActiveWallet(addr)
-                            }
-                          }}
                         >
-                          {shortenAddress(addr)}
-                        </Typography>
+                          <Tooltip
+                            title={tooltiptext}
+                            placement="top"
+                            arrow
+                            sx={{
+                              cursor: 'pointer',
+                              marginLeft: '0.5rem',
+                            }}
+                          >
+                            <ContentCopyIcon
+                              sx={{
+                                marginRight: '0.4rem',
+                                fontSize: '0.9rem',
+                                opacity: 0.7,
+                                transition: 'all .3s ease',
+                                ['&:hover']: {
+                                  opacity: 1,
+                                },
+                                ['@media(max-width:600px)']: {
+                                  fontSize: '1.5rem',
+                                },
+                              }}
+                              onClick={() => {
+                                copyAddress(addr.address)
+                              }}
+                            />
+                          </Tooltip>
+                          <Typography
+                            fontSize={fontSize || '1.2rem'}
+                            textAlign={'center'}
+                            fontWeight={700}
+                            marginInline={'auto'}
+                            sx={{
+                              display: 'block',
+                              paddingBlock: `${showList ? '0.8rem' : '0'}`,
+                            }}
+                            onClick={() => {
+                              if (activeWallet?.address !== addr.address) {
+                                setActiveWallet(addr)
+                              }
+                            }}
+                          >
+                            {shortenAddress(addr)}
+                          </Typography>
+                        </Box>
                       ))}
                   </>
                 )}
@@ -133,7 +211,7 @@ export const WalletDropdown = ({ screen, sx, fontSize }) => {
                     fontSize={screen == 'wallet' ? '1rem' : '0.95rem'}
                     textAlign={'center'}
                     fontWeight={700}
-                    marginLeft={'auto'}
+                    // marginLeft={'auto'}
                     paddingBlock={screen == 'wallet' ? 0 : '1rem'}
                     onClick={addWallet}
                   >
@@ -149,7 +227,7 @@ export const WalletDropdown = ({ screen, sx, fontSize }) => {
               flex={1}
               textAlign={'center'}
             >
-              Sign Up for Rewards
+              Connect Wallet
             </Typography>
           )}
         </>
@@ -158,11 +236,6 @@ export const WalletDropdown = ({ screen, sx, fontSize }) => {
             sx={{
               marginLeft: 'auto',
               transform: `${showList ? 'rotate(180deg)' : '0'}`,
-            }}
-            onClick={() => {
-              if (addressesLength > 0) {
-                setShowList(!showList)
-              }
             }}
           />
         )}

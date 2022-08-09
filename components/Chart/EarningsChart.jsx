@@ -1,16 +1,16 @@
-import React, { useState } from 'react'
+import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
 
 // Material UI components
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
-import Container from '@mui/material/Container'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Checkbox from '@mui/material/Checkbox'
 import Grid from '@mui/material/Grid'
 
 // Custom components
 import AreaChart from './Area-chart'
+import { ChartDataContext } from 'context/chartContext'
 
 const styles = {
   selectorContainer: {
@@ -38,12 +38,25 @@ const styles = {
 }
 
 export const EarningsChart = ({ isConnected }) => {
-  const [activeCurrency, setActiveCurrency] = useState('ALGX')
-  const [activeRange, setActiveRange] = useState('3M')
-  const [activeStage, setActiveStage] = useState('Total')
+  const context = useContext(ChartDataContext)
+  if (context === undefined) {
+    throw new Error('Must be inside of a Chart Provider')
+  }
+  const {
+    timeRangeEnum,
+    stagesEnum,
+    activeRange,
+    setActiveRange,
+    activeStage,
+    setActiveStage,
+    activeCurrency,
+    setActiveCurrency,
+    includeUnvested,
+    setIncludeUnvested,
+  } = context
 
   return (
-    <Container sx={{ marginBlock: '1.5rem', padding: '0' }}>
+    <Box sx={{ marginBlock: '1.5rem', padding: '0' }}>
       <Box
         marginBottom={'2rem'}
         sx={{
@@ -86,28 +99,53 @@ export const EarningsChart = ({ isConnected }) => {
           </Typography>
         </Box>
       </Box>
-      {!isConnected ? (
-        <Typography
-          fontSize={'0.95rem'}
-          fontStyle={'italic'}
-          color={'primary.contrastText'}
-          marginBlock={'10vh'}
-          textAlign={'center'}
+
+      <Box
+        sx={{
+          position: 'relative',
+        }}
+      >
+        {!isConnected && (
+          <Box
+            sx={{
+              color: 'primary.contrastText',
+              position: 'absolute',
+              bottom: '30vh',
+              right: 0,
+              width: '9.5rem',
+              fontSize: '1rem',
+              fontWeight: 600,
+              textAlign: 'center',
+            }}
+          >
+            Connect a wallet to view rewards over time with an interactive chart
+          </Box>
+        )}
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={includeUnvested}
+              sx={{ color: 'primary.contrastText' }}
+              onChange={({ target: { checked } }) =>
+                setIncludeUnvested(checked)
+              }
+            />
+          }
+          disabled={!isConnected}
+          label="Include unvested rewards in chart totals"
+          sx={{ color: 'primary.contrastText' }}
+        />
+        <Box
+          sx={{
+            opacity: `${isConnected ? '1' : '.6'}`,
+            pointerEvents: `${isConnected ? 'all' : 'none'}`,
+          }}
         >
-          Connect Wallet to View Charts
-        </Typography>
-      ) : (
-        <>
-          <FormControlLabel
-            control={<Checkbox sx={{ color: 'primary.contrastText' }} />}
-            label="Include unvested rewards in chart totals"
-            sx={{ color: 'primary.contrastText' }}
-          />
           <Box sx={{ marginBlock: '2rem' }}>
-            <AreaChart />
+            <AreaChart isConnected={isConnected} />
           </Box>
           <Grid container>
-            <Grid item xs={12} sm={12} md={12} lg={6} xl={6}>
+            <Grid item xs={12} sm={12} md={6} lg={5} xl={5}>
               <Box
                 sx={{
                   display: 'flex',
@@ -120,32 +158,38 @@ export const EarningsChart = ({ isConnected }) => {
                   },
                 }}
               >
-                {[...Array('Total', 'Mainnet Stage 1', 'Mainnet Stage 2')].map(
-                  (item) => (
-                    <Box
-                      key={item}
-                      onClick={() => {
-                        setActiveStage(item)
-                      }}
-                      sx={[
-                        styles.selectorContainer,
-                        styles.selector,
-                        activeStage == item ? styles.activeSelector : {},
-                        {
-                          width: '98px',
-                          lineHeight: '0.8rem',
-                          marginRight: '13px',
-                          height: '38px',
-                        },
-                      ]}
-                    >
-                      {item}
-                    </Box>
-                  )
-                )}
+                {Object.values(stagesEnum).map((item) => (
+                  <Box
+                    key={item}
+                    onClick={() => {
+                      setActiveStage(item)
+                    }}
+                    sx={[
+                      styles.selectorContainer,
+                      styles.selector,
+                      activeStage == item ? styles.activeSelector : {},
+                      {
+                        width: '98px',
+                        lineHeight: '0.8rem',
+                        marginRight: '13px',
+                        height: '38px',
+                      },
+                    ]}
+                  >
+                    {item}
+                  </Box>
+                ))}
               </Box>
             </Grid>
-            <Grid item xs={12} sm={12} md={12} lg={6} xl={6}>
+            <Grid
+              item
+              xs={12}
+              sm={12}
+              md={5}
+              lg={5}
+              xl={5}
+              marginLeft={'auto'}
+            >
               <Box
                 sx={{
                   display: 'flex',
@@ -153,7 +197,7 @@ export const EarningsChart = ({ isConnected }) => {
                   marginBlock: '1rem',
                 }}
               >
-                {[...Array('1D', '1W', '1M', '3M', '1Y', '5Y')].map((item) => (
+                {Object.keys(timeRangeEnum).map((item) => (
                   <Box
                     key={item}
                     onClick={() => {
@@ -178,14 +222,15 @@ export const EarningsChart = ({ isConnected }) => {
               </Box>
             </Grid>
           </Grid>
-        </>
-      )}
-    </Container>
+        </Box>
+      </Box>
+    </Box>
   )
 }
 
 EarningsChart.propTypes = {
   isConnected: PropTypes.bool,
+  updateRange: PropTypes.func,
 }
 
 EarningsChart.defaultProps = {

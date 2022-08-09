@@ -8,6 +8,7 @@ export default function TestPage() {
   useEffect(() => {
     const fetchRewards = async (wallet) => {
       const rewards = await getRewards(wallet)
+      console.log({ rewards })
       setRewards(JSON.stringify(rewards))
     }
     fetchRewards('KJMDX5PTKZCK3DMQXQ6JYSIDLVZOK5WX6FHGF7ZWPN2ROILIMO6GNBZLHA')

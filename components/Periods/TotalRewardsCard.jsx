@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import Image from 'next/image'
 
@@ -7,51 +7,72 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
 
-export const TotalRewardsCard = ({ isConnected, rewards, loading }) => {
-  const totalEarned = rewards.reduce((a, b) => {
-    return a + b.value.earned_rewards
-  }, 0)
-  const totalVested = 0
-  const totalUnvested = totalEarned - totalVested
+// Custom Hook
+import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
+
+export const TotalRewardsCard = ({
+  isConnected,
+  rewards,
+  vestedRewards,
+  loading,
+}) => {
+  const totalEarned = useMemo(() => {
+    return rewards.reduce((a, b) => {
+      return a + b.value.earnedRewards
+    }, 0)
+  }, [rewards])
+
+  const totalVested = useMemo(() => {
+    return vestedRewards.reduce((a, b) => {
+      return a + b.value.vestedRewards
+    }, 0)
+  }, [vestedRewards])
+
+  const totalUnvested = useMemo(() => {
+    return totalEarned - totalVested
+  }, [totalEarned, totalVested])
+
+  const { conversionRate } = usePriceConversionHook({})
 
   return (
     <>
-      {isConnected && (
-        <Box
-          sx={{
-            backgroundColor: 'secondary.dark',
-            color: 'primary.contrastText',
-            borderRadius: '3px',
-            padding: '1rem',
-            marginBlock: '1.2rem',
-            border: '1px solid',
-            borderColor: 'secondary.light2',
-            display: 'flex',
-            alignItems: 'flex-start',
-          }}
-        >
-          <Box marginRight={'7px'} marginTop={'3px'}>
-            <Image
-              src={'/algo-rounded-icon.png'}
-              alt="algodex_icon"
-              height="16"
-              width="16"
-            />
-          </Box>
-          <Box sx={{ width: '100%' }}>
-            <Typography variant="p" fontSize={'1.1rem'} fontWeight={600}>
-              Total Rewards Earned:
+      <Box
+        sx={{
+          backgroundColor: 'secondary.dark',
+          color: 'primary.contrastText',
+          borderRadius: '3px',
+          padding: '1rem',
+          marginBlock: '1.2rem',
+          border: '1px solid',
+          borderColor: 'secondary.light2',
+          display: 'flex',
+          alignItems: 'flex-start',
+        }}
+      >
+        <Box marginRight={'7px'} marginTop={'3px'}>
+          <Image
+            src={'/algo-rounded-icon.png'}
+            alt="algodex_icon"
+            height="16"
+            width="16"
+          />
+        </Box>
+        <Box sx={{ width: '100%' }}>
+          <Typography variant="p" fontSize={'1.1rem'} fontWeight={600}>
+            Total Rewards Earned:
+          </Typography>
+          <Box
+            marginBottom={'0.5rem'}
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
+            <Typography fontSize={'0.95rem'} fontWeight={600}>
+              Total Earned Rewards:
             </Typography>
-            <Box
-              marginBottom={'0.5rem'}
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Typography fontSize={'0.95rem'} fontWeight={600}>
-                Total Earned Rewards:
-              </Typography>
+
+            {isConnected && (
               <Box>
                 {loading ? (
                   <>
@@ -59,7 +80,11 @@ export const TotalRewardsCard = ({ isConnected, rewards, loading }) => {
                   </>
                 ) : (
                   <>
-                    <Typography fontSize={'1rem'} fontWeight={600}>
+                    <Typography
+                      fontSize={'1rem'}
+                      fontWeight={600}
+                      textAlign={'right'}
+                    >
                       {totalEarned.toLocaleString()} ALGX
                     </Typography>
 
@@ -69,21 +94,23 @@ export const TotalRewardsCard = ({ isConnected, rewards, loading }) => {
                       textAlign={'right'}
                       sx={{ color: 'secondary.light' }}
                     >
-                      $14.57 USD
+                      {(totalEarned * conversionRate).toLocaleString()} USD
                     </Typography>
                   </>
                 )}
               </Box>
-            </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Typography fontSize={'0.95rem'} fontWeight={600}>
-                Total Unvested Rewards:
-              </Typography>
+            )}
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
+            <Typography fontSize={'0.95rem'} fontWeight={600}>
+              Total Unvested Rewards:
+            </Typography>
+            {isConnected ? (
               <Box>
                 {loading ? (
                   <>
@@ -91,7 +118,11 @@ export const TotalRewardsCard = ({ isConnected, rewards, loading }) => {
                   </>
                 ) : (
                   <>
-                    <Typography fontSize={'1rem'} fontWeight={600}>
+                    <Typography
+                      fontSize={'1rem'}
+                      fontWeight={600}
+                      textAlign={'right'}
+                    >
                       {totalUnvested.toLocaleString()} ALGX
                     </Typography>
 
@@ -101,15 +132,29 @@ export const TotalRewardsCard = ({ isConnected, rewards, loading }) => {
                       textAlign={'right'}
                       sx={{ color: 'secondary.light' }}
                     >
-                      $6.98 USD
+                      {(totalUnvested * conversionRate).toLocaleString()} USD
                     </Typography>
                   </>
                 )}
               </Box>
-            </Box>
+            ) : (
+              <Typography
+                fontSize={'0.85rem'}
+                fontWeight={500}
+                textAlign={'right'}
+                sx={{
+                  color: 'secondary.light',
+                  width: '8rem',
+                  textAlign: 'center',
+                  marginTop: '-2rem',
+                }}
+              >
+                Connect a wallet to see your total rewards add up here
+              </Typography>
+            )}
           </Box>
         </Box>
-      )}
+      </Box>
     </>
   )
 }
@@ -117,9 +162,11 @@ export const TotalRewardsCard = ({ isConnected, rewards, loading }) => {
 TotalRewardsCard.propTypes = {
   isConnected: PropTypes.bool,
   rewards: PropTypes.array,
+  vestedRewards: PropTypes.array,
   loading: PropTypes.bool,
 }
 
 TotalRewardsCard.defaultProps = {
   isConnected: false,
+  vestedRewards: [],
 }
