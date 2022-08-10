@@ -2,6 +2,7 @@ import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import Link from '../Nav/Link'
 import { DateTime } from 'luxon'
+import { useTranslation } from 'next-i18next'
 
 // Material UI components
 import Typography from '@mui/material/Typography'
@@ -47,6 +48,7 @@ export const CurrentEpochCard = ({
   activeCurrency,
   setActiveCurrency,
 }) => {
+  const { t } = useTranslation('common')
   const getLastWeekEpoch = () => {
     const now = new Date()
     return Date.parse(
@@ -132,7 +134,7 @@ export const CurrentEpochCard = ({
           }}
         >
           <Typography fontSize={'1.1rem'} fontWeight={600}>
-            Current Period Pending:
+            {t('Current Period Pending')}:
           </Typography>
 
           <Box sx={styles.selectorContainer}>
@@ -181,7 +183,7 @@ export const CurrentEpochCard = ({
           }}
         >
           <Typography fontSize={'0.95rem'} fontWeight={600}>
-            New Earned Rewards:
+            {t('New Earned Rewards')}:
           </Typography>
           {isConnected && (
             <Typography fontSize={'1rem'} fontWeight={600}>
@@ -206,7 +208,7 @@ export const CurrentEpochCard = ({
           }}
         >
           <Typography fontSize={'0.95rem'} fontWeight={600}>
-            New Earned Vested:
+            {t('New Earned Vested')}:
           </Typography>
           {isConnected && (
             <Typography
@@ -245,7 +247,7 @@ export const CurrentEpochCard = ({
           }}
         >
           <Typography fontSize={'0.95rem'} fontWeight={600}>
-            Vested Rewards:
+            {t('Vested Rewards')}:
           </Typography>
           {isConnected ? (
             <Box>
@@ -286,7 +288,7 @@ export const CurrentEpochCard = ({
                 marginTop: '-2rem',
               }}
             >
-              Connect a wallet to see your current pending rewards
+              {t('Connect a wallet to see your current pending rewards')}
             </Typography>
           )}
         </Box>
@@ -297,8 +299,9 @@ export const CurrentEpochCard = ({
             fontStyle={'italic'}
             marginLeft={'0.5rem'}
           >
-            Rewards will be paid out two days after the end of one-week accrual
-            periods
+            {t(
+              'Rewards will be paid out two days after the end of one-week accrual periods'
+            )}
           </Typography>
 
           <Box textAlign={'center'} marginTop={'1.5rem'}>
@@ -314,7 +317,7 @@ export const CurrentEpochCard = ({
                 justifyContent: 'flex-end',
               }}
             >
-              View on AlgoExplorer
+              {t('View on AlgoExplorer')}
               <LaunchRoundedIcon
                 sx={{
                   color: 'primary.contrastText',

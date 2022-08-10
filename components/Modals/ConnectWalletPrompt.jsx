@@ -1,12 +1,14 @@
 import React from 'react'
 import Image from 'next/image'
 import PropTypes from 'prop-types'
+import { useTranslation } from 'next-i18next'
 
 // Material UI components
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 
 export const ConnectWalletPrompt = ({ connectWallet }) => {
+  const { t } = useTranslation('common')
   return (
     <>
       <Typography
@@ -15,7 +17,7 @@ export const ConnectWalletPrompt = ({ connectWallet }) => {
         fontSize="1rem"
         marginTop={'1rem'}
       >
-        Connect Wallet with:
+        {t('Connect Wallet with')}:
       </Typography>
       <Box
         sx={{

@@ -122,7 +122,7 @@ function Drawer({ width, offset, ...props }) {
                 fontWeight: 500,
               }}
             >
-              Other Links
+              {common('Other Links')}
             </ListSubheader>
           }
         >
@@ -131,7 +131,7 @@ function Drawer({ width, offset, ...props }) {
               key={text}
               to={link}
               icon={<IconComponent />}
-              primary={text}
+              primary={common(text)}
               target={'_blank'}
             />
           ))}

@@ -3,6 +3,7 @@ import Flag from 'react-country-flag'
 import PropTypes from 'prop-types'
 
 import { Countries } from '@/lib/countries'
+import { useTranslation } from 'next-i18next'
 
 // Material UI components
 import TextField from '@mui/material/TextField'
@@ -12,6 +13,7 @@ import InputAdornment from '@mui/material/InputAdornment'
 import LanguageIcon from '@mui/icons-material/Language'
 
 export const SelectCountry = ({ sx, value, setValue }) => {
+  const { t } = useTranslation('common')
   return (
     <Box sx={sx}>
       <Autocomplete
@@ -63,7 +65,7 @@ export const SelectCountry = ({ sx, value, setValue }) => {
                             marginRight: '0.5rem',
                           }}
                         />
-                        Choose a country
+                        {t('Choose a country')}
                       </>
                     )}
                   </InputAdornment>
