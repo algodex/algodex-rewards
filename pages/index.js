@@ -36,6 +36,7 @@ export async function getServerSideProps({ locale }) {
 }
 export default function Home() {
   const { t } = useTranslation('index')
+  const { t: tc } = useTranslation('common')
   const { addresses, activeWallet, minAmount } = useRewardsAddresses()
   const isConnected = addresses.length > 0
   const [walletSignedUp, setWalletSignedUp] = useState(activeWallet?.signedUp)
@@ -74,7 +75,9 @@ export default function Home() {
           <WarningCard
             warnings={[
               // eslint-disable-next-line max-len
-              `At least ${minAmount} ALGX must be held for a wallet to vest retroactive rewards and/or earn new rewards. Plan is subject to change as nessesary.`,
+              `${t('At least')} ${minAmount} ${t(
+                'ALGX must be held for a wallet to vest retroactive rewards and/or earn new rewards'
+              )}.${t('Plan is subject to change as necessary')}.`,
             ]}
           />
         )}
@@ -104,7 +107,7 @@ export default function Home() {
                 onClick={signUp}
                 loading={loading}
               >
-                Sign Up for rewards
+                {tc('Sign Up for rewards')}
               </LoadingButton>
             )}
             <TotalRewardsCard

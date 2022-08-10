@@ -1,6 +1,15 @@
 {
-  "title": "Casa | Aplicación de inicio",
-  "heading": "Ejemplo de página de inicio",
-  "favorites-page-link": "Ir a la página de Favoritos",
-  "body": "Less Ipsum"
+  "title": "Inicio | Recompensas de Algodex",
+  "At least": "Al menos",
+  "ALGX must be held for a wallet to vest retroactive rewards and/or earn new rewards": "ALGX debe ser retenido por una billetera para otorgar recompensas retroactivas y/o ganar nuevas recompensas",
+  "Plan is subject to change as necessary": "El plan está sujeto a cambios según sea necesario",
+  "Total Rewards Earned": "Recompensas totales ganadas",
+  "Total Earned Rewards": "Recompensas totales ganadas",
+  "Total Unvested Rewards": "Recompensas totales no otorgadas",
+  "Connect a wallet to see your total rewards add up here": "Conecte una billetera para ver cómo se suman sus recompensas totales aquí",
+  "Pending Period": "Período pendiente",
+  "New Rewards": "Nuevas recompensas",
+  "Vesting Rewards": "Recompensas de adquisición de derechos",
+  "Connect a wallet to see your pending rewards for each period": "Conecte una billetera para ver sus recompensas pendientes para cada período",
+  "View Past Periods": "Ver períodos anteriores"
 }

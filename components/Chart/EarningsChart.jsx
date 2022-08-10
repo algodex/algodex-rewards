@@ -1,5 +1,6 @@
 import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
+import { useTranslation } from 'next-i18next'
 
 // Material UI components
 import Typography from '@mui/material/Typography'
@@ -38,6 +39,7 @@ const styles = {
 }
 
 export const EarningsChart = ({ isConnected }) => {
+  const { t } = useTranslation('common')
   const context = useContext(ChartDataContext)
   if (context === undefined) {
     throw new Error('Must be inside of a Chart Provider')
@@ -70,7 +72,7 @@ export const EarningsChart = ({ isConnected }) => {
           fontWeight={600}
           color={'secondary.contrastText'}
         >
-          Earnings Over Time
+          {t('Earnings Over Time')}
         </Typography>
         <Box sx={styles.selectorContainer}>
           <Typography
@@ -118,7 +120,9 @@ export const EarningsChart = ({ isConnected }) => {
               textAlign: 'center',
             }}
           >
-            Connect a wallet to view rewards over time with an interactive chart
+            {t(
+              'Connect a wallet to view rewards over time with an interactive chart'
+            )}
           </Box>
         )}
         <FormControlLabel
@@ -132,7 +136,7 @@ export const EarningsChart = ({ isConnected }) => {
             />
           }
           disabled={!isConnected}
-          label="Include unvested rewards in chart totals"
+          label={`${t('Include unvested rewards in chart totals')}`}
           sx={{ color: 'primary.contrastText' }}
         />
         <Box
@@ -181,15 +185,7 @@ export const EarningsChart = ({ isConnected }) => {
                 ))}
               </Box>
             </Grid>
-            <Grid
-              item
-              xs={12}
-              sm={12}
-              md={5}
-              lg={5}
-              xl={5}
-              marginLeft={'auto'}
-            >
+            <Grid item xs={12} sm={12} md={5} lg={5} xl={5} marginLeft={'auto'}>
               <Box
                 sx={{
                   display: 'flex',

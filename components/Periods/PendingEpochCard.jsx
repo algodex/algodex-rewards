@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
+import { useTranslation } from 'next-i18next'
 
 // Material UI components
 import Typography from '@mui/material/Typography'
@@ -23,6 +24,8 @@ export const PendingEpochCard = ({
   activeWallet,
   minAmount,
 }) => {
+  const { t } = useTranslation('index')
+  const { t: tc } = useTranslation('common')
   const getLastWeekEpoch = () => {
     const now = new Date()
     return Date.parse(
@@ -83,7 +86,7 @@ export const PendingEpochCard = ({
               }}
             >
               <Typography fontSize={'1.1rem'} fontWeight={600}>
-                Pending Period {pendingPeriod}:
+                {t('Pending Period')} {pendingPeriod}:
               </Typography>
             </Box>
             {isConnected && (
@@ -103,7 +106,7 @@ export const PendingEpochCard = ({
               }}
             >
               <Typography fontSize={'0.95rem'} fontWeight={600}>
-                New Rewards:
+                {t('New Rewards')}:
               </Typography>
 
               {isConnected && (
@@ -142,7 +145,7 @@ export const PendingEpochCard = ({
               }}
             >
               <Typography fontSize={'0.95rem'} fontWeight={600}>
-                Vesting Rewards:
+                {t('Vesting Rewards')}:
               </Typography>
 
               {isConnected ? (
@@ -184,7 +187,9 @@ export const PendingEpochCard = ({
                     marginTop: '-2rem',
                   }}
                 >
-                  Connect a wallet to see your pending rewards for each period
+                  {t(
+                    'Connect a wallet to see your pending rewards for each period'
+                  )}
                 </Typography>
               )}
             </Box>
@@ -205,7 +210,7 @@ export const PendingEpochCard = ({
               fontWeight={600}
               sx={{ textDecoration: 'underline', marginBottom: '0.7rem' }}
             >
-              How are Rewards Calculated?
+              {tc('How are Rewards Calculated?')}
             </Typography>
           </Box>
           <Typography
@@ -214,14 +219,15 @@ export const PendingEpochCard = ({
             fontStyle={'italic'}
             marginLeft={'0.5rem'}
           >
-            Rewards will be paid out within two days after the end of one-week
-            accrual periods
+            {tc(
+              'Rewards will be paid out within two days after the end of one-week accrual periods'
+            )}
           </Typography>
 
           <Box textAlign={'center'} marginTop={'1.5rem'}>
             <Link href="/periods" sx={{ textDecoration: 'none' }}>
               <Button variant="outlined" disabled={!isConnected}>
-                View Past Periods
+                {t('View Past Periods')}
               </Button>
             </Link>
           </Box>
@@ -232,8 +238,10 @@ export const PendingEpochCard = ({
         <WarningCard
           warnings={[
             // eslint-disable-next-line max-len
-            `At least ${minAmount} ALGX must be held for a wallet to vest retroactive rewards and/or earn new rewards.`,
-            'Plan is subject to change as nessesary.',
+            `${t('At least')} ${minAmount} ${t(
+              'ALGX must be held for a wallet to vest retroactive rewards and/or earn new rewards'
+            )}`,
+            `${t('Plan is subject to change as necessary')}.`,
           ]}
         />
       )}

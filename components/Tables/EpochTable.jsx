@@ -14,6 +14,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import { TableLoader } from '../Loaders/TableLoader'
 import { WarningCard } from '../WarningCard'
 import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
+import { useTranslation } from 'next-i18next'
 
 const columns = [
   { id: 'period', label: 'Period' },
@@ -45,6 +46,7 @@ export const EpochTable = ({
   vestedRewards,
   activeCurrency,
 }) => {
+  const { t } = useTranslation('common')
   const { conversionRate } = usePriceConversionHook({})
 
   const attachCurrency = (price) => {
@@ -76,7 +78,7 @@ export const EpochTable = ({
     return Object.entries(x)
   }, [rewards, vestedRewards])
 
-  console.log({ mergedRewards })
+  // console.log({ mergedRewards })
 
   return (
     <>
@@ -95,7 +97,7 @@ export const EpochTable = ({
                         component="th"
                         scope="row"
                       >
-                        {column.label}
+                        {t(`${column.label}`)}
                       </StyledTableCell>
                     ))}
                     <StyledTableCell></StyledTableCell>

@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import Image from 'next/image'
+import { useTranslation } from 'next-i18next'
 
 // Material UI components
 import Typography from '@mui/material/Typography'
@@ -16,6 +17,7 @@ export const TotalRewardsCard = ({
   vestedRewards,
   loading,
 }) => {
+  const { t } = useTranslation('index')
   const totalEarned = useMemo(() => {
     return rewards.reduce((a, b) => {
       return a + b.value.earnedRewards
@@ -59,7 +61,7 @@ export const TotalRewardsCard = ({
         </Box>
         <Box sx={{ width: '100%' }}>
           <Typography variant="p" fontSize={'1.1rem'} fontWeight={600}>
-            Total Rewards Earned:
+            {t('Total Rewards Earned')}:
           </Typography>
           <Box
             marginBottom={'0.5rem'}
@@ -69,7 +71,7 @@ export const TotalRewardsCard = ({
             }}
           >
             <Typography fontSize={'0.95rem'} fontWeight={600}>
-              Total Earned Rewards:
+              {t('Total Earned Rewards')}:
             </Typography>
 
             {isConnected && (
@@ -108,7 +110,7 @@ export const TotalRewardsCard = ({
             }}
           >
             <Typography fontSize={'0.95rem'} fontWeight={600}>
-              Total Unvested Rewards:
+              {t('Total Unvested Rewards')}:
             </Typography>
             {isConnected ? (
               <Box>
@@ -149,7 +151,7 @@ export const TotalRewardsCard = ({
                   marginTop: '-2rem',
                 }}
               >
-                Connect a wallet to see your total rewards add up here
+                {t('Connect a wallet to see your total rewards add up here')}
               </Typography>
             )}
           </Box>

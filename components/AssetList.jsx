@@ -1,6 +1,7 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import Image from 'next/image'
+import { useTranslation } from 'next-i18next'
 
 // Material UI components
 import Typography from '@mui/material/Typography'
@@ -16,6 +17,7 @@ import { ChartDataContext } from 'context/chartContext'
 import { getAlgoPrice } from '@/lib/getTinymanPrice'
 
 export const AssetList = ({ isConnected }) => {
+  const { t } = useTranslation('common')
   const { conversionRate } = usePriceConversionHook({})
   const [algoPrices, setAlgoPrices] = useState({})
   const context = useContext(ChartDataContext)
@@ -59,7 +61,7 @@ export const AssetList = ({ isConnected }) => {
           marginBlock={'10vh'}
           textAlign={'center'}
         >
-          Connect Wallet to View Assets
+          {t('Connect Wallet to View Assets')}
         </Typography>
       ) : (
         <>
@@ -91,7 +93,7 @@ export const AssetList = ({ isConnected }) => {
                     color={'secondary.light'}
                     marginBottom={'0.7rem'}
                   >
-                    Asset
+                    {t('Asset')}
                   </Typography>
 
                   <Box
@@ -117,7 +119,7 @@ export const AssetList = ({ isConnected }) => {
                         fontWeight={700}
                         sx={{ color: 'secondary.light3' }}
                       >
-                        Asset ID: {asset.assetId}
+                        {t('Asset ID')}: {asset.assetId}
                       </Typography>
                     </Box>
                     <Box sx={{ marginLeft: 'auto', alignSelf: 'flex-start' }}>
@@ -151,14 +153,14 @@ export const AssetList = ({ isConnected }) => {
                         color={'secondary.light'}
                         marginBottom={'0.5rem'}
                       >
-                        Avg Amount Supplied
+                        {t('Avg Amount Supplied')}
                       </Typography>
                       <Typography
                         fontSize={'0.95rem'}
                         fontWeight={600}
                         lineHeight={'1.5rem'}
                       >
-                        {asset.depthSum.toFixed(2)} goBTC <br />
+                        {asset.depthSum.toFixed(2)} {asset.assetName} <br />
                         {(
                           algoPrices[asset.assetId] * asset.depthSum || 0
                         ).toFixed(2)}{' '}
@@ -179,7 +181,7 @@ export const AssetList = ({ isConnected }) => {
                         textAlign={'right'}
                         marginBottom={'0.5rem'}
                       >
-                        Est. Daily Rewards
+                        {t('Est. Daily Rewards')}
                       </Typography>
                       <Typography
                         fontSize={'1rem'}

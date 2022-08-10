@@ -1,4 +1,15 @@
 {
   "title": "Home | Algodex Rewards",
-  "heading": "Home Page"
+  "At least": "At least",
+  "ALGX must be held for a wallet to vest retroactive rewards and/or earn new rewards": "ALGX must be held for a wallet to vest retroactive rewards and/or earn new rewards",
+  "Plan is subject to change as necessary": "Plan is subject to change as necessary",
+  "Total Rewards Earned": "Total Rewards Earned",
+  "Total Earned Rewards": "Total Earned Rewards",
+  "Total Unvested Rewards": "Total Unvested Rewards",
+  "Connect a wallet to see your total rewards add up here": "Connect a wallet to see your total rewards add up here",
+  "Pending Period": "Pending Period",
+  "New Rewards": "New Rewards",
+  "Vesting Rewards": "Vesting Rewards",
+  "Connect a wallet to see your pending rewards for each period": "Connect a wallet to see your pending rewards for each period",
+  "View Past Periods": "View Past Periods"
 }

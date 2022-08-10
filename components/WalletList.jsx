@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 import React, { useMemo } from 'react'
 import Image from 'next/image'
+import { useTranslation } from 'next-i18next'
 
 //Material UI
 import Box from '@mui/material/Box'
@@ -25,6 +26,7 @@ const styles = {
 }
 
 export const WalletList = () => {
+  const { t } = useTranslation('common')
   const { addresses, activeWallet, handleDisconnect, minAmount } =
     useRewardsAddresses()
 
@@ -62,8 +64,8 @@ export const WalletList = () => {
                   color: 'primary.light',
                 }}
               >
-                <Typography fontSize={'0.95rem'}>WALLET NAME</Typography>
-                <Typography fontSize={'0.95rem'}>BALANCE</Typography>
+                <Typography fontSize={'0.95rem'}>{t('WALLET NAME')}</Typography>
+                <Typography fontSize={'0.95rem'}>{t('BALANCE')}</Typography>
               </Box>
               <Accordion sx={styles.accordionStyles}>
                 <AccordionSummary
@@ -149,7 +151,7 @@ export const WalletList = () => {
                       sx={{ fontSize: '0.8rem' }}
                       onClick={() => handleDisconnect(address, type)}
                     >
-                      Disconnect {shortenAddress(address)}
+                      {t('Disconnect')} {shortenAddress(address)}
                     </Button>
                   </Box>
                 </AccordionDetails>
@@ -166,7 +168,7 @@ export const WalletList = () => {
             marginBlock={'10vh'}
             textAlign={'center'}
           >
-            Connect wallets and manage here
+            {t('Connect wallets and manage here')}
           </Typography>
         </>
       )}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import Image from 'next/image'
+import { useTranslation } from 'next-i18next'
 
 // Material UI components
 import Typography from '@mui/material/Typography'
@@ -16,6 +17,7 @@ import { ConnectWalletPrompt } from './ConnectWalletPrompt'
 import { SelectCountry } from './SelectCountry'
 
 export const ConfirmLocationModal = ({ open, handleClose, connectWallet }) => {
+  const { t } = useTranslation('common')
   const [openSuccessModal, setOpenSuccessModal] = useState(false)
   const [openFailedModal, setOpenFailedModal] = useState(false)
   const [countryValue, setCountryValue] = useState({})
@@ -68,12 +70,13 @@ export const ConfirmLocationModal = ({ open, handleClose, connectWallet }) => {
           }}
         >
           <Typography variant="p" fontWeight={700} fontSize="1rem">
-            Confirm Your Location
+            {t('Confirm Your Location')}
           </Typography>
           <hr />
           <Typography variant="p" fontWeight={500} fontSize="0.9rem">
-            Algodex needs to confirm your location to comply with local
-            regulations
+            {t(
+              'Algodex needs to confirm your location to comply with local regulations'
+            )}
           </Typography>
           <SelectCountry
             sx={{ marginBlock: '1.5rem' }}
@@ -92,7 +95,7 @@ export const ConfirmLocationModal = ({ open, handleClose, connectWallet }) => {
             onClick={handleConfirm}
             disabled={!countryValue.code}
           >
-            Confirm
+            {t('Confirm')}
           </Button>
         </Box>
       </Modal>
@@ -125,7 +128,7 @@ export const ConfirmLocationModal = ({ open, handleClose, connectWallet }) => {
             fontSize="1.1rem"
             marginBottom={'1rem'}
           >
-            Your country is supported!
+            {t('Your country is supported')}!
           </Typography>
           <Typography
             variant="p"
@@ -133,9 +136,11 @@ export const ConfirmLocationModal = ({ open, handleClose, connectWallet }) => {
             fontSize="1rem"
             marginBottom={'1.5rem'}
           >
-            To sign up for rewards you will need to connect your wallet with a 0
-            ALGO transaction. This transaction will also opt into ALGX if your
-            wallet hasn&apos;t done so already.
+            {t(
+              // eslint-disable-next-line max-len
+              'To sign up for rewards you will need to connect your wallet with a 0 ALGO transaction. This transaction will also opt into ALGX if your wallet hasn&apos;t done so already'
+            )}
+            .
           </Typography>
           <hr />
 
@@ -177,7 +182,7 @@ export const ConfirmLocationModal = ({ open, handleClose, connectWallet }) => {
             fontSize="1.1rem"
             marginBottom={'1rem'}
           >
-            Your country is not supported yet
+            {t('Your country is not supported yet')}
           </Typography>
           <Typography
             variant="p"
@@ -185,9 +190,11 @@ export const ConfirmLocationModal = ({ open, handleClose, connectWallet }) => {
             fontSize="1rem"
             marginBottom={'1.5rem'}
           >
-            At this time, your country is not eligible to sign up for rewards.
-            Your country may become eligible in the future. Keep an eye on our
-            social channels for updates.
+            {t(
+              // eslint-disable-next-line max-len
+              'At this time, your country is not eligible to sign up for rewards. Your country may become eligible in the future. Keep an eye on our social channels for updates'
+            )}
+            .
           </Typography>
           <hr />
           <Box
