@@ -111,7 +111,7 @@ export const WalletList = () => {
                   ) : (
                     <>
                       {assets
-                        .filter(
+                        ?.filter(
                           (asset) =>
                             asset['asset-id'] == 724480511 ||
                             asset['asset-id'] == 31566704
