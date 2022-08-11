@@ -1,5 +1,6 @@
 import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
+import { useTranslation } from 'next-i18next'
 
 //MUI components
 import Table from '@mui/material/Table'
@@ -11,6 +12,13 @@ import TableRow from '@mui/material/TableRow'
 import Checkbox from '@mui/material/Checkbox'
 import { styled } from '@mui/material/styles'
 import { ChartDataContext } from 'context/chartContext'
+import Typography from '@mui/material/Typography'
+
+const timeRangeEnum = {
+  '1Wk': '1 Week',
+  '3M': '3 Months',
+  '1Y': '1 Year',
+}
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -27,6 +35,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 }))
 
 export const AssetTable = ({ isConnected }) => {
+  const { t } = useTranslation('common')
   const context = useContext(ChartDataContext)
   if (context === undefined) {
     throw new Error('Must be inside of a Chart Provider')
@@ -42,7 +51,7 @@ export const AssetTable = ({ isConnected }) => {
     },
     {
       id: 'total',
-      label: `Total (${activeRange})`,
+      label: `Total (${timeRangeEnum[activeRange]})`,
       format: (value) => value.toLocaleString('en-US'),
     },
   ]
@@ -87,6 +96,16 @@ export const AssetTable = ({ isConnected }) => {
     <>
       {isConnected && (
         <>
+          <Typography
+            sx={{
+              color: 'primary.contrastText',
+              fontWeight: 700,
+              marginTop: '2rem',
+              fontSize: '1.2rem',
+            }}
+          >
+            {t('Select Assets to Include in Chart')}.
+          </Typography>
           <TableContainer>
             <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
               <TableHead>
