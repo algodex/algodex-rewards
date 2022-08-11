@@ -18,7 +18,7 @@
   "Avg Amount Supplied": "Importe medio suministrado",
   "Est. Daily Rewards": "Est. Recompensas diarias",
   "Total": "Total",
-  "Current Period Pending": "Current Period Pending",
+  "Period Pending": "Period Pending",
   "New Earned Rewards": "Nuevas recompensas ganadas",
   "New Earned Vested": "Nuevo ganado adquirido",
   "Vested Rewards": "Recompensas adquiridas",
@@ -46,5 +46,8 @@
   "DOCS": "DOCS",
   "ABOUT": "SOBRE",
   "SUPPORT": "APOYO",
-  "MAILBOX": "BUZÓN"
+  "MAILBOX": "BUZÓN",
+  "Current Period": "Período actual",
+  "You can select a period from this list to view more information": "Puede seleccionar un período de esta lista para ver más información",
+  "Previous Periods": "Períodos anteriores"
 }

@@ -122,6 +122,7 @@ export default function Home() {
               loading={loadingReward}
               isMobile={isMobile}
               activeWallet={activeWallet}
+              vestedRewards={vestedRewards}
               minAmount={minAmount}
             />
             {isMobile && (

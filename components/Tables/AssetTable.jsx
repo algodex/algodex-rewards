@@ -78,6 +78,11 @@ export const AssetTable = ({ isConnected }) => {
 
   const isSelected = (name) => selected.indexOf(name) !== -1
 
+  // useEffect(() => {
+  //   const assets = assetTableData.map(({ asset }) => asset)
+  //   setSelected(assets)
+  // }, [assetTableData])
+
   return (
     <>
       {isConnected && (
@@ -117,8 +122,9 @@ export const AssetTable = ({ isConnected }) => {
                               selected.length < assetTableData.length
                             }
                             checked={
-                              assetTableData.length > 0 &&
-                              selected.length === assetTableData.length
+                              (assetTableData.length > 0 &&
+                                selected.length === assetTableData.length) ||
+                              selected.includes('ALL')
                             }
                             onChange={handleSelectAllClick}
                             inputProps={{

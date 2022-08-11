@@ -1,9 +1,10 @@
-import React, { useMemo } from 'react'
+import React, { useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
 
 // Material UI components
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
+import Typography from '@mui/material/Typography'
 import TableCell, { tableCellClasses } from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
@@ -15,6 +16,8 @@ import { TableLoader } from '../Loaders/TableLoader'
 import { WarningCard } from '../WarningCard'
 import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
 import { useTranslation } from 'next-i18next'
+import { getEpochEnd } from '@/lib/getRewards'
+import { PeriodContext } from 'context/periodContext'
 
 const columns = [
   { id: 'period', label: 'Period' },
@@ -39,6 +42,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     borderColor: theme.palette.secondary.main,
   },
 }))
+
 export const EpochTable = ({
   isConnected,
   loading,
@@ -48,6 +52,15 @@ export const EpochTable = ({
 }) => {
   const { t } = useTranslation('common')
   const { conversionRate } = usePriceConversionHook({})
+  const context = useContext(PeriodContext)
+  const { setPeriodAssets, tinymanAssets } = context
+
+  const getLastWeekEpoch = () => {
+    const now = new Date()
+    return Date.parse(
+      new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7)
+    )
+  }
 
   const attachCurrency = (price) => {
     return `${(activeCurrency === 'ALGX'
@@ -78,69 +91,49 @@ export const EpochTable = ({
     return Object.entries(x)
   }, [rewards, vestedRewards])
 
+  const currentPeriod = useMemo(() => {
+    // Find a reward whose epoch is not over a week from now
+    const newR = Object.values(mergedRewards).filter(
+      (epoch) => getEpochEnd(epoch[0]) * 1000 > getLastWeekEpoch()
+    )
+    return newR || []
+  }, [mergedRewards])
+
   // console.log({ mergedRewards })
+
+  const getAssetsByEpoch = (_epoch) => {
+    const rewardsCopy = [...rewards]
+    const data = []
+    const assets = {}
+    if (rewardsCopy.length > 0) {
+      rewardsCopy.forEach(({ value }) => {
+        if (assets[value.assetId]) {
+          assets[value.assetId] = [...assets[value.assetId], value]
+        } else {
+          assets[value.assetId] = [value]
+        }
+      })
+    }
+    for (const assetId in assets) {
+      const list = [...assets[assetId]].filter(({ epoch }) => epoch == _epoch)
+      data.push({
+        assetId,
+        dailyRwd: (
+          list.find(({ epoch }) => epoch == _epoch).earnedRewards / 7
+        ).toFixed(2),
+        depthSum: list.reduce((a, b) => a + b.depthSum, 0) / 10080,
+        assetName: tinymanAssets[assetId].name,
+        assetLogo: tinymanAssets[assetId].logo?.svg,
+      })
+    }
+    setPeriodAssets(data)
+  }
 
   return (
     <>
       {isConnected && (
         <>
-          <TableContainer sx={{ maxHeight: 440 }}>
-            <Table stickyHeader aria-label="sticky table">
-              {!loading && rewards.length > 0 && (
-                <TableHead>
-                  <TableRow>
-                    {columns.map((column) => (
-                      <StyledTableCell
-                        key={column.id}
-                        align={column.align}
-                        style={{ minWidth: column.minWidth }}
-                        component="th"
-                        scope="row"
-                      >
-                        {t(`${column.label}`)}
-                      </StyledTableCell>
-                    ))}
-                    <StyledTableCell></StyledTableCell>
-                  </TableRow>
-                </TableHead>
-              )}
-              {loading ? (
-                <TableLoader columnCount={5} />
-              ) : (
-                <TableBody>
-                  {mergedRewards.map((row) => {
-                    return (
-                      <TableRow
-                        hover
-                        role="checkbox"
-                        tabIndex={-1}
-                        key={row[0]}
-                      >
-                        <>
-                          <StyledTableCell>{row[0]}</StyledTableCell>
-                          <StyledTableCell>
-                            {attachCurrency(row[1].earnedRewards)}
-                          </StyledTableCell>
-                          <StyledTableCell>
-                            {attachCurrency(row[1].vestedRewards || 0)}
-                          </StyledTableCell>
-                          <StyledTableCell>
-                            {attachCurrency(
-                              row[1].earnedRewards - (row[1].vestedRewards || 0)
-                            )}
-                          </StyledTableCell>
-                          <StyledTableCell>
-                            <ChevronRightIcon />
-                          </StyledTableCell>
-                        </>
-                      </TableRow>
-                    )
-                  })}
-                </TableBody>
-              )}
-            </Table>
-          </TableContainer>
-          {!loading && rewards.length < 1 && (
+          {!loading && rewards.length < 1 ? (
             <WarningCard
               title="Not enough ALGX in wallet for rewards"
               warnings={[
@@ -152,6 +145,167 @@ export const EpochTable = ({
                 url: '/',
               }}
             />
+          ) : (
+            <>
+              <Typography
+                sx={{
+                  color: 'primary.light',
+                  fontWeight: 500,
+                  marginTop: '2rem',
+                }}
+              >
+                {t(
+                  'You can select a period from this list to view more information'
+                )}
+                .
+              </Typography>
+              {currentPeriod.length > 0 && (
+                <>
+                  <Typography
+                    sx={{
+                      color: 'primary.contrastText',
+                      fontWeight: 700,
+                      fontSize: '1.2rem',
+                      marginTop: '2rem',
+                    }}
+                  >
+                    {t('Current Period')}
+                  </Typography>
+                  <TableContainer sx={{ maxHeight: 440 }}>
+                    <Table stickyHeader aria-label="sticky table">
+                      {!loading && currentPeriod.length > 0 && (
+                        <TableHead>
+                          <TableRow>
+                            {columns.map((column) => (
+                              <StyledTableCell
+                                key={column.id}
+                                align={column.align}
+                                style={{ minWidth: column.minWidth }}
+                                component="th"
+                                scope="row"
+                              >
+                                {t(`${column.label}`)}
+                              </StyledTableCell>
+                            ))}
+                            <StyledTableCell></StyledTableCell>
+                          </TableRow>
+                        </TableHead>
+                      )}
+                      {loading ? (
+                        <TableLoader columnCount={5} />
+                      ) : (
+                        <TableBody>
+                          {currentPeriod.map((row) => {
+                            return (
+                              <TableRow
+                                hover
+                                role="checkbox"
+                                tabIndex={-1}
+                                key={row[0]}
+                                sx={{ cursor: 'pointer' }}
+                                onClick={() => {
+                                  getAssetsByEpoch(row[0])
+                                }}
+                              >
+                                <>
+                                  <StyledTableCell>{row[0]}</StyledTableCell>
+                                  <StyledTableCell>
+                                    {attachCurrency(row[1].earnedRewards)}
+                                  </StyledTableCell>
+                                  <StyledTableCell>
+                                    {attachCurrency(row[1].vestedRewards || 0)}
+                                  </StyledTableCell>
+                                  <StyledTableCell>
+                                    {attachCurrency(
+                                      row[1].earnedRewards -
+                                        (row[1].vestedRewards || 0)
+                                    )}
+                                  </StyledTableCell>
+                                  <StyledTableCell>
+                                    <ChevronRightIcon />
+                                  </StyledTableCell>
+                                </>
+                              </TableRow>
+                            )
+                          })}
+                        </TableBody>
+                      )}
+                    </Table>
+                  </TableContainer>
+                </>
+              )}
+              <Typography
+                sx={{
+                  color: 'primary.contrastText',
+                  fontWeight: 700,
+                  fontSize: '1.2rem',
+                  marginTop: '2rem',
+                }}
+              >
+                {t('Previous Periods')}
+              </Typography>
+              <TableContainer sx={{ maxHeight: 440 }}>
+                <Table stickyHeader aria-label="sticky table">
+                  {!loading && mergedRewards.length > 0 && (
+                    <TableHead>
+                      <TableRow>
+                        {columns.map((column) => (
+                          <StyledTableCell
+                            key={column.id}
+                            align={column.align}
+                            style={{ minWidth: column.minWidth }}
+                            component="th"
+                            scope="row"
+                          >
+                            {t(`${column.label}`)}
+                          </StyledTableCell>
+                        ))}
+                        <StyledTableCell></StyledTableCell>
+                      </TableRow>
+                    </TableHead>
+                  )}
+                  {loading ? (
+                    <TableLoader columnCount={5} />
+                  ) : (
+                    <TableBody>
+                      {mergedRewards.map((row) => {
+                        return (
+                          <TableRow
+                            hover
+                            role="checkbox"
+                            tabIndex={-1}
+                            key={row[0]}
+                            sx={{ cursor: 'pointer' }}
+                            onClick={() => {
+                              getAssetsByEpoch(row[0])
+                            }}
+                          >
+                            <>
+                              <StyledTableCell>{row[0]}</StyledTableCell>
+                              <StyledTableCell>
+                                {attachCurrency(row[1].earnedRewards)}
+                              </StyledTableCell>
+                              <StyledTableCell>
+                                {attachCurrency(row[1].vestedRewards || 0)}
+                              </StyledTableCell>
+                              <StyledTableCell>
+                                {attachCurrency(
+                                  row[1].earnedRewards -
+                                    (row[1].vestedRewards || 0)
+                                )}
+                              </StyledTableCell>
+                              <StyledTableCell>
+                                <ChevronRightIcon />
+                              </StyledTableCell>
+                            </>
+                          </TableRow>
+                        )
+                      })}
+                    </TableBody>
+                  )}
+                </Table>
+              </TableContainer>
+            </>
           )}
         </>
       )}
@@ -164,6 +318,7 @@ EpochTable.propTypes = {
   loading: PropTypes.bool,
   rewards: PropTypes.array,
   vestedRewards: PropTypes.array,
+  activeWallet: PropTypes.object,
 }
 
 EpochTable.defaultProps = {

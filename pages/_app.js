@@ -21,6 +21,7 @@ import { Layout } from '@/components/Layout'
 import { WalletsProvider } from '@/hooks/useWallets'
 import { RewardsAddressesProvider } from '@/hooks/useRewardsAddresses'
 import { ChartDataProvider } from 'context/chartContext'
+import { PeriodProvider } from 'context/periodContext'
 
 const theme = getTheme('dark')
 // Client-side cache, shared for the whole session of the user in the browser.
@@ -71,9 +72,11 @@ export function App(props) {
         <WalletsProvider>
           <RewardsAddressesProvider>
             <ChartDataProvider>
-              <Layout>
-                <Component {...pageProps} />
-              </Layout>
+              <PeriodProvider>
+                <Layout>
+                  <Component {...pageProps} />
+                </Layout>
+              </PeriodProvider>
             </ChartDataProvider>
           </RewardsAddressesProvider>
         </WalletsProvider>

@@ -18,7 +18,7 @@
   "Avg Amount Supplied": "Avg Amount Supplied",
   "Est. Daily Rewards": "Est. Daily Rewards",
   "Total": "Total",
-  "Current Period Pending": "Current Period Pending",
+  "Period Pending": "Period Pending",
   "New Earned Rewards": "New Earned Rewards",
   "New Earned Vested": "New Earned Vested",
   "Vested Rewards": "Vested Rewards",
@@ -46,5 +46,8 @@
   "DOCS": "DOCS",
   "ABOUT": "ABOUT",
   "SUPPORT": "SUPPORT",
-  "MAILBOX": "MAILBOX"
+  "MAILBOX": "MAILBOX",
+  "Current Period": "Current Period",
+  "You can select a period from this list to view more information": "You can select a period from this list to view more information",
+  "Previous Periods": "Previous Periods"
 }
