@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react'
+import React, { useContext, useEffect, useMemo } from 'react'
 import PropTypes from 'prop-types'
 
 // Material UI components
@@ -49,6 +49,7 @@ export const EpochTable = ({
   rewards,
   vestedRewards,
   activeCurrency,
+  activeWallet
 }) => {
   const { t } = useTranslation('common')
   const { conversionRate } = usePriceConversionHook({})
@@ -99,6 +100,9 @@ export const EpochTable = ({
     return newR || []
   }, [mergedRewards])
 
+  useEffect(() => {
+    setPeriodAssets([])
+  }, [activeWallet])
   // console.log({ mergedRewards })
 
   const getAssetsByEpoch = (_epoch) => {

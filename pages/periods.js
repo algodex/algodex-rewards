@@ -83,6 +83,7 @@ export default function Periods() {
               rewards={rewards}
               vestedRewards={vestedRewards}
               activeCurrency={activeCurrency}
+              activeWallet={activeWallet}
             />
           </Grid>
           <Grid
