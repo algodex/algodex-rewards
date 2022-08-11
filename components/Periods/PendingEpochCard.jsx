@@ -14,11 +14,13 @@ import InfoRoundedIcon from '@mui/icons-material/InfoRounded'
 import Link from '../Nav/Link'
 import { WarningCard } from '../WarningCard'
 import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
-import { getEpochEnd } from '@/lib/getRewards'
+import { getEpochEnd, getEpochStart } from '@/lib/getRewards'
+import { DateTime } from 'luxon'
 
 export const PendingEpochCard = ({
   isConnected,
   rewards,
+  vestedRewards,
   loading,
   isMobile,
   activeWallet,
@@ -34,24 +36,41 @@ export const PendingEpochCard = ({
   }
 
   const newReward = useMemo(() => {
-    // Find a reward whose epoch is not over a week
+    // Find a reward whose epoch is not over a week from now
     const newR = rewards.find(
-      ({ value }) => getLastWeekEpoch() > getEpochEnd(value.epoch)
+      ({ value }) => getEpochEnd(value.epoch) * 1000 > getLastWeekEpoch()
     )
-    return newR?.value?.earnedRewards || 0
+    return newR
   }, [rewards])
 
-  const vestingReward = useMemo(() => {
-    // return rewards[0]?.value?.earnedRewards - 0 || 0
-    const newR = rewards.find(
-      ({ value }) => getLastWeekEpoch() > getEpochEnd(value.epoch)
-    )
-    return newR?.value?.earnedRewards || 0
-  }, [rewards])
+  const vestedReward = useMemo(() => {
+    return vestedRewards.reduce((a, b) => {
+      return a + b.value.vestedRewards
+    }, 0)
+  }, [vestedRewards])
 
   const pendingPeriod = useMemo(() => {
-    return rewards[0]?.value?.epoch || 0
-  }, [rewards])
+    if (newReward) {
+      const { epoch } = newReward.value
+
+      const start = DateTime.fromJSDate(
+        new Date(getEpochStart(epoch) * 1000)
+      ).toLocaleString(DateTime.DATE_MED)
+
+      const end = DateTime.fromJSDate(
+        new Date(getEpochEnd(epoch) * 1000)
+      ).toLocaleString(DateTime.DATE_MED)
+
+      return {
+        date: `${start} - ${end}`,
+        number: epoch,
+      }
+    }
+    return {
+      date: '--',
+      number: 0,
+    }
+  }, [newReward])
 
   const { conversionRate } = usePriceConversionHook({})
 
@@ -86,7 +105,7 @@ export const PendingEpochCard = ({
               }}
             >
               <Typography fontSize={'1.1rem'} fontWeight={600}>
-                {t('Pending Period')} {pendingPeriod}:
+                {t('Pending Period')} {pendingPeriod.number}:
               </Typography>
             </Box>
             {isConnected && (
@@ -95,7 +114,7 @@ export const PendingEpochCard = ({
                 fontWeight={700}
                 sx={{ color: 'secondary.light' }}
               >
-                June 06, 2022 - June 20, 2022
+                {pendingPeriod.date}
               </Typography>
             )}
             <Box
@@ -122,7 +141,10 @@ export const PendingEpochCard = ({
                         fontWeight={600}
                         textAlign={'right'}
                       >
-                        {newReward.toLocaleString()} ALGX
+                        {(
+                          newReward?.value?.earnedRewards || 0
+                        ).toLocaleString()}{' '}
+                        ALGX
                       </Typography>
                       <Typography
                         fontSize={'0.85rem'}
@@ -130,8 +152,12 @@ export const PendingEpochCard = ({
                         textAlign={'right'}
                         sx={{ color: 'secondary.light' }}
                       >
-                        {(newReward * conversionRate).toLocaleString()} USD
-                      </Typography>{' '}
+                        {(
+                          (newReward?.value?.earnedRewards || 0) *
+                          conversionRate
+                        ).toLocaleString()}{' '}
+                        USD
+                      </Typography>
                     </>
                   )}
                 </Box>
@@ -145,7 +171,7 @@ export const PendingEpochCard = ({
               }}
             >
               <Typography fontSize={'0.95rem'} fontWeight={600}>
-                {t('Vesting Rewards')}:
+                {t('Vested Rewards')}:
               </Typography>
 
               {isConnected ? (
@@ -161,7 +187,7 @@ export const PendingEpochCard = ({
                         fontWeight={600}
                         textAlign={'right'}
                       >
-                        {vestingReward.toLocaleString()} ALGX
+                        {vestedReward.toLocaleString()} ALGX
                       </Typography>
 
                       <Typography
@@ -170,7 +196,7 @@ export const PendingEpochCard = ({
                         textAlign={'right'}
                         sx={{ color: 'secondary.light' }}
                       >
-                        {(vestingReward * conversionRate).toLocaleString()} USD
+                        {(vestedReward * conversionRate).toLocaleString()} USD
                       </Typography>
                     </>
                   )}
@@ -226,7 +252,11 @@ export const PendingEpochCard = ({
 
           <Box textAlign={'center'} marginTop={'1.5rem'}>
             <Link href="/periods" sx={{ textDecoration: 'none' }}>
-              <Button variant="outlined" disabled={!isConnected}>
+              <Button
+                variant="outlined"
+                disabled={!isConnected}
+                sx={{ borderWidth: '1px' }}
+              >
                 {t('View Past Periods')}
               </Button>
             </Link>
@@ -253,6 +283,7 @@ PendingEpochCard.propTypes = {
   isConnected: PropTypes.bool,
   loading: PropTypes.bool,
   rewards: PropTypes.array,
+  vestedRewards: PropTypes.array,
   isMobile: PropTypes.bool,
   activeWallet: PropTypes.object,
   minAmount: PropTypes.number,
@@ -261,4 +292,5 @@ PendingEpochCard.propTypes = {
 PendingEpochCard.defaultProps = {
   isConnected: false,
   rewards: [],
+  vestedRewards: [],
 }

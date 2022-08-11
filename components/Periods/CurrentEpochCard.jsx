@@ -69,24 +69,26 @@ export const CurrentEpochCard = ({
     const newR = rewards.find(
       ({ value: { epoch } }) => getEpochEnd(epoch) * 1000 > getLastWeekEpoch()
     )
-    // const newR = vestedRewards.find(
-    //   ({ value: { vestedUnixTime } }) =>
-    //     vestedUnixTime * 1000 > getLastWeekEpoch()
-    // )
     if (newR) {
       const { epoch } = newR.value
 
       const start = DateTime.fromJSDate(
         new Date(getEpochStart(epoch) * 1000)
-      ).toLocaleString(DateTime.DATE_FULL)
+      ).toLocaleString(DateTime.DATE_MED)
 
       const end = DateTime.fromJSDate(
         new Date(getEpochEnd(epoch) * 1000)
-      ).toLocaleString(DateTime.DATE_FULL)
+      ).toLocaleString(DateTime.DATE_MED)
 
-      return `${start} - ${end}`
+      return {
+        date: `${start} - ${end}`,
+        number: epoch,
+      }
     }
-    return '--'
+    return {
+      date: '--',
+      number: 0,
+    }
   }, [rewards])
 
   const sumVestedRewards = useMemo(() => {
@@ -134,7 +136,7 @@ export const CurrentEpochCard = ({
           }}
         >
           <Typography fontSize={'1.1rem'} fontWeight={600}>
-            {t('Current Period Pending')}:
+            {t('Pending Period')} {pendingPeriods.number}:
           </Typography>
 
           <Box sx={styles.selectorContainer}>
@@ -170,7 +172,7 @@ export const CurrentEpochCard = ({
             fontWeight={700}
             sx={{ color: 'secondary.light', marginBottom: '1rem' }}
           >
-            {pendingPeriods}
+            {pendingPeriods.date}
           </Typography>
         )}
         <Box
