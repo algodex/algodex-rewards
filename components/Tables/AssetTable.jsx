@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useTranslation } from 'next-i18next'
 
@@ -87,10 +87,12 @@ export const AssetTable = ({ isConnected }) => {
 
   const isSelected = (name) => selected.indexOf(name) !== -1
 
-  // useEffect(() => {
-  //   const assets = assetTableData.map(({ asset }) => asset)
-  //   setSelected(assets)
-  // }, [assetTableData])
+  useEffect(() => {
+    const assets = assetTableData.map(({ asset }) => asset)
+    if (selected.includes('ALL')) {
+      setSelected(assets)
+    }
+  }, [assetTableData])
 
   return (
     <>
@@ -141,9 +143,8 @@ export const AssetTable = ({ isConnected }) => {
                               selected.length < assetTableData.length
                             }
                             checked={
-                              (assetTableData.length > 0 &&
-                                selected.length === assetTableData.length) ||
-                              selected.includes('ALL')
+                              assetTableData.length > 0 &&
+                              selected.length === assetTableData.length
                             }
                             onChange={handleSelectAllClick}
                             inputProps={{
