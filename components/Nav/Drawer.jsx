@@ -85,7 +85,7 @@ function Drawer({ width, offset, ...props }) {
     >
       {/* Add Toolbar for spacing */}
       <Toolbar sx={{ height: offset }} />
-      <Box sx={{ overflow: 'auto' }}>
+      <Box sx={{ overflow: 'auto' }} data-testid="toolbar-links">
         <List>
           <ListItemLink
             to="/"
@@ -112,6 +112,7 @@ function Drawer({ width, offset, ...props }) {
         </List>
         <Divider />
         <List
+          data-testid="toolbar-links"
           subheader={
             <ListSubheader
               component="div"
