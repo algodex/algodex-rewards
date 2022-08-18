@@ -34,7 +34,6 @@
     "axios": "^0.27.2",
     "browserslist": "^4.21.3",
     "clsx": "^1.1.1",
-    "cross-env": "^7.0.3",
     "css-mediaquery": "^0.1.2",
     "lightweight-charts": "^3.8.0",
     "luxon": "^3.0.1",
