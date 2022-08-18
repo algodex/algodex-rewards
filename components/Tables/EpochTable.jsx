@@ -72,23 +72,25 @@ export const EpochTable = ({
 
   const mergedRewards = useMemo(() => {
     const x = {}
-    const list = rewards.concat(vestedRewards)
-    list.forEach(({ value }) => {
-      if (x[value.epoch]) {
-        x[value.epoch] = {
-          ...x[value.epoch],
-          ...value,
-          assetId: x[value.epoch].assetId.includes(value.assetId)
-            ? x[value.epoch].assetId
-            : [...x[value.epoch].assetId, value.assetId],
+    if (vestedRewards.length > 0) {
+      const list = rewards.concat(vestedRewards)
+      list.forEach(({ value }) => {
+        if (x[value.epoch]) {
+          x[value.epoch] = {
+            ...x[value.epoch],
+            ...value,
+            assetId: x[value.epoch].assetId.includes(value.assetId)
+              ? x[value.epoch].assetId
+              : [...x[value.epoch].assetId, value.assetId],
+          }
+        } else {
+          x[value.epoch] = {
+            ...value,
+            assetId: [value.assetId],
+          }
         }
-      } else {
-        x[value.epoch] = {
-          ...value,
-          assetId: [value.assetId],
-        }
-      }
-    })
+      })
+    }
     return Object.entries(x)
   }, [rewards, vestedRewards])
 
