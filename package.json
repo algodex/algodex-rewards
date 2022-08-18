@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build-start": "cross-env NODE_ENV=test next build && next start",
     "docs": "jsdoc -c jsdoc.conf.json",
     "test-jest": "jest",
     "test-lint": "eslint . --quiet",
