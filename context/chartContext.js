@@ -69,10 +69,7 @@ export function ChartDataProvider({ children }) {
   }
 
   const amoungSelected = (assetId) => {
-    if (
-      selected.includes('ALL') ||
-      selected.includes(tinymanAssets[assetId].name)
-    ) {
+    if (selected.includes(tinymanAssets[assetId].name)) {
       return true
     } else {
       return false
