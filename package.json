@@ -5,11 +5,15 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build-start": "cross-env NODE_ENV=test next build && next start",
     "docs": "jsdoc -c jsdoc.conf.json",
     "test-jest": "jest",
     "test-lint": "eslint . --quiet",
     "start": "next start",
     "lint": "next lint",
+    "cypress-open": "cypress open",
+    "cypress-run": "cypress run",
+    "test-cypress": "cross-env NODE_ENV=test start-server-and-test build-start http://localhost:3000 cypress-run",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },
@@ -30,6 +34,7 @@
     "axios": "^0.27.2",
     "browserslist": "^4.21.3",
     "clsx": "^1.1.1",
+    "cross-env": "^7.0.3",
     "css-mediaquery": "^0.1.2",
     "lightweight-charts": "^3.8.0",
     "luxon": "^3.0.1",
@@ -62,14 +67,18 @@
     "babel-jest": "^27.5.1",
     "babel-loader": "^8.2.3",
     "better-docs": "^2.7.2",
+    "cypress": "^10.6.0",
+    "cypress-react-selector": "^3.0.0",
     "eslint": "^8.20.0",
     "eslint-config-next": "12.1.0",
+    "eslint-plugin-cypress": "^2.12.1",
     "eslint-plugin-jest": "^26.1.1",
     "eslint-plugin-storybook": "^0.5.7",
     "eslint-plugin-testing-library": "^5.0.5",
     "jest": "^27.5.1",
     "jsdoc": "^3.6.10",
     "postcss": "^8.4.7",
+    "start-server-and-test": "^1.14.0",
     "tailwindcss": "^3.0.23"
   }
 }

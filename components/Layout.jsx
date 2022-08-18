@@ -43,6 +43,7 @@ export function Layout({ children, components, componentsProps }) {
       }}
     >
       <AppBar
+        data-testid="app-bar"
         position="static"
         sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
       >

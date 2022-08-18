@@ -41,6 +41,7 @@ function BottomNavigation({ onChange, ...rest }) {
 
   return (
     <MUIBottomNavigation
+      data-testid="menu-btn"
       showLabels
       value={activeNav}
       onChange={onChange || _onChange}

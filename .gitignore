@@ -145,3 +145,6 @@ dist
 algodex_user_wallet_addresses
 activeWallet
 .npmrc
+
+cypress/videos
+cypress/screenshots

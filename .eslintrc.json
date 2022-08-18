@@ -11,7 +11,8 @@
     "plugin:react-hooks/recommended",
     "plugin:jsx-a11y/recommended",
     "plugin:storybook/recommended",
-    "next/core-web-vitals"
+    "next/core-web-vitals",
+    "plugin:cypress/recommended"
   ],
   "plugins": ["jest"],
   "rules": {
