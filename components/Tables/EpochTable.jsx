@@ -69,8 +69,7 @@ export const EpochTable = ({
       : price * conversionRate
     ).toLocaleString()} ${activeCurrency}`
   }
-  console.log({ vestedRewards })
-  console.log({ rewards })
+
   const mergedRewards = useMemo(() => {
     const x = {}
     if (vestedRewards.length > 0) {
