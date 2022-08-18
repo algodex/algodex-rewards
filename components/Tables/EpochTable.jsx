@@ -49,7 +49,7 @@ export const EpochTable = ({
   rewards,
   vestedRewards,
   activeCurrency,
-  activeWallet
+  activeWallet,
 }) => {
   const { t } = useTranslation('common')
   const { conversionRate } = usePriceConversionHook({})
@@ -123,7 +123,7 @@ export const EpochTable = ({
       data.push({
         assetId,
         dailyRwd: (
-          list.find(({ epoch }) => epoch == _epoch).earnedRewards / 7
+          list.find(({ epoch }) => epoch == _epoch)?.earnedRewards / 7 || 0
         ).toFixed(2),
         depthSum: list.reduce((a, b) => a + b.depthSum, 0) / 10080,
         assetName: tinymanAssets[assetId].name,
