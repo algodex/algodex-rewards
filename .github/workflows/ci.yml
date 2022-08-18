@@ -53,6 +53,8 @@ jobs:
           NPM_AUTH_TOKEN: ${{ secrets.GHP_AUTH_TOKEN }}
       - name: Run Cypress
         run: yarn test-cypress
+        env:
+          DB_BASE_URL: http://ec2-3-22-97-104.us-east-2.compute.amazonaws.com:5984
   chromatic-deployment:
     name: Storybook
     runs-on: ubuntu-latest
