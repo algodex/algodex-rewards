@@ -31,7 +31,15 @@ export const useSignUpHook = ({ setWalletSignedUp, activeWallet }) => {
       ) {
         setActionStatus({
           message:
-            'This wallet is disconnected, please kindly reconnect wallet and try again',
+            // eslint-disable-next-line max-len
+            'This wallet is disconnected, please refresh this page or kindly reconnect wallet and try again',
+          success: false,
+        })
+      } else if (/Network mismatch between dApp and Wallet/.test(response)) {
+        setActionStatus({
+          message:
+            // eslint-disable-next-line max-len
+            'Network mismatch, wallet is connected to TestNet and dApp connected to MainNet (or vice versa)',
           success: false,
         })
       } else if (/overspend/.test(response)) {
