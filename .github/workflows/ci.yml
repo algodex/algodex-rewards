@@ -51,11 +51,8 @@ jobs:
           yarn
         env:
           NPM_AUTH_TOKEN: ${{ secrets.GHP_AUTH_TOKEN }}
-      - name: Cypress run
-        uses: cypress-io/github-action@v4
-        with:
-          build: yarn run build
-          start: yarn start
+        - name: Run Cypress
+          run: yarn run cypress:headless
   chromatic-deployment:
     name: Storybook
     runs-on: ubuntu-latest
