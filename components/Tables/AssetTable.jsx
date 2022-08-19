@@ -66,22 +66,26 @@ export const AssetTable = ({ isConnected }) => {
   }
 
   const handleClick = (event, asset) => {
-    const selectedIndex = selected.indexOf(asset)
+    let selectedCopy = [...selected]
+    if (selectedCopy.includes('ALL')) {
+      const selectedIndex = selectedCopy.indexOf('ALL')
+      selectedCopy.splice(selectedIndex, 1)
+    }
+    const selectedIndex = selectedCopy.indexOf(asset)
     let newSelected = []
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, asset)
+      newSelected = newSelected.concat(selectedCopy, asset)
     } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1))
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1))
+      newSelected = newSelected.concat(selectedCopy.slice(1))
+    } else if (selectedIndex === selectedCopy.length - 1) {
+      newSelected = newSelected.concat(selectedCopy.slice(0, -1))
     } else if (selectedIndex > 0) {
       newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
+        selectedCopy.slice(0, selectedIndex),
+        selectedCopy.slice(selectedIndex + 1)
       )
     }
-
     setSelected(newSelected)
   }
 
