@@ -89,7 +89,7 @@ export const AssetTable = ({ isConnected }) => {
 
   useEffect(() => {
     const assets = assetTableData.map(({ asset }) => asset)
-    if (selected.includes('ALL')) {
+    if (selected.includes('ALL') || selected.includes('home')) {
       setSelected(assets)
     }
   }, [assetTableData])

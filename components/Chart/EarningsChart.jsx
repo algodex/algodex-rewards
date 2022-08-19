@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useTranslation } from 'next-i18next'
 
@@ -38,7 +38,7 @@ const styles = {
   },
 }
 
-export const EarningsChart = ({ isConnected }) => {
+export const EarningsChart = ({ isConnected, page }) => {
   const { t } = useTranslation('common')
   const context = useContext(ChartDataContext)
   if (context === undefined) {
@@ -55,7 +55,12 @@ export const EarningsChart = ({ isConnected }) => {
     setActiveCurrency,
     includeUnvested,
     setIncludeUnvested,
+    setSelected,
   } = context
+
+  useEffect(() => {
+    setSelected([page])
+  }, [page])
 
   return (
     <Box sx={{ marginBlock: '1.5rem', padding: '0' }}>
