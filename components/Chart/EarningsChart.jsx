@@ -38,7 +38,7 @@ const styles = {
   },
 }
 
-export const EarningsChart = ({ isConnected, page }) => {
+export const EarningsChart = ({ isConnected }) => {
   const { t } = useTranslation('common')
   const context = useContext(ChartDataContext)
   if (context === undefined) {
@@ -59,8 +59,8 @@ export const EarningsChart = ({ isConnected, page }) => {
   } = context
 
   useEffect(() => {
-    setSelected([page])
-  }, [page])
+    setSelected(['All'])
+  }, [])
 
   return (
     <Box sx={{ marginBlock: '1.5rem', padding: '0' }}>
