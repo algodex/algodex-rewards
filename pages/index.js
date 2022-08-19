@@ -130,7 +130,7 @@ export default function Home() {
             )}
           </Grid>
           <Grid item xs={12} sm={12} md={6} lg={8} xl={8}>
-            <EarningsChart isConnected={isConnected} />
+            <EarningsChart isConnected={isConnected} page={'home'} />
             {isMobile && (
               <Divider sx={{ borderColor: 'primary.contrastText' }} />
             )}
