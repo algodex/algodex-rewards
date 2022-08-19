@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
 import { useTranslation } from 'next-i18next'
 
@@ -86,13 +86,6 @@ export const AssetTable = ({ isConnected }) => {
   }
 
   const isSelected = (name) => selected.indexOf(name) !== -1
-
-  useEffect(() => {
-    const assets = assetTableData.map(({ asset }) => asset)
-    if (selected.includes('ALL') || selected.includes('home')) {
-      setSelected(assets)
-    }
-  }, [assetTableData])
 
   return (
     <>

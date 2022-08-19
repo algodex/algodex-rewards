@@ -55,12 +55,17 @@ export const EarningsChart = ({ isConnected }) => {
     setActiveCurrency,
     includeUnvested,
     setIncludeUnvested,
+    assetTableData,
+    selected,
     setSelected,
   } = context
 
   useEffect(() => {
-    setSelected(['All'])
-  }, [])
+    const assets = assetTableData.map(({ asset }) => asset)
+    if (selected.includes('ALL')) {
+      setSelected(assets)
+    }
+  }, [assetTableData])
 
   return (
     <Box sx={{ marginBlock: '1.5rem', padding: '0' }}>
