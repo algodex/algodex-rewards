@@ -38,7 +38,7 @@ const styles = {
   },
 }
 
-export const EarningsChart = ({ isConnected, page }) => {
+export const EarningsChart = ({ isConnected }) => {
   const { t } = useTranslation('common')
   const context = useContext(ChartDataContext)
   if (context === undefined) {
@@ -55,12 +55,17 @@ export const EarningsChart = ({ isConnected, page }) => {
     setActiveCurrency,
     includeUnvested,
     setIncludeUnvested,
+    assetTableData,
+    selected,
     setSelected,
   } = context
 
   useEffect(() => {
-    setSelected([page])
-  }, [page])
+    const assets = assetTableData.map(({ asset }) => asset)
+    if (selected.includes('ALL')) {
+      setSelected(assets)
+    }
+  }, [assetTableData])
 
   return (
     <Box sx={{ marginBlock: '1.5rem', padding: '0' }}>
