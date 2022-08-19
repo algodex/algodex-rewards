@@ -40,30 +40,32 @@ export const usePeriodsHook = ({ activeWallet }) => {
     },
   ]
 
-  const fetchRewards = useCallback(
-    async (wallet) => {
-      setLoading(true)
-      try {
-        const rewards = await getRewardsData(wallet)
-        const vestedRewards = await getVestedRewardsData(wallet)
-        setRewards(rewards.rows)
-        setVestedRewards(vestedRewards.rows)
-        setLoading(false)
-      } catch (error) {
-        //TODO: This should be removed after production launch
+  const fetchRewards = useCallback(async (wallet) => {
+    setLoading(true)
+    const _rewards = new Promise((resolve) => {
+      resolve(getRewardsData(wallet))
+    })
+    const _vestedRewards = new Promise((resolve) => {
+      resolve(getVestedRewardsData(wallet))
+    })
+    await Promise.all([_rewards, _vestedRewards])
+      .then((values) => {
+        setRewards(values[0].rows)
+        setVestedRewards(values[1].rows)
+      })
+      .catch(() => {
+        //TODO: This dummy data should be removed after production launch
         setRewards(dummyReward)
         setVestedRewards(dummyVestedRewards)
-        setLoading(false)
-      }
-    },
-    [setRewards]
-  )
+      })
+    setLoading(false)
+  }, [])
 
   useEffect(() => {
     if (activeWallet) {
       fetchRewards(activeWallet?.address)
     }
-  }, [activeWallet])
+  }, [activeWallet?.address])
 
   return { loading, rewards, vestedRewards }
 }
