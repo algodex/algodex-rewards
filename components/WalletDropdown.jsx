@@ -180,8 +180,9 @@ export const WalletDropdown = ({ screen, sx, fontSize }) => {
                                   fontSize: '1.5rem',
                                 },
                               }}
-                              onClick={() => {
+                              onClick={(e) => {
                                 copyAddress(addr.address)
+                                e.stopPropagation()
                               }}
                             />
                           </Tooltip>
