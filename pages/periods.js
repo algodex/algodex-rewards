@@ -13,7 +13,7 @@ import { useTheme } from '@mui/material/styles'
 // Custom components and hook(s)
 import { WalletDropdown } from '@/components/WalletDropdown'
 import { CurrentEpochCard } from '@/components/Periods/CurrentEpochCard'
-import { EpochTable } from '@/components/Tables/EpochTable'
+import { PeriodTable } from '@/components/Tables/PeriodTable'
 import useRewardsAddresses from '@/hooks/useRewardsAddresses'
 import { usePeriodsHook } from '@/hooks/usePeriodsHook'
 import { AssetContainer } from '@/components/AssetContainer'
@@ -77,7 +77,7 @@ export default function Periods() {
             xl={5}
             sx={isMobile ? { maxWidth: '100% !important' } : {}}
           >
-            <EpochTable
+            <PeriodTable
               isConnected={isConnected}
               loading={loading}
               rewards={rewards}

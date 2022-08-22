@@ -50,15 +50,17 @@ export const usePeriodsHook = ({ activeWallet }) => {
     })
     await Promise.all([_rewards, _vestedRewards])
       .then((values) => {
+        setLoading(false)
         setRewards(values[0].rows)
         setVestedRewards(values[1].rows)
       })
-      .catch(() => {
+      .catch((err) => {
+        setLoading(false)
+        console.debug(err)
         //TODO: This dummy data should be removed after production launch
         setRewards(dummyReward)
         setVestedRewards(dummyVestedRewards)
       })
-    setLoading(false)
   }, [])
 
   useEffect(() => {

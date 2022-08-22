@@ -73,7 +73,6 @@ export const PendingEpochCard = ({
   }, [newReward])
 
   const { conversionRate } = usePriceConversionHook({})
-
   return (
     <>
       <Box
@@ -250,17 +249,19 @@ export const PendingEpochCard = ({
             )}
           </Typography>
 
-          <Box textAlign={'center'} marginTop={'1.5rem'}>
-            <Link href="/periods" sx={{ textDecoration: 'none' }}>
-              <Button
-                variant="outlined"
-                disabled={!isConnected}
-                sx={{ borderWidth: '1px' }}
-              >
-                {t('View Past Periods')}
-              </Button>
-            </Link>
-          </Box>
+          {rewards.length > 0 && (
+            <Box textAlign={'center'} marginTop={'1.5rem'}>
+              <Link href="/periods" sx={{ textDecoration: 'none' }}>
+                <Button
+                  variant="outlined"
+                  disabled={!isConnected}
+                  sx={{ borderWidth: '1px' }}
+                >
+                  {t('View Past Periods')}
+                </Button>
+              </Link>
+            </Box>
+          )}
         </>
       </Box>
 

@@ -43,7 +43,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   },
 }))
 
-export const EpochTable = ({
+export const PeriodTable = ({
   isConnected,
   loading,
   rewards,
@@ -72,8 +72,8 @@ export const EpochTable = ({
 
   const mergedRewards = useMemo(() => {
     const x = {}
-    if (vestedRewards.length > 0) {
-      const list = rewards.concat(vestedRewards)
+    const list = rewards.concat(vestedRewards)
+    if (list.length > 0) {
       list.forEach(({ value }) => {
         if (x[value.epoch]) {
           x[value.epoch] = {
@@ -319,7 +319,7 @@ export const EpochTable = ({
   )
 }
 
-EpochTable.propTypes = {
+PeriodTable.propTypes = {
   isConnected: PropTypes.bool,
   loading: PropTypes.bool,
   rewards: PropTypes.array,
@@ -327,7 +327,7 @@ EpochTable.propTypes = {
   activeWallet: PropTypes.object,
 }
 
-EpochTable.defaultProps = {
+PeriodTable.defaultProps = {
   isConnected: false,
   loading: true,
   rewards: [],
