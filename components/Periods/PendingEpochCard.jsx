@@ -14,13 +14,13 @@ import InfoRoundedIcon from '@mui/icons-material/InfoRounded'
 import Link from '../Nav/Link'
 import { WarningCard } from '../WarningCard'
 import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
-import { getEpochEnd, getEpochStart } from '@/lib/getRewards'
-import { DateTime } from 'luxon'
+import { getEpochEnd } from '@/lib/getRewards'
 
 export const PendingEpochCard = ({
   isConnected,
   rewards,
   vestedRewards,
+  pendingPeriod,
   loading,
   isMobile,
   activeWallet,
@@ -48,29 +48,6 @@ export const PendingEpochCard = ({
       return a + b.value.vestedRewards
     }, 0)
   }, [vestedRewards])
-
-  const pendingPeriod = useMemo(() => {
-    if (newReward) {
-      const { epoch } = newReward.value
-
-      const start = DateTime.fromJSDate(
-        new Date(getEpochStart(epoch) * 1000)
-      ).toLocaleString(DateTime.DATE_MED)
-
-      const end = DateTime.fromJSDate(
-        new Date(getEpochEnd(epoch) * 1000)
-      ).toLocaleString(DateTime.DATE_MED)
-
-      return {
-        date: `${start} - ${end}`,
-        number: epoch,
-      }
-    }
-    return {
-      date: '--',
-      number: 0,
-    }
-  }, [newReward])
 
   const { conversionRate } = usePriceConversionHook({})
   return (
@@ -104,18 +81,16 @@ export const PendingEpochCard = ({
               }}
             >
               <Typography fontSize={'1.1rem'} fontWeight={600}>
-                {t('Pending Period')} {pendingPeriod.number}:
+                {t('Pending Period')} {pendingPeriod().number}:
               </Typography>
             </Box>
-            {isConnected && (
-              <Typography
-                fontSize={'0.85rem'}
-                fontWeight={700}
-                sx={{ color: 'secondary.light' }}
-              >
-                {pendingPeriod.date}
-              </Typography>
-            )}
+            <Typography
+              fontSize={'0.85rem'}
+              fontWeight={700}
+              sx={{ color: 'secondary.light' }}
+            >
+              {pendingPeriod().date}
+            </Typography>
             <Box
               marginBottom={'0.5rem'}
               sx={{
@@ -288,6 +263,7 @@ PendingEpochCard.propTypes = {
   isMobile: PropTypes.bool,
   activeWallet: PropTypes.object,
   minAmount: PropTypes.number,
+  pendingPeriod: PropTypes.func,
 }
 
 PendingEpochCard.defaultProps = {
