@@ -38,7 +38,7 @@ const styles = {
   },
 }
 
-export const EarningsChart = ({ isConnected }) => {
+export const EarningsChart = ({ isConnected, isMobile }) => {
   const { t } = useTranslation('common')
   const context = useContext(ChartDataContext)
   if (context === undefined) {
@@ -203,11 +203,11 @@ export const EarningsChart = ({ isConnected }) => {
                   marginBlock: '1rem',
                 }}
               >
-                {Object.keys(timeRangeEnum).map((item) => (
+                {Object.values(timeRangeEnum).map(({ value, name }) => (
                   <Box
-                    key={item}
+                    key={value}
                     onClick={() => {
-                      setActiveRange(item)
+                      setActiveRange(value)
                     }}
                     sx={[
                       styles.selectorContainer,
@@ -219,10 +219,10 @@ export const EarningsChart = ({ isConnected }) => {
                         background: 'transparent',
                         padding: '5px',
                       },
-                      activeRange == item ? styles.activeSelector : {},
+                      activeRange == value ? styles.activeSelector : {},
                     ]}
                   >
-                    {item}
+                    {isMobile ? value : name}
                   </Box>
                 ))}
               </Box>
@@ -236,7 +236,7 @@ export const EarningsChart = ({ isConnected }) => {
 
 EarningsChart.propTypes = {
   isConnected: PropTypes.bool,
-  updateRange: PropTypes.func,
+  isMobile: PropTypes.bool,
 }
 
 EarningsChart.defaultProps = {

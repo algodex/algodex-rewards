@@ -58,7 +58,7 @@ export default function Chart() {
             <hr />
           </>
         )}
-        <EarningsChart isConnected={isConnected} />
+        <EarningsChart isConnected={isConnected} isMobile={isMobile} />
         <Box sx={{ paddingBlock: '2rem' }}>
           <AssetTable isConnected={isConnected} />
         </Box>

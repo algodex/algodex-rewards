@@ -41,6 +41,7 @@ export default function Home() {
   const isConnected = addresses.length > 0
   const [walletSignedUp, setWalletSignedUp] = useState(activeWallet?.signedUp)
   const isMobile = useMediaQuery(useTheme().breakpoints.down('sm'))
+  const isWebLarge = useMediaQuery(useTheme().breakpoints.down('lg'))
   const { loading, openModal, setOpenModal, actionStatus, signUp } =
     useSignUpHook({
       setWalletSignedUp,
@@ -130,7 +131,7 @@ export default function Home() {
             )}
           </Grid>
           <Grid item xs={12} sm={12} md={6} lg={8} xl={8}>
-            <EarningsChart isConnected={isConnected} />
+            <EarningsChart isConnected={isConnected} isMobile={isMobile || isWebLarge} />
             {isMobile && (
               <Divider sx={{ borderColor: 'primary.contrastText' }} />
             )}

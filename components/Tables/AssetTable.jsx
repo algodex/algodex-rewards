@@ -18,6 +18,7 @@ const timeRangeEnum = {
   '1Wk': '1 Week',
   '3M': '3 Months',
   '1Y': '1 Year',
+  'YTD': 'Year Today',
 }
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
