@@ -118,13 +118,11 @@ function Drawer({ width, offset, ...props }) {
               component="div"
               id="nested-list-subheader"
               sx={{
-                backgroundColor: 'secondary.light',
-                color: 'secondary.dark',
-                fontWeight: 500,
+                marginBlock:'20px',
+                border: '2px solid',
+                borderColor: 'secondary.light',
               }}
-            >
-              {common('Other Links')}
-            </ListSubheader>
+            />
           }
         >
           {otherLinks.map(({ text, icon: IconComponent, link }) => (
