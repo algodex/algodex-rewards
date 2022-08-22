@@ -18,7 +18,12 @@ export default function AreaChart({ isConnected }) {
   if (context === undefined) {
     throw new Error('Must be inside of a Chart Provider')
   }
-  const { vestedChartData, earnedChartData, activeCurrency } = context
+  const {
+    vestedChartData,
+    earnedChartData,
+    activeCurrency,
+    setIncludeUnvested,
+  } = context
 
   const chartContainerRef = useRef()
   const chart = useRef()
@@ -123,6 +128,12 @@ export default function AreaChart({ isConnected }) {
     areaSeries,
     isConnected,
   ])
+
+  useEffect(() => {
+    if (isConnected && vestedChartData.length < 1) {
+      setIncludeUnvested(true)
+    }
+  }, [isConnected])
 
   // Resize chart on container resizes.
   useEffect(() => {
