@@ -19,23 +19,34 @@ export function ChartDataProvider({ children }) {
   const timeRangeEnum = {
     '1Wk': {
       value: '1Wk',
+      name: '1 Week',
       epoch: Date.parse(
         new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7)
       ),
     },
     '3M': {
       value: '3M',
+      name: '3 Months',
       epoch: Date.parse(
         new Date(now.getFullYear(), now.getMonth() - 3, now.getDate())
       ),
     },
     '1Y': {
       value: '1Y',
+      name: '1 Year',
       epoch: Date.parse(
         new Date(now.getFullYear() - 1, now.getMonth(), now.getDate())
       ),
     },
+    'YTD': {
+      value: 'YTD',
+      name: 'YTD',
+      epoch: Date.parse(
+        new Date(now.getFullYear(), 0, 1)
+      ),
+    },
   }
+  
   const [activeRange, setActiveRange] = useState(timeRangeEnum['1Y'].value)
   const [activeStage, setActiveStage] = useState(stagesEnum[0])
   const [activeCurrency, setActiveCurrency] = useState('ALGX')
