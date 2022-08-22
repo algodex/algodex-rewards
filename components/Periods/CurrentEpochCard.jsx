@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import Link from '../Nav/Link'
-import { DateTime } from 'luxon'
 import { useTranslation } from 'next-i18next'
 
 // Material UI components
@@ -13,7 +12,7 @@ import CircularProgress from '@mui/material/CircularProgress'
 
 // custom hook and libs
 import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
-import { getEpochEnd, getEpochStart } from '@/lib/getRewards'
+import { getEpochEnd } from '@/lib/getRewards'
 
 const styles = {
   selectorContainer: {
@@ -47,6 +46,7 @@ export const CurrentEpochCard = ({
   loading,
   activeCurrency,
   setActiveCurrency,
+  pendingPeriod,
 }) => {
   const { t } = useTranslation('common')
   const getLastWeekEpoch = () => {
@@ -62,33 +62,6 @@ export const CurrentEpochCard = ({
       ({ value: { epoch } }) => getEpochEnd(epoch) * 1000 > getLastWeekEpoch()
     )
     return newR?.value?.earnedRewards || 0
-  }, [rewards])
-
-  const pendingPeriods = useMemo(() => {
-    // Find a reward whose epoch is not over a week from now
-    const newR = rewards.find(
-      ({ value: { epoch } }) => getEpochEnd(epoch) * 1000 > getLastWeekEpoch()
-    )
-    if (newR) {
-      const { epoch } = newR.value
-
-      const start = DateTime.fromJSDate(
-        new Date(getEpochStart(epoch) * 1000)
-      ).toLocaleString(DateTime.DATE_MED)
-
-      const end = DateTime.fromJSDate(
-        new Date(getEpochEnd(epoch) * 1000)
-      ).toLocaleString(DateTime.DATE_MED)
-
-      return {
-        date: `${start} - ${end}`,
-        number: epoch,
-      }
-    }
-    return {
-      date: '--',
-      number: 0,
-    }
   }, [rewards])
 
   const sumVestedRewards = useMemo(() => {
@@ -136,7 +109,7 @@ export const CurrentEpochCard = ({
           }}
         >
           <Typography fontSize={'1.1rem'} fontWeight={600}>
-            {t('Pending Period')} {pendingPeriods.number}:
+            {t('Pending Period')} {pendingPeriod().number}:
           </Typography>
 
           <Box sx={styles.selectorContainer}>
@@ -172,7 +145,7 @@ export const CurrentEpochCard = ({
             fontWeight={700}
             sx={{ color: 'secondary.light', marginBottom: '1rem' }}
           >
-            {pendingPeriods.date}
+            {pendingPeriod().date}
           </Typography>
         )}
         <Box
@@ -340,6 +313,7 @@ CurrentEpochCard.propTypes = {
   rewards: PropTypes.array,
   vestedRewards: PropTypes.array,
   loading: PropTypes.bool,
+  pendingPeriod: PropTypes.func,
 }
 
 CurrentEpochCard.defaultProps = {

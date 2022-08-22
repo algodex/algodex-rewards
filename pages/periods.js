@@ -31,7 +31,7 @@ export default function Periods() {
   const { t } = useTranslation('periods')
   const { addresses, activeWallet } = useRewardsAddresses()
   const isConnected = addresses.length > 0
-  const { rewards, vestedRewards, loading } = usePeriodsHook({
+  const { rewards, vestedRewards, loading, pendingPeriod } = usePeriodsHook({
     activeWallet,
   })
   const context = useContext(PeriodContext)
@@ -100,6 +100,7 @@ export default function Periods() {
               loading={loading}
               rewards={rewards}
               vestedRewards={vestedRewards}
+              pendingPeriod={pendingPeriod}
               activeCurrency={activeCurrency}
               setActiveCurrency={setActiveCurrency}
             />

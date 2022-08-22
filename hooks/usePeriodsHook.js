@@ -1,5 +1,7 @@
 import { getRewardsData, getVestedRewardsData } from '@/lib/getRewards'
 import { useCallback, useEffect, useState } from 'react'
+import { getEpochEnd, getEpochStart } from '@/lib/getRewards'
+import { DateTime } from 'luxon'
 
 export const usePeriodsHook = ({ activeWallet }) => {
   const [rewards, setRewards] = useState([])
@@ -40,6 +42,24 @@ export const usePeriodsHook = ({ activeWallet }) => {
     },
   ]
 
+  const pendingPeriod = () => {
+    const curr_unix = Math.floor(Date.now() / 1000)
+    const epoch = (curr_unix - getEpochStart(1)) / 604800 + 1
+
+    const start = DateTime.fromJSDate(
+      new Date(getEpochStart(epoch) * 1000)
+    ).toLocaleString(DateTime.DATE_MED)
+
+    const end = DateTime.fromJSDate(
+      new Date(getEpochEnd(epoch) * 1000)
+    ).toLocaleString(DateTime.DATE_MED)
+
+    return {
+      date: `${start} - ${end}`,
+      number: epoch.toFixed(0),
+    }
+  }
+
   const fetchRewards = useCallback(async (wallet) => {
     setLoading(true)
     const _rewards = new Promise((resolve) => {
@@ -69,5 +89,5 @@ export const usePeriodsHook = ({ activeWallet }) => {
     }
   }, [activeWallet?.address])
 
-  return { loading, rewards, vestedRewards }
+  return { loading, rewards, vestedRewards, pendingPeriod }
 }
