@@ -51,6 +51,7 @@ export default function Home() {
     rewards,
     loading: loadingReward,
     vestedRewards,
+    pendingPeriod,
   } = usePeriodsHook({ activeWallet })
 
   return (
@@ -123,6 +124,7 @@ export default function Home() {
               loading={loadingReward}
               isMobile={isMobile}
               activeWallet={activeWallet}
+              pendingPeriod={pendingPeriod}
               vestedRewards={vestedRewards}
               minAmount={minAmount}
             />
@@ -131,7 +133,10 @@ export default function Home() {
             )}
           </Grid>
           <Grid item xs={12} sm={12} md={6} lg={8} xl={8}>
-            <EarningsChart isConnected={isConnected} isMobile={isMobile || isWebLarge} />
+            <EarningsChart
+              isConnected={isConnected}
+              isMobile={isMobile || isWebLarge}
+            />
             {isMobile && (
               <Divider sx={{ borderColor: 'primary.contrastText' }} />
             )}

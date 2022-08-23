@@ -81,7 +81,7 @@ export const PendingEpochCard = ({
               }}
             >
               <Typography fontSize={'1.1rem'} fontWeight={600}>
-                {t('Pending Period')} {pendingPeriod().number}:
+                {t('Pending Period')} {pendingPeriod()?.number}:
               </Typography>
             </Box>
             <Typography
@@ -89,7 +89,7 @@ export const PendingEpochCard = ({
               fontWeight={700}
               sx={{ color: 'secondary.light' }}
             >
-              {pendingPeriod().date}
+              {pendingPeriod()?.date}
             </Typography>
             <Box
               marginBottom={'0.5rem'}
