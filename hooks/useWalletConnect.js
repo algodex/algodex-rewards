@@ -27,28 +27,39 @@ export default function useWalletConnect(onConnect, onDisconnect) {
         console.error(ERROR.FAILED_TO_INIT)
         return
       }
-
       // Check if connection is already established
       if (!walletConnect.current.connected) {
         console.log('Creating Session')
         // create new session
         walletConnect.current.createSession()
       } else {
-        console.log('Already Connected')
-        QRCodeModal.close()
+        walletConnect.current.killSession()
+        setTimeout(() => {
+          walletConnect.current.createSession()
+        }, 1000)
       }
-      // Map the connector to the address list
-      const _addresses = walletConnect.current.accounts.map((acct) => {
-        console.log(acct)
-        return {
-          name: 'WalletConnect',
-          address: acct,
-          type: 'wallet-connect',
-          connector: walletConnect.current,
-        }
-      })
-      // setAddresses(_addresses);
-      onConnect(_addresses)
+
+      // // Check if connection is already established
+      // if (!walletConnect.current.connected) {
+      //   console.log('Creating Session')
+      //   // create new session
+      //   walletConnect.current.createSession()
+      // } else {
+      //   console.log('Already Connected')
+      //   QRCodeModal.close()
+      // }
+      // // Map the connector to the address list
+      // const _addresses = walletConnect.current.accounts.map((acct) => {
+      //   console.log(acct)
+      //   return {
+      //     name: 'WalletConnect',
+      //     address: acct,
+      //     type: 'wallet-connect',
+      //     connector: walletConnect.current,
+      //   }
+      // })
+      // // setAddresses(_addresses);
+      // onConnect(_addresses)
     } catch (e) {
       console.error(ERROR.FAILED_TO_CONNECT, e)
     }
@@ -56,6 +67,7 @@ export default function useWalletConnect(onConnect, onDisconnect) {
   const disconnect = () => {
     if (walletConnect.current.connected) {
       onDisconnect(walletConnect.current.accounts[0])
+      console.log('kill session')
       walletConnect.current.killSession()
     }
   }
@@ -75,6 +87,7 @@ export default function useWalletConnect(onConnect, onDisconnect) {
     (err) => {
       console.log('DISCONNECTED')
       if (err) throw err
+      localStorage.removeItem('walletconnect')
       onDisconnect(walletConnect.current.accounts[0])
     },
     [onDisconnect]

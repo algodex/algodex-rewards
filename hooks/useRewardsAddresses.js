@@ -92,10 +92,10 @@ export default function useRewardsAddresses() {
     async (_address) => {
       const _addresses = await addressessDb.getAddresses()
       const parsedAddresses =
-        _addresses.map(({ doc }) => JSON.parse(doc.wallet)) || []
+      _addresses.map(({ doc }) => JSON.parse(doc.wallet)) || []
+      addressessDb.removeAddress(_address)
       const _activeWallet = (await activeWalletDb.getAddresses())[0]?.doc
       const parsedActiveWallet = JSON.parse(_activeWallet?.wallet)
-      addressessDb.removeAddress(_address)
       if (parsedAddresses.length > 1) {
         const remainder = parsedAddresses.filter(
           ({ address }) => address != _address
@@ -113,7 +113,7 @@ export default function useRewardsAddresses() {
         setActiveWallet()
       }
     },
-    [addresses, activeWallet]
+    []
   )
 
   const {
@@ -255,6 +255,7 @@ export default function useRewardsAddresses() {
     myAlgoConnect,
     peraConnect,
     minAmount,
+    peraDisconnect,
     handleDisconnect,
   }
 }
