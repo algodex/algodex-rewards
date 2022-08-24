@@ -2,6 +2,11 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
+Copy .env.example to .env. Make sure Couchdb is configured properly.
+
+```
+cp .env.example .env
+```
 First, run the development server:
 
 ```bash
