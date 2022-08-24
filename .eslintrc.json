@@ -5,6 +5,8 @@
     "es2021": true,
     "node": true
   },
+  "parser": "@typescript-eslint/parser",
+
   "extends": [
     "eslint:recommended",
     "plugin:react/recommended",
@@ -12,9 +14,11 @@
     "plugin:jsx-a11y/recommended",
     "plugin:storybook/recommended",
     "next/core-web-vitals",
-    "plugin:cypress/recommended"
+    "plugin:cypress/recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
   ],
-  "plugins": ["jest"],
+  "plugins": ["jest", "@typescript-eslint"],
   "rules": {
     "semi": ["error", "never"],
     "quotes": ["error", "single"],
