@@ -10,7 +10,7 @@ interface IPerson {
   sayWorks: ()=>string 
 } 
 
-let customer:IPerson = { 
+const customer:IPerson = { 
   firstName:'Tom',
   lastName:'Hanks', 
   sayWorks: ():string =>{return 'Works'} 
