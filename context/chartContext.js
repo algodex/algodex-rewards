@@ -1,96 +1,99 @@
-import { createContext, useEffect, useMemo, useState } from 'react'
-import PropTypes from 'prop-types'
-import { usePeriodsHook } from '@/hooks/usePeriodsHook'
-import useRewardsAddresses from '@/hooks/useRewardsAddresses'
-import { getEpochEnd } from '@/lib/getRewards'
-import { DateTime } from 'luxon'
-import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
-import { getAssets } from '@/lib/getTinymanPrice'
+import { createContext, useEffect, useMemo, useState } from "react";
+import PropTypes from "prop-types";
+import { usePeriodsHook } from "@/hooks/usePeriodsHook";
+import useRewardsAddresses from "@/hooks/useRewardsAddresses";
+import { getEpochEnd } from "@/lib/getRewards";
+import { DateTime } from "luxon";
+import { usePriceConversionHook } from "@/hooks/usePriceConversionHook";
+import { getAssets } from "@/lib/getTinymanPrice";
 
-export const ChartDataContext = createContext(undefined)
+export const ChartDataContext = createContext(undefined);
 
 export function ChartDataProvider({ children }) {
   const stagesEnum = {
-    0: 'Total',
-    1: 'Mainnet Stage 1',
-    2: 'Mainnet Stage 2',
-  }
-  const now = new Date()
+    0: "Total",
+    1: "Mainnet Stage 1",
+    2: "Mainnet Stage 2",
+  };
+  const now = new Date();
   const timeRangeEnum = {
-    '1Wk': {
-      value: '1Wk',
-      name: '1 Week',
+    "1Wk": {
+      value: "1Wk",
+      name: "1 Week",
       epoch: Date.parse(
         new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7)
       ),
     },
-    '3M': {
-      value: '3M',
-      name: '3 Months',
+    "3M": {
+      value: "3M",
+      name: "3 Months",
       epoch: Date.parse(
         new Date(now.getFullYear(), now.getMonth() - 3, now.getDate())
       ),
     },
-    '1Y': {
-      value: '1Y',
-      name: '1 Year',
+    "1Y": {
+      value: "1Y",
+      name: "1 Year",
       epoch: Date.parse(
         new Date(now.getFullYear() - 1, now.getMonth(), now.getDate())
       ),
     },
-    'YTD': {
-      value: 'YTD',
-      name: 'YTD',
-      epoch: Date.parse(
-        new Date(now.getFullYear(), 0, 1)
-      ),
+    YTD: {
+      value: "YTD",
+      name: "YTD",
+      epoch: Date.parse(new Date(now.getFullYear(), 0, 1)),
     },
-  }
-  
-  const [activeRange, setActiveRange] = useState(timeRangeEnum['1Y'].value)
-  const [activeStage, setActiveStage] = useState(stagesEnum[0])
-  const [activeCurrency, setActiveCurrency] = useState('ALGX')
-  const [includeUnvested, setIncludeUnvested] = useState(false)
-  const { conversionRate } = usePriceConversionHook({})
-  const { activeWallet } = useRewardsAddresses()
-  const { rewards, vestedRewards } = usePeriodsHook({ activeWallet })
-  const [tinymanAssets, setTinymanAssets] = useState(null)
-  const [selected, setSelected] = useState(['ALL'])
+  };
+
+  const [activeRange, setActiveRange] = useState(timeRangeEnum["1Y"].value);
+  const [activeStage, setActiveStage] = useState(stagesEnum[0]);
+  const [activeCurrency, setActiveCurrency] = useState("ALGX");
+  const [includeUnvested, setIncludeUnvested] = useState(false);
+  const { conversionRate } = usePriceConversionHook({});
+  const { activeWallet } = useRewardsAddresses();
+  const { rewards, vestedRewards } = usePeriodsHook({ activeWallet });
+  const [tinymanAssets, setTinymanAssets] = useState(null);
+  const [selected, setSelected] = useState(["ALL"]);
 
   useEffect(() => {
     const getAllAssets = async () => {
-      const res = await getAssets()
-      setTinymanAssets(res)
-    }
-    getAllAssets()
-  }, [])
+      try {
+        const res = await getAssets();
+        setTinymanAssets(res);
+      } catch (error) {
+        console.error("tinymanAsset error", error);
+        getAllAssets();
+      }
+    };
+    getAllAssets();
+  }, []);
 
   const withinTimeRange = (epoch) => {
-    return epoch * 1000 >= timeRangeEnum[activeRange].epoch
-  }
+    return epoch * 1000 >= timeRangeEnum[activeRange].epoch;
+  };
 
   const withinStageData = (epoch) => {
     if (activeStage == stagesEnum[1]) {
-      return epoch <= 4
+      return epoch <= 4;
     } else if (activeStage == stagesEnum[2]) {
-      return epoch > 4
+      return epoch > 4;
     } else {
-      return true
+      return true;
     }
-  }
+  };
 
   const amoungSelected = (assetId) => {
     if (
       selected.includes(tinymanAssets[assetId].name) ||
-      selected.includes('home')
+      selected.includes("home")
     ) {
-      return true
+      return true;
     } else {
-      return false
+      return false;
     }
-  }
+  };
   const vestedChartData = useMemo(() => {
-    const data = []
+    const data = [];
     const rewardsCopy = [
       ...vestedRewards.filter(
         ({ value: { epoch, vestedUnixTime, assetId } }) =>
@@ -98,23 +101,23 @@ export function ChartDataProvider({ children }) {
           withinTimeRange(vestedUnixTime) &&
           amoungSelected(assetId)
       ),
-    ]
+    ];
 
-    rewardsCopy.sort((a, b) => a.value.epoch - b.value.epoch)
+    rewardsCopy.sort((a, b) => a.value.epoch - b.value.epoch);
     rewardsCopy.forEach(({ value }) => {
       data.push({
         time: DateTime.fromJSDate(
           new Date(value.vestedUnixTime * 1000)
-        ).toFormat('yyyy-LL-dd'),
+        ).toFormat("yyyy-LL-dd"),
         value: value.vestedRewards,
-      })
-    })
+      });
+    });
 
-    return data
-  }, [vestedRewards, activeStage, activeRange, selected])
+    return data;
+  }, [vestedRewards, activeStage, activeRange, selected]);
 
   const earnedChartData = useMemo(() => {
-    const data = []
+    const data = [];
     if (includeUnvested) {
       const rewardsCopy = [
         ...rewards.filter(
@@ -123,59 +126,59 @@ export function ChartDataProvider({ children }) {
             withinTimeRange(getEpochEnd(epoch)) &&
             amoungSelected(assetId)
         ),
-      ]
+      ];
 
-      rewardsCopy.sort((a, b) => a.value.epoch - b.value.epoch)
+      rewardsCopy.sort((a, b) => a.value.epoch - b.value.epoch);
 
       rewardsCopy.forEach(({ value }) => {
         data.push({
           time: DateTime.fromJSDate(
             new Date(getEpochEnd(value.epoch) * 1000)
-          ).toFormat('yyyy-LL-dd'),
+          ).toFormat("yyyy-LL-dd"),
           value: value.earnedRewards,
-        })
-      })
+        });
+      });
     }
-    return data
-  }, [rewards, includeUnvested, activeStage, activeRange, selected])
+    return data;
+  }, [rewards, includeUnvested, activeStage, activeRange, selected]);
 
   const attachCurrency = (price) => {
     return `${
-      activeCurrency === 'ALGX'
+      activeCurrency === "ALGX"
         ? price.toFixed(2)
         : (price * conversionRate).toFixed(2)
-    } ${activeCurrency}`
-  }
+    } ${activeCurrency}`;
+  };
 
   const assetTableData = useMemo(() => {
     const rewardsCopy = includeUnvested
       ? [
-        ...rewards.filter(
-          ({ value: { epoch } }) =>
-            withinStageData(epoch) && withinTimeRange(getEpochEnd(epoch))
-        ),
-      ]
+          ...rewards.filter(
+            ({ value: { epoch } }) =>
+              withinStageData(epoch) && withinTimeRange(getEpochEnd(epoch))
+          ),
+        ]
       : [
-        ...vestedRewards.filter(
-          ({ value: { epoch, vestedUnixTime } }) =>
-            withinStageData(epoch) && withinTimeRange(vestedUnixTime)
-        ),
-      ]
+          ...vestedRewards.filter(
+            ({ value: { epoch, vestedUnixTime } }) =>
+              withinStageData(epoch) && withinTimeRange(vestedUnixTime)
+          ),
+        ];
 
     const totalMaxRwd = rewardsCopy.find(
       ({ value: { epoch } }) =>
         epoch == Math.max(...rewardsCopy.map(({ value: { epoch } }) => epoch))
-    )
+    );
 
-    let totalDailyRwd = 0
+    let totalDailyRwd = 0;
     if (totalMaxRwd) {
       totalDailyRwd = includeUnvested
         ? totalMaxRwd.value.earnedRewards / 7
-        : totalMaxRwd.value.vestedRewards / 7
+        : totalMaxRwd.value.vestedRewards / 7;
     }
     const data = [
       {
-        asset: 'ALL',
+        asset: "ALL",
         EDRewards: attachCurrency(totalDailyRwd),
         total: attachCurrency(
           includeUnvested
@@ -183,28 +186,28 @@ export function ChartDataProvider({ children }) {
             : rewardsCopy.reduce((a, b) => a + b.value.vestedRewards, 0)
         ),
       },
-    ]
+    ];
 
-    const assets = {}
+    const assets = {};
     if (rewardsCopy.length > 0) {
       rewardsCopy.forEach(({ value }) => {
         if (assets[value.assetId]) {
-          assets[value.assetId] = [...assets[value.assetId], value]
+          assets[value.assetId] = [...assets[value.assetId], value];
         } else {
-          assets[value.assetId] = [value]
+          assets[value.assetId] = [value];
         }
-      })
+      });
     }
 
     for (const assetId in assets) {
-      const list = assets[assetId]
-      const max = Math.max(...list.map(({ epoch }) => epoch))
-      const maxRwd = list.find(({ epoch }) => epoch == max)
-      let dailyRwd = 0
+      const list = assets[assetId];
+      const max = Math.max(...list.map(({ epoch }) => epoch));
+      const maxRwd = list.find(({ epoch }) => epoch == max);
+      let dailyRwd = 0;
       if (maxRwd) {
         dailyRwd = includeUnvested
           ? maxRwd.earnedRewards / 7
-          : maxRwd.vestedRewards / 7
+          : maxRwd.vestedRewards / 7;
       }
       data.push({
         asset: tinymanAssets[assetId].name,
@@ -212,10 +215,10 @@ export function ChartDataProvider({ children }) {
         total: includeUnvested
           ? attachCurrency(list.reduce((a, b) => a + b.earnedRewards, 0))
           : attachCurrency(list.reduce((a, b) => a + b.vestedRewards, 0)),
-      })
+      });
     }
 
-    return data
+    return data;
   }, [
     rewards,
     vestedRewards,
@@ -223,30 +226,30 @@ export function ChartDataProvider({ children }) {
     activeCurrency,
     activeStage,
     activeRange,
-  ])
+  ]);
 
   const earnedAssetData = useMemo(() => {
-    const rewardsCopy = [...rewards]
-    const data = []
-    const assets = {}
+    const rewardsCopy = [...rewards];
+    const data = [];
+    const assets = {};
 
     if (rewardsCopy.length > 0) {
       rewardsCopy.forEach(({ value }) => {
         if (assets[value.assetId]) {
-          assets[value.assetId] = [...assets[value.assetId], value]
+          assets[value.assetId] = [...assets[value.assetId], value];
         } else {
-          assets[value.assetId] = [value]
+          assets[value.assetId] = [value];
         }
-      })
+      });
     }
 
     for (const assetId in assets) {
-      const list = assets[assetId]
-      const max = Math.max(...list.map(({ epoch }) => epoch))
-      const maxRwd = list.find(({ epoch }) => epoch == max)
-      let dailyRwd = 0
+      const list = assets[assetId];
+      const max = Math.max(...list.map(({ epoch }) => epoch));
+      const maxRwd = list.find(({ epoch }) => epoch == max);
+      let dailyRwd = 0;
       if (maxRwd) {
-        dailyRwd = maxRwd.earnedRewards / 7
+        dailyRwd = maxRwd.earnedRewards / 7;
       }
 
       data.push({
@@ -255,11 +258,11 @@ export function ChartDataProvider({ children }) {
         depthSum: list.reduce((a, b) => a + b.depthSum, 0) / 10080,
         assetName: tinymanAssets[assetId].name,
         assetLogo: tinymanAssets[assetId].logo?.svg,
-      })
+      });
     }
 
-    return data
-  }, [rewards, tinymanAssets])
+    return data;
+  }, [rewards, tinymanAssets]);
 
   return (
     <ChartDataContext.Provider
@@ -284,8 +287,8 @@ export function ChartDataProvider({ children }) {
     >
       {children}
     </ChartDataContext.Provider>
-  )
+  );
 }
 ChartDataProvider.propTypes = {
   children: PropTypes.node,
-}
+};

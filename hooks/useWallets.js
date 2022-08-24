@@ -1,7 +1,8 @@
 import useMyAlgoConnect from './useMyAlgoConnect'
 import useWalletConnect from './useWalletConnect'
-import { createContext, useCallback, useContext, useState } from 'react'
+import { createContext, useCallback, useContext, useState, useRef, useEffect } from 'react'
 import PropTypes from 'prop-types'
+import QRCodeModal from "algorand-walletconnect-qrcode-modal";
 
 /**
  *
@@ -24,8 +25,21 @@ function _mergeAddresses(a, b) {
 export const WalletsContext = createContext()
 export function WalletsProvider({ children }) {
   const [addresses, setAddresses] = useState([])
+  const walletConnect = useRef()
+
+  useEffect(() => {
+    const initWalletConnect = async () => {
+      const WalletConnect = (await import('@walletconnect/client')).default
+      walletConnect.current = new WalletConnect({
+        bridge: 'https://bridge.walletconnect.org', // Required
+        qrcodeModal: QRCodeModal,
+      })
+      walletConnect.current.connected = false
+    }
+    initWalletConnect()
+  }, [])
   return (
-    <WalletsContext.Provider value={[addresses, setAddresses]}>
+    <WalletsContext.Provider value={{addresses, setAddresses, walletConnect}}>
       {children}
     </WalletsContext.Provider>
   )
@@ -43,7 +57,7 @@ function useWallets(updateAddresses, removeAddress) {
   if (context === undefined) {
     throw new Error('Must be inside of a Wallets Provider')
   }
-  const [addresses, setAddresses] = context
+  const {addresses, setAddresses} = context
 
   // TODO: Account Info Query
   // Handle any Connection
