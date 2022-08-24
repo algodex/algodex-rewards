@@ -1,13 +1,5 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
-
-import WalletConnect from '@walletconnect/client'
-import QRCodeModal from 'algorand-walletconnect-qrcode-modal'
-
-const connector = new WalletConnect({
-  bridge: 'https://bridge.walletconnect.org', // Required
-  qrcodeModal: QRCodeModal,
-})
 
 // Material UI components
 import Typography from '@mui/material/Typography'
@@ -21,10 +13,13 @@ import Tooltip from '@mui/material/Tooltip'
 import { ConfirmLocationModal } from '@/components/Modals/ConfirmLocationModal'
 import { ConnectWalletPrompt } from './Modals/ConnectWalletPrompt'
 import useRewardsAddresses from '@/hooks/useRewardsAddresses'
+import { NewWalletPrompt } from './Modals/NewWalletPrompt'
+import { WalletsContext } from '@/hooks/useWallets'
 
 export const WalletDropdown = ({ screen, sx, fontSize }) => {
   const dropdownRef = useRef(null)
-  const connectorRef = useRef(connector)
+  const { walletConnect: connectorRef } = useContext(WalletsContext)
+
   const {
     addresses,
     activeWallet,
@@ -36,8 +31,10 @@ export const WalletDropdown = ({ screen, sx, fontSize }) => {
   // const addressesLength = 0
   const [showList, setShowList] = useState(false)
   const [openModal, setOpenModal] = useState(false)
+  const [newWalletPrompt, setNewWalletPrompt] = useState(false)
   const [connectWalletModal, setConnectWalletModal] = useState(false)
   const [tooltiptext, setTooltiptext] = useState('Click to Copy')
+  const [addressToDisconnect, setAddressToDisconnect] = useState()
 
   const formattedAddresses = useMemo(() => {
     const copy = [...addresses]
@@ -53,7 +50,7 @@ export const WalletDropdown = ({ screen, sx, fontSize }) => {
     return copy
   }, [addresses, activeWallet])
 
-  const addWallet = () => {
+  const toggleWalletModal = () => {
     setConnectWalletModal(!connectWalletModal)
   }
 
@@ -72,24 +69,15 @@ export const WalletDropdown = ({ screen, sx, fontSize }) => {
     if (type == 'myalgo') {
       myAlgoConnect()
     } else {
-      peraConnect()
+      // Check if connection is already established
+      if (!connectorRef.current.connected) {
+        peraConnect()
+      } else {
+        setNewWalletPrompt(true)
+        setAddressToDisconnect(connectorRef.current._accounts[0])
+      }
     }
   }
-
-  useEffect(() => {
-    // eslint-disable-next-line max-len
-    // This useEffect is necessary because when getting the wallet from localStorage the sendCustomRequest method is undefined
-    // rerunning peraConnect reAttaches the signing method to the connector.
-    if (
-      activeWallet?.type === 'wallet-connect' &&
-      typeof activeWallet.connector.sendCustomRequest === 'undefined'
-    ) {
-      setActiveWallet({
-        ...activeWallet,
-        connector: connectorRef.current,
-      })
-    }
-  }, [activeWallet])
 
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -134,7 +122,7 @@ export const WalletDropdown = ({ screen, sx, fontSize }) => {
           if (addressesLength < 1) {
             toggleModal()
           } else if (screen == 'wallet') {
-            addWallet()
+            toggleWalletModal()
           } else {
             setShowList(!showList)
           }
@@ -214,7 +202,7 @@ export const WalletDropdown = ({ screen, sx, fontSize }) => {
                     fontWeight={700}
                     // marginLeft={'auto'}
                     paddingBlock={screen == 'wallet' ? 0 : '1rem'}
-                    onClick={addWallet}
+                    onClick={toggleWalletModal}
                   >
                     Add Another Wallet
                   </Typography>
@@ -246,9 +234,15 @@ export const WalletDropdown = ({ screen, sx, fontSize }) => {
         handleClose={toggleModal}
         connectWallet={connectWallet}
       />
+      <NewWalletPrompt
+        open={newWalletPrompt}
+        handleClose={() => setNewWalletPrompt(false)}
+        address={addressToDisconnect}
+        type={'walletconnect'}
+      />
       <Modal
         open={connectWalletModal}
-        onClose={addWallet}
+        onClose={toggleWalletModal}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
         sx={{
@@ -271,7 +265,7 @@ export const WalletDropdown = ({ screen, sx, fontSize }) => {
         >
           <ConnectWalletPrompt
             connectWallet={(e) => {
-              addWallet()
+              toggleWalletModal()
               connectWallet(e)
             }}
           />

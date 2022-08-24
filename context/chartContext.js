@@ -38,15 +38,13 @@ export function ChartDataProvider({ children }) {
         new Date(now.getFullYear() - 1, now.getMonth(), now.getDate())
       ),
     },
-    'YTD': {
+    YTD: {
       value: 'YTD',
       name: 'YTD',
-      epoch: Date.parse(
-        new Date(now.getFullYear(), 0, 1)
-      ),
+      epoch: Date.parse(new Date(now.getFullYear(), 0, 1)),
     },
   }
-  
+
   const [activeRange, setActiveRange] = useState(timeRangeEnum['1Y'].value)
   const [activeStage, setActiveStage] = useState(stagesEnum[0])
   const [activeCurrency, setActiveCurrency] = useState('ALGX')
@@ -59,8 +57,13 @@ export function ChartDataProvider({ children }) {
 
   useEffect(() => {
     const getAllAssets = async () => {
-      const res = await getAssets()
-      setTinymanAssets(res)
+      try {
+        const res = await getAssets()
+        setTinymanAssets(res)
+      } catch (error) {
+        console.error('tinymanAsset error', error)
+        getAllAssets()
+      }
     }
     getAllAssets()
   }, [])

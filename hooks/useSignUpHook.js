@@ -1,7 +1,9 @@
 import { signUpForRewards } from '@/lib/send_transaction'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
+import { WalletsContext } from './useWallets'
 
 export const useSignUpHook = ({ setWalletSignedUp, activeWallet }) => {
+  const { walletConnect } = useContext(WalletsContext)
   const [actionStatus, setActionStatus] = useState({
     message: '',
     success: false,
@@ -11,7 +13,13 @@ export const useSignUpHook = ({ setWalletSignedUp, activeWallet }) => {
 
   const signUp = async () => {
     setLoading(true)
-    const response = await signUpForRewards(activeWallet)
+    const response = await signUpForRewards({
+      ...activeWallet,
+      connector:
+        walletConnect.current?.accounts[0] == activeWallet.address
+          ? walletConnect.current
+          : null,
+    })
     setLoading(false)
     console.debug(response)
     if (response instanceof Error) {
@@ -27,12 +35,12 @@ export const useSignUpHook = ({ setWalletSignedUp, activeWallet }) => {
         })
       } else if (
         /disconnected/.test(response) ||
-        /connector.sendCustomRequest is not a function/.test(response)
+        /Cannot read properties of null/.test(response)
       ) {
         setActionStatus({
           message:
             // eslint-disable-next-line max-len
-            'This wallet is disconnected, please refresh this page or kindly reconnect wallet and try again',
+            'This wallet is disconnected, kindly reconnect wallet and try again',
           success: false,
         })
       } else if (/Network mismatch between dApp and Wallet/.test(response)) {

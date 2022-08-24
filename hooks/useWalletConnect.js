@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useContext, useEffect, useRef } from 'react'
 
 import QRCodeModal from 'algorand-walletconnect-qrcode-modal'
+import { WalletsContext } from './useWallets'
 const ERROR = {
   FAILED_TO_INIT: 'WalletConnect Wallet failed to initialize.',
   FAILED_TO_CONNECT: 'WalletConnect Wallet failed to connect.',
@@ -13,42 +14,29 @@ const ERROR = {
  * @return {object}
  */
 export default function useWalletConnect(onConnect, onDisconnect) {
-  // const [addresses, setAddresses] = useState([]);
   /**
    * Instance referenc
    */
-  const walletConnect = useRef()
-
+  // const walletConnect = useRef()
+  const { walletConnect } = useContext(WalletsContext)
   const connect = async () => {
-    console.log('Connecting')
     try {
       // Something went wrong!
       if (!walletConnect.current) {
         console.error(ERROR.FAILED_TO_INIT)
         return
       }
-
       // Check if connection is already established
       if (!walletConnect.current.connected) {
         console.log('Creating Session')
         // create new session
         walletConnect.current.createSession()
       } else {
-        console.log('Already Connected')
-        QRCodeModal.close()
+        walletConnect.current.killSession()
+        setTimeout(() => {
+          walletConnect.current.createSession()
+        }, 1000)
       }
-      // Map the connector to the address list
-      const _addresses = walletConnect.current.accounts.map((acct) => {
-        console.log(acct)
-        return {
-          name: 'WalletConnect',
-          address: acct,
-          type: 'wallet-connect',
-          connector: walletConnect.current,
-        }
-      })
-      // setAddresses(_addresses);
-      onConnect(_addresses)
     } catch (e) {
       console.error(ERROR.FAILED_TO_CONNECT, e)
     }
@@ -59,22 +47,12 @@ export default function useWalletConnect(onConnect, onDisconnect) {
       walletConnect.current.killSession()
     }
   }
-  useEffect(() => {
-    const initWalletConnect = async () => {
-      const WalletConnect = (await import('@walletconnect/client')).default
-      walletConnect.current = new WalletConnect({
-        bridge: 'https://bridge.walletconnect.org', // Required
-        qrcodeModal: QRCodeModal,
-      })
-      walletConnect.current.connected = false
-    }
-    initWalletConnect()
-  }, [])
 
   const handleDisconnect = useCallback(
     (err) => {
       console.log('DISCONNECTED')
       if (err) throw err
+      localStorage.removeItem('walletconnect')
       onDisconnect(walletConnect.current.accounts[0])
     },
     [onDisconnect]
@@ -99,7 +77,6 @@ export default function useWalletConnect(onConnect, onDisconnect) {
       connector: walletConnect.current,
       address: acct,
     }))
-    console.log('connected here')
     onConnect(_addresses)
     QRCodeModal.close()
   }
