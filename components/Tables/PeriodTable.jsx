@@ -195,7 +195,7 @@ export const PeriodTable = ({
                         <TableLoader columnCount={5} />
                       ) : (
                         <TableBody>
-                          {currentPeriod.reverse().map((row) => {
+                          {currentPeriod.map((row) => {
                             return (
                               <TableRow
                                 hover
@@ -268,7 +268,7 @@ export const PeriodTable = ({
                     <TableLoader columnCount={5} />
                   ) : (
                     <TableBody>
-                      {mergedRewards.reverse().map((row) => {
+                      {mergedRewards.map((row) => {
                         return (
                           <TableRow
                             hover
