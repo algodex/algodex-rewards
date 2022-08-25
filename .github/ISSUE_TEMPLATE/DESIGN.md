@@ -1,7 +1,7 @@
 ---
 name: 🎨 Design New Feature 
 about: Design a new feature(🎨) for the project
-title: '🎨 Feature: '
+title: 'Feature: '
 labels: 'design'
 assignees: 'stephclarkga'
 ---
