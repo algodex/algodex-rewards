@@ -24,7 +24,7 @@ export const PendingEpochCard = ({
 }) => {
   const { t } = useTranslation('index')
   const { t: tc } = useTranslation('common')
-  console.log(rewards)
+
   const currentPeriod = useMemo(() => {
     // return a reward whose epoch is current.
     const newR = rewards.filter(
@@ -94,8 +94,8 @@ export const PendingEpochCard = ({
             />
             <Box marginBottom={'2rem'}>
               <Typography fontSize={'0.8rem'} fontWeight={600}>
-                Wallet {shortenAddress(activeWallet)} {tc('is')}{' '}
-                {currentPeriod.length == 0 && <>{tc('NOT')} </>}
+                Wallet {activeWallet?.address && shortenAddress(activeWallet)}{' '}
+                {tc('is')} {currentPeriod.length == 0 && <>{tc('NOT')} </>}
                 {tc(
                   // eslint-disable-next-line max-len
                   'currently earning rewards for this period. Number of rewards will be updated when they are paid out'
