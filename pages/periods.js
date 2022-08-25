@@ -82,6 +82,7 @@ export default function Periods() {
               loading={loading}
               rewards={rewards}
               vestedRewards={vestedRewards}
+              pendingPeriod={pendingPeriod}
               activeCurrency={activeCurrency}
               activeWallet={activeWallet}
             />

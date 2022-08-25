@@ -38,7 +38,7 @@ const styles = {
   },
 }
 
-export const EarningsChart = ({ isConnected, isMobile }) => {
+export const EarningsChart = ({ isConnected, isMobile, isHome }) => {
   const { t } = useTranslation('common')
   const context = useContext(ChartDataContext)
   if (context === undefined) {
@@ -62,7 +62,7 @@ export const EarningsChart = ({ isConnected, isMobile }) => {
 
   useEffect(() => {
     const assets = assetTableData.map(({ asset }) => asset)
-    if (selected.includes('ALL')) {
+    if (selected.includes('ALL') || isHome) {
       setSelected(assets)
     }
   }, [assetTableData])
@@ -237,6 +237,7 @@ export const EarningsChart = ({ isConnected, isMobile }) => {
 EarningsChart.propTypes = {
   isConnected: PropTypes.bool,
   isMobile: PropTypes.bool,
+  isHome: PropTypes.bool
 }
 
 EarningsChart.defaultProps = {

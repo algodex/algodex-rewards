@@ -49,5 +49,14 @@
   "Current Period": "Current Period",
   "You can select a period from this list to view more information": "You can select a period from this list to view more information",
   "Previous Periods": "Previous Periods",
-  "Select Assets to Include in Chart": "Select Assets to Include in Chart"
+  "Select Assets to Include in Chart": "Select Assets to Include in Chart",
+  "currently earning rewards for this period. Number of rewards will be updated when they are paid out": "currently earning rewards for this period. Number of rewards will be updated when they are paid out",
+  "is": "is",
+  "NOT": "NOT",
+  "You have an active walletconnect session, do you want to disconnect the current session to connect another":"You have an active walletconnect session, do you want to disconnect the current session to connect another",
+  "Close": "Close",
+  "Connect new": "Connect new",
+  "Active Session": "Active Session",
+  "View breakdown of earning and vesting of ALGX from each period here": "View breakdown of earning and vesting of ALGX from each period here",
+  "Rewards have been paid out through Period": "Rewards have been paid out through Period"
 }

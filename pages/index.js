@@ -121,11 +121,9 @@ export default function Home() {
             <PendingEpochCard
               isConnected={isConnected}
               rewards={rewards}
-              loading={loadingReward}
+              pendingPeriod={pendingPeriod}
               isMobile={isMobile}
               activeWallet={activeWallet}
-              pendingPeriod={pendingPeriod}
-              vestedRewards={vestedRewards}
               minAmount={minAmount}
             />
             {isMobile && (
@@ -136,6 +134,7 @@ export default function Home() {
             <EarningsChart
               isConnected={isConnected}
               isMobile={isMobile || isWebLarge}
+              isHome={true}
             />
             {isMobile && (
               <Divider sx={{ borderColor: 'primary.contrastText' }} />

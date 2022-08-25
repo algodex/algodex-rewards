@@ -48,6 +48,7 @@ export const PeriodTable = ({
   loading,
   rewards,
   vestedRewards,
+  pendingPeriod,
   activeCurrency,
   activeWallet,
 }) => {
@@ -55,13 +56,6 @@ export const PeriodTable = ({
   const { conversionRate } = usePriceConversionHook({})
   const context = useContext(PeriodContext)
   const { setPeriodAssets, tinymanAssets } = context
-
-  const getLastWeekEpoch = () => {
-    const now = new Date()
-    return Date.parse(
-      new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7)
-    )
-  }
 
   const attachCurrency = (price) => {
     return `${(activeCurrency === 'ALGX'
@@ -95,12 +89,12 @@ export const PeriodTable = ({
   }, [rewards, vestedRewards])
 
   const currentPeriod = useMemo(() => {
-    // Find a reward whose epoch is not over a week from now
+    // return a reward whose epoch is current.
     const newR = Object.values(mergedRewards).filter(
-      (epoch) => getEpochEnd(epoch[0]) * 1000 > getLastWeekEpoch()
+      (epoch) => epoch === pendingPeriod().number
     )
     return newR || []
-  }, [mergedRewards])
+  }, [mergedRewards, pendingPeriod])
 
   useEffect(() => {
     setPeriodAssets([])
@@ -201,7 +195,7 @@ export const PeriodTable = ({
                         <TableLoader columnCount={5} />
                       ) : (
                         <TableBody>
-                          {currentPeriod.map((row) => {
+                          {currentPeriod.reverse().map((row) => {
                             return (
                               <TableRow
                                 hover
@@ -274,7 +268,7 @@ export const PeriodTable = ({
                     <TableLoader columnCount={5} />
                   ) : (
                     <TableBody>
-                      {mergedRewards.map((row) => {
+                      {mergedRewards.reverse().map((row) => {
                         return (
                           <TableRow
                             hover
@@ -323,6 +317,7 @@ PeriodTable.propTypes = {
   isConnected: PropTypes.bool,
   loading: PropTypes.bool,
   rewards: PropTypes.array,
+  pendingPeriod: PropTypes.func,
   vestedRewards: PropTypes.array,
   activeWallet: PropTypes.object,
 }

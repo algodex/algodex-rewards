@@ -49,5 +49,14 @@
   "Current Period": "Período actual",
   "You can select a period from this list to view more information": "Puede seleccionar un período de esta lista para ver más información",
   "Previous Periods": "Períodos anteriores",
-  "Select Assets to Include in Chart": "Seleccionar activos para incluir en el gráfico"
+  "Select Assets to Include in Chart": "Seleccionar activos para incluir en el gráfico",
+  "currently earning rewards for this period. Number of rewards will be updated when they are paid out": "actualmente ganando recompensas por este período. El número de recompensas se actualizará cuando se paguen",
+  "is": "es",
+  "NOT": "NO",
+  "You have an active walletconnect session, do you want to disconnect the current session to connect another":"Tienes una sesión activa de walletconnect, ¿quieres desconectar la sesión actual para conectar otra?",
+  "Close": "Cerca",
+  "Connect new": "Conectar nueva",
+  "Active Session": "Sesión activa",
+  "View breakdown of earning and vesting of ALGX from each period here": "Vea el desglose de ganancias y derechos de ALGX de cada período aquí",
+  "Rewards have been paid out through Period": "Las recompensas se han pagado a través del período"
 }

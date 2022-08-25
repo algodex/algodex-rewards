@@ -85,13 +85,14 @@ export function ChartDataProvider({ children }) {
   const amoungSelected = (assetId) => {
     if (
       selected.includes(tinymanAssets[assetId].name) ||
-      selected.includes('home')
+      selected.includes('ALL')
     ) {
       return true
     } else {
       return false
     }
   }
+
   const vestedChartData = useMemo(() => {
     const data = []
     const rewardsCopy = [
@@ -102,7 +103,6 @@ export function ChartDataProvider({ children }) {
           amoungSelected(assetId)
       ),
     ]
-
     rewardsCopy.sort((a, b) => a.value.epoch - b.value.epoch)
     rewardsCopy.forEach(({ value }) => {
       data.push({
@@ -112,7 +112,6 @@ export function ChartDataProvider({ children }) {
         value: value.vestedRewards,
       })
     })
-
     return data
   }, [vestedRewards, activeStage, activeRange, selected])
 
