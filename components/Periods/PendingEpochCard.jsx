@@ -83,15 +83,15 @@ export const PendingEpochCard = ({
             </Typography>
           </Box>
         </Box>
-        <Box sx={{ display: 'flex' }}>
-          <CheckCircleOutlineIcon
-            sx={{
-              marginRight: '6px',
-              fontSize: '1.2rem',
-              marginTop: '2px',
-            }}
-          />
-          {isConnected ? (
+        {isConnected ? (
+          <Box sx={{ display: 'flex' }}>
+            <CheckCircleOutlineIcon
+              sx={{
+                marginRight: '6px',
+                fontSize: '1.2rem',
+                marginTop: '2px',
+              }}
+            />
             <Box marginBottom={'2rem'}>
               <Typography fontSize={'0.8rem'} fontWeight={600}>
                 Wallet {shortenAddress(activeWallet)} {tc('is')}{' '}
@@ -115,24 +115,23 @@ export const PendingEpochCard = ({
                 )}
               </Typography>
             </Box>
-          ) : (
-            <Typography
-              fontSize={'0.85rem'}
-              fontWeight={500}
-              textAlign={'right'}
-              sx={{
-                color: 'secondary.light',
-                width: '7rem',
-                textAlign: 'center',
-                marginTop: '-2rem',
-              }}
-            >
-              {t(
-                'Connect a wallet to see your pending rewards for each period'
-              )}
-            </Typography>
-          )}
-        </Box>
+          </Box>
+        ) : (
+          <Typography
+            fontSize={'0.85rem'}
+            fontWeight={500}
+            textAlign={'right'}
+            sx={{
+              color: 'secondary.light',
+              width: '80%',
+              textAlign: 'center',
+              marginBottom: '1rem',
+              marginInline:'auto'
+            }}
+          >
+            {t('Connect a wallet to see your pending rewards for each period')}
+          </Typography>
+        )}
         <Box sx={{ display: 'flex' }}>
           <InfoRoundedIcon
             sx={{
