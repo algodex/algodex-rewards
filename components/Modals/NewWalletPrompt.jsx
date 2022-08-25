@@ -79,8 +79,11 @@ export const NewWalletPrompt = ({ open, handleClose, address, type }) => {
           fontSize="1rem"
           marginBottom={'1.5rem'}
         >
-          You have an active walletconnect session, do you want to disconnect
-          the current session to connect another?
+          {t(
+            // eslint-disable-next-line max-len
+            'You have an active walletconnect session, do you want to disconnect the current session to connect another'
+          )}
+          ?
         </Typography>
 
         <Box sx={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>

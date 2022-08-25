@@ -6,50 +6,40 @@ import { useTranslation } from 'next-i18next'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import CircularProgress from '@mui/material/CircularProgress'
 import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded'
 import InfoRoundedIcon from '@mui/icons-material/InfoRounded'
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
 
 // Custom Component and hooks
 import Link from '../Nav/Link'
 import { WarningCard } from '../WarningCard'
-import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
-import { getEpochEnd } from '@/lib/getRewards'
 
 export const PendingEpochCard = ({
   isConnected,
   rewards,
-  vestedRewards,
   pendingPeriod,
-  loading,
   isMobile,
   activeWallet,
   minAmount,
 }) => {
   const { t } = useTranslation('index')
   const { t: tc } = useTranslation('common')
-  const getLastWeekEpoch = () => {
-    const now = new Date()
-    return Date.parse(
-      new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7)
+  console.log(rewards)
+  const currentPeriod = useMemo(() => {
+    // return a reward whose epoch is current.
+    const newR = rewards.filter(
+      ({ value: { epoch } }) => epoch >= pendingPeriod().number
     )
+    return newR || []
+  }, [rewards, pendingPeriod])
+
+  const shortenAddress = ({ address }) => {
+    const list = address.split('')
+    const first = list.slice(0, 6)
+    const last = list.slice(list.length - 6, list.length)
+    return `${first.join('')}...${last.join('')}`
   }
 
-  const newReward = useMemo(() => {
-    // Find a reward whose epoch is not over a week from now
-    const newR = rewards.find(
-      ({ value }) => getEpochEnd(value.epoch) * 1000 > getLastWeekEpoch()
-    )
-    return newR
-  }, [rewards])
-
-  const vestedReward = useMemo(() => {
-    return vestedRewards.reduce((a, b) => {
-      return a + b.value.vestedRewards
-    }, 0)
-  }, [vestedRewards])
-
-  const { conversionRate } = usePriceConversionHook({})
   return (
     <>
       <Box
@@ -85,160 +75,126 @@ export const PendingEpochCard = ({
               </Typography>
             </Box>
             <Typography
-              fontSize={'0.85rem'}
+              fontSize={'0.8rem'}
               fontWeight={700}
-              sx={{ color: 'secondary.light' }}
+              sx={{ color: 'secondary.light', marginBottom: '1rem' }}
             >
               {pendingPeriod()?.date}
             </Typography>
-            <Box
-              marginBottom={'0.5rem'}
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Typography fontSize={'0.95rem'} fontWeight={600}>
-                {t('New Rewards')}:
-              </Typography>
-
-              {isConnected && (
-                <Box>
-                  {loading ? (
-                    <>
-                      <CircularProgress size={'1rem'} />
-                    </>
-                  ) : (
-                    <>
-                      <Typography
-                        fontSize={'1rem'}
-                        fontWeight={600}
-                        textAlign={'right'}
-                      >
-                        {(
-                          newReward?.value?.earnedRewards || 0
-                        ).toLocaleString()}{' '}
-                        ALGX
-                      </Typography>
-                      <Typography
-                        fontSize={'0.85rem'}
-                        fontWeight={700}
-                        textAlign={'right'}
-                        sx={{ color: 'secondary.light' }}
-                      >
-                        {(
-                          (newReward?.value?.earnedRewards || 0) *
-                          conversionRate
-                        ).toLocaleString()}{' '}
-                        USD
-                      </Typography>
-                    </>
-                  )}
-                </Box>
-              )}
-            </Box>
-            <Box
-              marginBottom={'2rem'}
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Typography fontSize={'0.95rem'} fontWeight={600}>
-                {t('Vested Rewards')}:
-              </Typography>
-
-              {isConnected ? (
-                <Box>
-                  {loading ? (
-                    <>
-                      <CircularProgress size={'1rem'} />
-                    </>
-                  ) : (
-                    <>
-                      <Typography
-                        fontSize={'1rem'}
-                        fontWeight={600}
-                        textAlign={'right'}
-                      >
-                        {vestedReward.toLocaleString()} ALGX
-                      </Typography>
-
-                      <Typography
-                        fontSize={'0.85rem'}
-                        fontWeight={700}
-                        textAlign={'right'}
-                        sx={{ color: 'secondary.light' }}
-                      >
-                        {(vestedReward * conversionRate).toLocaleString()} USD
-                      </Typography>
-                    </>
-                  )}
-                </Box>
-              ) : (
-                <Typography
-                  fontSize={'0.85rem'}
-                  fontWeight={500}
-                  textAlign={'right'}
-                  sx={{
-                    color: 'secondary.light',
-                    width: '7rem',
-                    textAlign: 'center',
-                    marginTop: '-2rem',
-                  }}
-                >
-                  {t(
-                    'Connect a wallet to see your pending rewards for each period'
-                  )}
-                </Typography>
-              )}
-            </Box>
           </Box>
         </Box>
-        <>
-          <Box sx={{ display: 'flex' }}>
-            <InfoRoundedIcon
-              sx={{
-                marginRight: '6px',
-                fontSize: '1.2rem',
-                marginTop: '2px',
-              }}
-            />
+        <Box sx={{ display: 'flex' }}>
+          <CheckCircleOutlineIcon
+            sx={{
+              marginRight: '6px',
+              fontSize: '1.2rem',
+              marginTop: '2px',
+            }}
+          />
+          {isConnected ? (
+            <Box marginBottom={'2rem'}>
+              <Typography fontSize={'0.8rem'} fontWeight={600}>
+                Wallet {shortenAddress(activeWallet)} {tc('is')}{' '}
+                {currentPeriod.length == 0 && <>{tc('NOT')} </>}
+                {tc(
+                  // eslint-disable-next-line max-len
+                  'currently earning rewards for this period. Number of rewards will be updated when they are paid out'
+                )}
+                .
+              </Typography>
+
+              <Typography
+                variant="p"
+                fontSize={'0.8rem'}
+                fontStyle={'italic'}
+                sx={{ color: 'secondary.light' }}
+              >
+                {tc(
+                  // eslint-disable-next-line max-len
+                  'Rewards will be paid out within two days after the end of one-week accrual periods'
+                )}
+              </Typography>
+            </Box>
+          ) : (
             <Typography
-              variant="p"
-              fontSize={'0.9rem'}
-              fontWeight={600}
-              sx={{ textDecoration: 'underline', marginBottom: '0.7rem' }}
+              fontSize={'0.85rem'}
+              fontWeight={500}
+              textAlign={'right'}
+              sx={{
+                color: 'secondary.light',
+                width: '7rem',
+                textAlign: 'center',
+                marginTop: '-2rem',
+              }}
             >
-              {tc('How are Rewards Calculated?')}
+              {t(
+                'Connect a wallet to see your pending rewards for each period'
+              )}
             </Typography>
-          </Box>
+          )}
+        </Box>
+        <Box sx={{ display: 'flex' }}>
+          <InfoRoundedIcon
+            sx={{
+              marginRight: '6px',
+              fontSize: '1.2rem',
+              marginTop: '2px',
+            }}
+          />
           <Typography
             variant="p"
+            fontSize={'0.9rem'}
+            fontWeight={600}
+            sx={{ textDecoration: 'underline', marginBottom: '0.7rem' }}
+          >
+            {tc('How are Rewards Calculated?')}
+          </Typography>
+        </Box>
+      </Box>
+      {rewards.length > 0 && (
+        <Box
+          sx={{
+            backgroundColor: 'secondary.dark',
+            color: 'primary.contrastText',
+            borderRadius: '3px',
+            padding: '0.7rem 1rem',
+            marginBlock: '1.2rem',
+            border: '1px solid',
+            borderColor: 'secondary.light2',
+          }}
+        >
+          <Typography
             fontSize={'0.8rem'}
+            fontWeight={700}
+            marginBottom={'.3rem'}
+          >
+            {t('Rewards have been paid out through Period')}:{' '}
+            {Math.max(...rewards.map(({ value }) => value.epoch))}
+          </Typography>
+          <Typography
+            variant="p"
+            fontSize={'0.7rem'}
             fontStyle={'italic'}
-            marginLeft={'0.5rem'}
+            sx={{ color: 'secondary.light' }}
           >
             {tc(
-              'Rewards will be paid out within two days after the end of one-week accrual periods'
+              'View breakdown of earning and vesting of ALGX from each period here'
             )}
+            :
           </Typography>
-
-          {rewards.length > 0 && (
-            <Box textAlign={'center'} marginTop={'1.5rem'}>
-              <Link href="/periods" sx={{ textDecoration: 'none' }}>
-                <Button
-                  variant="outlined"
-                  disabled={!isConnected}
-                  sx={{ borderWidth: '1px' }}
-                >
-                  {t('View Past Periods')}
-                </Button>
-              </Link>
-            </Box>
-          )}
-        </>
-      </Box>
+          <Box textAlign={'center'} marginTop={'1rem'}>
+            <Link href="/periods" sx={{ textDecoration: 'none' }}>
+              <Button
+                variant="outlined"
+                disabled={!isConnected}
+                sx={{ borderWidth: '1px' }}
+              >
+                {t('View Past Periods')}
+              </Button>
+            </Link>
+          </Box>
+        </Box>
+      )}
 
       {isConnected && isMobile && activeWallet?.amount < minAmount && (
         <WarningCard
@@ -257,9 +213,7 @@ export const PendingEpochCard = ({
 
 PendingEpochCard.propTypes = {
   isConnected: PropTypes.bool,
-  loading: PropTypes.bool,
   rewards: PropTypes.array,
-  vestedRewards: PropTypes.array,
   isMobile: PropTypes.bool,
   activeWallet: PropTypes.object,
   minAmount: PropTypes.number,
@@ -269,5 +223,4 @@ PendingEpochCard.propTypes = {
 PendingEpochCard.defaultProps = {
   isConnected: false,
   rewards: [],
-  vestedRewards: [],
 }

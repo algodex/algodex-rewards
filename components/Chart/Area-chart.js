@@ -130,7 +130,11 @@ export default function AreaChart({ isConnected }) {
   ])
 
   useEffect(() => {
-    if (isConnected && vestedChartData.length < 1) {
+    if (
+      isConnected &&
+      earnedChartData.length > 0 &&
+      vestedChartData.length < 1
+    ) {
       setIncludeUnvested(true)
     }
   }, [isConnected])
