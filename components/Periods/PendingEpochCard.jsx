@@ -126,7 +126,7 @@ export const PendingEpochCard = ({
               width: '80%',
               textAlign: 'center',
               marginBottom: '1rem',
-              marginInline:'auto'
+              marginInline: 'auto',
             }}
           >
             {t('Connect a wallet to see your pending rewards for each period')}
