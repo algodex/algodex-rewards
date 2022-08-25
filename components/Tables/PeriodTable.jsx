@@ -173,7 +173,7 @@ export const PeriodTable = ({
                   </Typography>
                   <TableContainer sx={{ maxHeight: 440 }}>
                     <Table stickyHeader aria-label="sticky table">
-                      {!loading && currentPeriod.length > 0 && (
+                      {(loading || currentPeriod.length > 0) && (
                         <TableHead>
                           <TableRow>
                             {columns.map((column) => (
@@ -246,7 +246,7 @@ export const PeriodTable = ({
               </Typography>
               <TableContainer sx={{ maxHeight: 440 }}>
                 <Table stickyHeader aria-label="sticky table">
-                  {!loading && mergedRewards.length > 0 && (
+                  {(loading || mergedRewards.length > 0) && (
                     <TableHead>
                       <TableRow>
                         {columns.map((column) => (
