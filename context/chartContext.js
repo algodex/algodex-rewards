@@ -48,7 +48,7 @@ export function ChartDataProvider({ children }) {
   const [activeRange, setActiveRange] = useState(timeRangeEnum['1Y'].value)
   const [activeStage, setActiveStage] = useState(stagesEnum[0])
   const [activeCurrency, setActiveCurrency] = useState('ALGX')
-  const [includeUnvested, setIncludeUnvested] = useState(false)
+  const [includeUnvested, setIncludeUnvested] = useState(true)
   const { conversionRate } = usePriceConversionHook({})
   const { activeWallet } = useRewardsAddresses()
   const { rewards, vestedRewards } = usePeriodsHook({ activeWallet })
@@ -150,7 +150,8 @@ export function ChartDataProvider({ children }) {
   }
 
   const assetTableData = useMemo(() => {
-    const rewardsCopy = includeUnvested
+    let _includeUnvested = includeUnvested
+    let rewardsCopy = includeUnvested
       ? [
         ...rewards.filter(
           ({ value: { epoch } }) =>
@@ -163,6 +164,17 @@ export function ChartDataProvider({ children }) {
             withinStageData(epoch) && withinTimeRange(vestedUnixTime)
         ),
       ]
+    // eslint-disable-next-line max-len
+    // If includeUnvested and earnedRewards has no data for the current filter, replace with vestedRewards data
+    if (rewardsCopy.length < 1 && _includeUnvested) {
+      _includeUnvested = false
+      rewardsCopy = [
+        ...vestedRewards.filter(
+          ({ value: { epoch, vestedUnixTime } }) =>
+            withinStageData(epoch) && withinTimeRange(vestedUnixTime)
+        ),
+      ]
+    }
 
     const totalMaxRwd = rewardsCopy.find(
       ({ value: { epoch } }) =>
@@ -171,7 +183,7 @@ export function ChartDataProvider({ children }) {
 
     let totalDailyRwd = 0
     if (totalMaxRwd) {
-      totalDailyRwd = includeUnvested
+      totalDailyRwd = _includeUnvested
         ? totalMaxRwd.value.earnedRewards / 7
         : totalMaxRwd.value.vestedRewards / 7
     }
@@ -180,7 +192,7 @@ export function ChartDataProvider({ children }) {
         asset: 'ALL',
         EDRewards: attachCurrency(totalDailyRwd),
         total: attachCurrency(
-          includeUnvested
+          _includeUnvested
             ? rewardsCopy.reduce((a, b) => a + b.value.earnedRewards, 0)
             : rewardsCopy.reduce((a, b) => a + b.value.vestedRewards, 0)
         ),
@@ -204,14 +216,14 @@ export function ChartDataProvider({ children }) {
       const maxRwd = list.find(({ epoch }) => epoch == max)
       let dailyRwd = 0
       if (maxRwd) {
-        dailyRwd = includeUnvested
+        dailyRwd = _includeUnvested
           ? maxRwd.earnedRewards / 7
           : maxRwd.vestedRewards / 7
       }
       data.push({
         asset: tinymanAssets[assetId].name,
         EDRewards: attachCurrency(dailyRwd),
-        total: includeUnvested
+        total: _includeUnvested
           ? attachCurrency(list.reduce((a, b) => a + b.earnedRewards, 0))
           : attachCurrency(list.reduce((a, b) => a + b.vestedRewards, 0)),
       })

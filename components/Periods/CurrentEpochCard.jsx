@@ -12,7 +12,8 @@ import CircularProgress from '@mui/material/CircularProgress'
 
 // custom hook and libs
 import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
-import { getEpochEnd } from '@/lib/getRewards'
+import { getEpochEnd, getEpochStart } from '@/lib/getRewards'
+import { DateTime } from 'luxon'
 
 const styles = {
   selectorContainer: {
@@ -46,7 +47,6 @@ export const CurrentEpochCard = ({
   loading,
   activeCurrency,
   setActiveCurrency,
-  pendingPeriod,
 }) => {
   const { t } = useTranslation('common')
   const getLastWeekEpoch = () => {
@@ -88,6 +88,31 @@ export const CurrentEpochCard = ({
     ).toLocaleString()} ${activeCurrency}`
   }
 
+  const completedPeriod = useMemo(() => {
+    if (rewards.length > 0) {
+      const maxEpoch = Math.max(
+        ...rewards.map(({ value: { epoch } }) => epoch)
+      )
+      const start = DateTime.fromJSDate(
+        new Date(getEpochStart(maxEpoch) * 1000)
+      ).toLocaleString(DateTime.DATE_MED)
+
+      const end = DateTime.fromJSDate(
+        new Date(getEpochEnd(maxEpoch) * 1000)
+      ).toLocaleString(DateTime.DATE_MED)
+
+      return {
+        date: `${start} - ${end}`,
+        number: maxEpoch.toFixed(0),
+      }
+    } else {
+      return {
+        date: '---',
+        number: 0,
+      }
+    }
+  }, [rewards])
+
   return (
     <>
       <Box
@@ -109,7 +134,7 @@ export const CurrentEpochCard = ({
           }}
         >
           <Typography fontSize={'1.1rem'} fontWeight={600}>
-            {t('Pending Period')} {pendingPeriod()?.number}:
+            {t('Period')} {completedPeriod.number} {t('Complete')}:
           </Typography>
 
           <Box sx={styles.selectorContainer}>
@@ -145,7 +170,7 @@ export const CurrentEpochCard = ({
             fontWeight={700}
             sx={{ color: 'secondary.light', marginBottom: '1rem' }}
           >
-            {pendingPeriod()?.date}
+            {completedPeriod.date}
           </Typography>
         )}
         <Box
@@ -313,7 +338,6 @@ CurrentEpochCard.propTypes = {
   rewards: PropTypes.array,
   vestedRewards: PropTypes.array,
   loading: PropTypes.bool,
-  pendingPeriod: PropTypes.func,
 }
 
 CurrentEpochCard.defaultProps = {
