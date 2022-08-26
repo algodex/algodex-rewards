@@ -65,11 +65,7 @@ export const WalletList = () => {
             .
           </Typography>
           {formattedAddresses.map(({ address, type, assets, amount }) => (
-            <Box
-              key={address}
-              marginY={'2rem'}
-             
-            >
+            <Box key={address} marginY={'2rem'}>
               <Box
                 sx={{
                   display: 'flex',
@@ -118,9 +114,10 @@ export const WalletList = () => {
                   {amount < minAmount ? (
                     <WarningCard
                       title="Not enough ALGX in wallet for rewards"
-                      warnings={[
-                        `At least ${minAmount} ALGX must be held for a wallet to vest retroactive rewards and/or earn new rewards.`,
-                      ]}
+                      link={{
+                        title: 'View info on earning rewards here',
+                        url: '/',
+                      }}
                     />
                   ) : (
                     <>
