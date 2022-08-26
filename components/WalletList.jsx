@@ -55,6 +55,15 @@ export const WalletList = () => {
     <>
       {formattedAddresses.length > 0 ? (
         <>
+          <Typography
+            fontSize={'0.8rem'}
+            sx={{ color: 'secondary.light', marginBlock: '2rem' }}
+          >
+            {t(
+              'Click the arrow beside each wallet to expand for the option to disconnect and to view ALGO and ALGX balances. Other ASAs are not shown on this page'
+            )}
+            .
+          </Typography>
           {formattedAddresses.map(({ address, type, assets, amount }) => (
             <Box key={address} marginY={'2rem'}>
               <Box
