@@ -29,20 +29,22 @@ export const WarningCard = ({ title, warnings, link }) => {
             <span>{title} </span>
           </Typography>
         )}
-        <Typography
-          variant="p"
-          fontSize={'0.8rem'}
-          fontWeight={500}
-          sx={{
-            lineHeight: '1.5rem',
-          }}
-        >
-          {warnings.map((text) => (
-            <span key={text}>
-              {text} <br />
-            </span>
-          ))}
-        </Typography>
+        {warnings && (
+          <Typography
+            variant="p"
+            fontSize={'0.8rem'}
+            fontWeight={500}
+            sx={{
+              lineHeight: '1.5rem',
+            }}
+          >
+            {warnings.map((text) => (
+              <span key={text}>
+                {text} <br />
+              </span>
+            ))}
+          </Typography>
+        )}
         {link && (
           <Link
             href={link.url}
