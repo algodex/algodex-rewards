@@ -65,7 +65,11 @@ export const WalletList = () => {
             .
           </Typography>
           {formattedAddresses.map(({ address, type, assets, amount }) => (
-            <Box key={address} marginY={'2rem'}>
+            <Box
+              key={address}
+              marginY={'2rem'}
+             
+            >
               <Box
                 sx={{
                   display: 'flex',
@@ -88,6 +92,7 @@ export const WalletList = () => {
                     ['.css-o4b71y-MuiAccordionSummary-content.Mui-expanded']: {
                       margin: 0,
                     },
+                    opacity: `${address == activeWallet?.address ? 1 : '0.65'}`,
                   }}
                 >
                   <Typography

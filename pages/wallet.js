@@ -6,8 +6,6 @@ import { defaults } from 'next-i18next.config'
 // Material UI components
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
-import useMediaQuery from '@mui/material/useMediaQuery'
-import { useTheme } from '@mui/material/styles'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 
 // Custom components and hook(s)
@@ -25,7 +23,6 @@ export async function getServerSideProps({ locale }) {
 
 export default function Wallet() {
   const { t } = useTranslation('wallet')
-  const isMobile = useMediaQuery(useTheme().breakpoints.down('sm'))
 
   return (
     <>
