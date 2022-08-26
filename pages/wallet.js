@@ -5,12 +5,13 @@ import { defaults } from 'next-i18next.config'
 
 // Material UI components
 import Container from '@mui/material/Container'
-import useMediaQuery from '@mui/material/useMediaQuery'
-import { useTheme } from '@mui/material/styles'
+import Grid from '@mui/material/Grid'
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 
 // Custom components and hook(s)
 import { WalletDropdown } from '@/components/WalletDropdown'
 import { WalletList } from '@/components/WalletList'
+import Link from '../components/Nav/Link'
 
 export async function getServerSideProps({ locale }) {
   return {
@@ -22,7 +23,6 @@ export async function getServerSideProps({ locale }) {
 
 export default function Wallet() {
   const { t } = useTranslation('wallet')
-  const isMobile = useMediaQuery(useTheme().breakpoints.down('sm'))
 
   return (
     <>
@@ -31,6 +31,20 @@ export default function Wallet() {
         <meta name="description" content={t('description')} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <Link
+        href="/"
+        fontSize={'0.9rem'}
+        sx={{
+          color: 'secondary.light',
+          marginTop: '2rem',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          textDecoration: 'none',
+        }}
+      >
+        <ChevronLeftIcon /> {t('Return Home')}
+      </Link>
       <Container
         maxWidth="md"
         sx={{
@@ -43,8 +57,25 @@ export default function Wallet() {
           },
         }}
       >
-        {isMobile && <WalletDropdown screen={'wallet'} />}
-        <WalletList />
+        <Grid container spacing={2}>
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            md={10}
+            lg={7}
+            xl={6}
+            marginX={'auto'}
+            marginY={'1rem'}
+          >
+            <Grid>
+              <Grid item xs={12} sm={12} md={8} lg={7} xl={6} marginX={'auto'}>
+                <WalletDropdown screen={'wallet'} />
+              </Grid>
+            </Grid>
+            <WalletList />
+          </Grid>
+        </Grid>
       </Container>
     </>
   )

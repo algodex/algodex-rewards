@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 
 // Material UI components
@@ -16,7 +16,6 @@ import { TableLoader } from '../Loaders/TableLoader'
 import { WarningCard } from '../WarningCard'
 import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
 import { useTranslation } from 'next-i18next'
-import { getEpochEnd } from '@/lib/getRewards'
 import { PeriodContext } from 'context/periodContext'
 
 const columns = [
@@ -43,6 +42,26 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   },
 }))
 
+const activeRowStyles = {
+  ['.MuiTableCell-body']: {
+    borderBottom: 'solid 0.1rem',
+    borderTop: 'solid 0.1rem',
+    borderColor: 'accent.main',
+    ['&:first-child']: {
+      borderLeft: 'solid 0.1rem',
+      borderColor: 'accent.main',
+      borderTopLeftRadius: '0.3rem',
+      borderBottomLeftRadius: '0.3rem',
+    },
+    ['&:last-child']: {
+      borderRight: 'solid 0.1rem',
+      borderColor: 'accent.main',
+      borderTopRightRadius: '0.3rem',
+      borderBottomRightRadius: '0.3rem',
+    },
+  },
+}
+
 export const PeriodTable = ({
   isConnected,
   loading,
@@ -54,6 +73,7 @@ export const PeriodTable = ({
 }) => {
   const { t } = useTranslation('common')
   const { conversionRate } = usePriceConversionHook({})
+  const [activeEpoch, setActiveEpoch] = useState('')
   const context = useContext(PeriodContext)
   const { setPeriodAssets, tinymanAssets } = context
 
@@ -102,6 +122,7 @@ export const PeriodTable = ({
   // console.log({ mergedRewards })
 
   const getAssetsByEpoch = (_epoch) => {
+    setActiveEpoch(_epoch)
     const rewardsCopy = [...rewards]
     const data = []
     const assets = {}
@@ -199,10 +220,14 @@ export const PeriodTable = ({
                             return (
                               <TableRow
                                 hover
-                                role="checkbox"
                                 tabIndex={-1}
                                 key={row[0]}
-                                sx={{ cursor: 'pointer' }}
+                                sx={[
+                                  {
+                                    cursor: 'pointer',
+                                  },
+                                  row[0] == activeEpoch && activeRowStyles,
+                                ]}
                                 onClick={() => {
                                   getAssetsByEpoch(row[0])
                                 }}
@@ -272,10 +297,14 @@ export const PeriodTable = ({
                         return (
                           <TableRow
                             hover
-                            role="checkbox"
                             tabIndex={-1}
                             key={row[0]}
-                            sx={{ cursor: 'pointer' }}
+                            sx={[
+                              {
+                                cursor: 'pointer',
+                              },
+                              row[0] == activeEpoch && activeRowStyles,
+                            ]}
                             onClick={() => {
                               getAssetsByEpoch(row[0])
                             }}
