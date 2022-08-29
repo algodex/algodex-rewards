@@ -142,10 +142,10 @@ export const AssetContainer = ({ asset }) => {
             textAlign={'right'}
             marginBottom={'0.5rem'}
           >
-            {t('Est. Daily Rewards')}
+            {t('Last Week’s Rewards')}
           </Typography>
           <Typography fontSize={'1rem'} fontWeight={600} textAlign={'right'}>
-            {asset.dailyRwd.toLocaleString()} ALGX
+            {asset.lastWeek.toLocaleString()} ALGX
           </Typography>
 
           <Typography
@@ -154,7 +154,7 @@ export const AssetContainer = ({ asset }) => {
             textAlign={'right'}
             sx={{ color: 'secondary.light' }}
           >
-            {(asset.dailyRwd * conversionRate).toLocaleString()} USD
+            {(asset.lastWeek * conversionRate).toLocaleString()} USD
           </Typography>
         </Box>
       </Box>

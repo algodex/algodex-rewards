@@ -58,9 +58,11 @@ export const CurrentEpochCard = ({
 
   const newEarnedReward = useMemo(() => {
     // Find a reward whose epoch is not over a week from now
-    const newR = rewards.find(
-      ({ value: { epoch } }) => getEpochEnd(epoch) * 1000 > getLastWeekEpoch()
+    const allNew = rewards.filter(
+      ({ value: { epoch } }) => getEpochEnd(epoch) * 1000 >= getLastWeekEpoch()
     )
+    const max = Math.max(...allNew.map(({ value: { epoch } }) => epoch))
+    const newR = rewards.find(({ value: { epoch } }) => epoch == max)
     return newR?.value?.earnedRewards || 0
   }, [rewards])
 
@@ -72,10 +74,12 @@ export const CurrentEpochCard = ({
 
   const newEarnedVestedReward = useMemo(() => {
     // Find a vested reward whose unix time is not over a week from now
-    const newR = vestedRewards.find(
+    const allNew = vestedRewards.filter(
       ({ value: { vestedUnixTime } }) =>
         vestedUnixTime * 1000 >= getLastWeekEpoch()
     )
+    const max = Math.max(...allNew.map(({ value: { epoch } }) => epoch))
+    const newR = vestedRewards.find(({ value: { epoch } }) => epoch == max)
     return newR?.value?.vestedRewards || 0
   }, [vestedRewards])
 

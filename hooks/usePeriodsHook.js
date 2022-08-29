@@ -10,19 +10,143 @@ export const usePeriodsHook = ({ activeWallet }) => {
 
   const dummyReward = [
     {
+      id: 'aeddaefef414434de3',
+      key: 'NN3BAWDPHEJAPIGO3IDB6I4ITGUMYG3QMN26ZYICXEZM3QRWISGXUK6J4Y',
       value: {
-        _id: 'da42b5aa00230629bb6b9175a302c4dc',
-        _rev: '5-278b8ed0e08a7edbeb6724d2964ae872',
-        ownerWallet:
-          'NN3BAWDPHEJAPIGO3IDB6I4ITGUMYG3QMN26ZYICXEZM3QRWISGXUK6J4Y',
-        uptime: 2845,
-        depthSum: 1598.4046350579222,
-        qualitySum: 25138621675447583000,
         algxAvg: 0,
-        qualityFinal: 8.544528521298251e27,
-        earnedRewards: 3500,
-        epoch: 1,
+        assetId: 230946361,
+        depthSum: 1298.4046350579222,
+        earnedRewards: 500,
+        epoch: 3,
+        qualityFinal: 8241412412,
+        qualitySum: 15138621675447583000,
+        uptime: 2843,
+      },
+    },
+    {
+      id: 'aeddaefe1442334de3',
+      key: 'NN3BAWDPHEJAPIGO3IDB6I4ITGUMYG3QMN26ZYICXEZM3QRWISGXUK6J4Y',
+      value: {
+        algxAvg: 0,
+        assetId: 230946361,
+        depthSum: 1298.4046350579222,
+        earnedRewards: 500,
+        epoch: 29,
+        qualityFinal: 8241412412,
+        qualitySum: 15138621675447583000,
+        uptime: 2843,
+      },
+    },
+    {
+      id: 'aeddaefe1442334de3',
+      key: 'NN3BAWDPHEJAPIGO3IDB6I4ITGUMYG3QMN26ZYICXEZM3QRWISGXUK6J4Y',
+      value: {
+        algxAvg: 0,
+        assetId: 230946361,
+        depthSum: 1298.4046350579222,
+        earnedRewards: 5000,
+        epoch: 29,
+        qualityFinal: 8241412412,
+        qualitySum: 15138621675447583000,
+        uptime: 2843,
+      },
+    },
+    {
+      id: 'aeddaefef44w43443de3',
+      key: 'NN3BAWDPHEJAPIGO3IDB6I4ITGUMYG3QMN26ZYICXEZM3QRWISGXUK6J4Y',
+      value: {
+        algxAvg: 0,
         assetId: 386192725,
+        depthSum: 1298.4046350579222,
+        earnedRewards: 100,
+        epoch: 4,
+        qualityFinal: 8241412412,
+        qualitySum: 15138621675447583000,
+        uptime: 2843,
+      },
+    },
+    {
+      id: 'aeddaefef44434de3',
+      key: 'NN3BAWDPHEJAPIGO3IDB6I4ITGUMYG3QMN26ZYICXEZM3QRWISGXUK6J4Y',
+      value: {
+        algxAvg: 0,
+        assetId: 386195940,
+        depthSum: 1298.4046350579222,
+        earnedRewards: 20,
+        epoch: 7,
+        qualityFinal: 8241412412,
+        qualitySum: 15138621675447583000,
+        uptime: 2843,
+      },
+    },
+    {
+      id: 'aedadaefef443434de3',
+      key: 'NN3BAWDPHEJAPIGO3IDB6I4ITGUMYG3QMN26ZYICXEZM3QRWISGXUK6J4Y',
+      value: {
+        algxAvg: 0,
+        assetId: 386192725,
+        depthSum: 1298.4046350579222,
+        earnedRewards: 100,
+        epoch: 2,
+        qualityFinal: 8241412412,
+        qualitySum: 15138621675447583000,
+        uptime: 2843,
+      },
+    },
+    {
+      id: 'aedadaefef4434w34de3',
+      key: 'NN3BAWDPHEJAPIGO3IDB6I4ITGUMYG3QMN26ZYICXEZM3QRWISGXUK6J4Y',
+      value: {
+        algxAvg: 0,
+        assetId: 31566704,
+        depthSum: 1298.4046350579222,
+        earnedRewards: 200,
+        epoch: 1,
+        qualityFinal: 8241412412,
+        qualitySum: 15138621675447583000,
+        uptime: 2843,
+      },
+    },
+    {
+      id: 'aedadaefef443234w34de3',
+      key: 'NN3BAWDPHEJAPIGO3IDB6I4ITGUMYG3QMN26ZYICXEZM3QRWISGXUK6J4Y',
+      value: {
+        algxAvg: 0,
+        assetId: 386192725,
+        depthSum: 1298.4046350579222,
+        earnedRewards: 2000,
+        epoch: 19,
+        qualityFinal: 8241412412,
+        qualitySum: 15138621675447583000,
+        uptime: 2843,
+      },
+    },
+    {
+      id: 'aedadaefef4432234w34de3',
+      key: 'NN3BAWDPHEJAPIGO3IDB6I4ITGUMYG3QMN26ZYICXEZM3QRWISGXUK6J4Y',
+      value: {
+        algxAvg: 0,
+        assetId: 31566704,
+        depthSum: 1298.4046350579222,
+        earnedRewards: 2000,
+        epoch: 28,
+        qualityFinal: 8241412412,
+        qualitySum: 15138621675447583000,
+        uptime: 2843,
+      },
+    },
+    {
+      id: 'aedadaef22234w34de3',
+      key: 'NN3BAWDPHEJAPIGO3IDB6I4ITGUMYG3QMN26ZYICXEZM3QRWISGXUK6J4Y',
+      value: {
+        algxAvg: 0,
+        assetId: 31566704,
+        depthSum: 1298.4046350579222,
+        earnedRewards: 300,
+        epoch: 30,
+        qualityFinal: 8241412412,
+        qualitySum: 15138621675447583000,
+        uptime: 2843,
       },
     },
   ]
@@ -37,6 +161,18 @@ export const usePeriodsHook = ({ activeWallet }) => {
         vestedRewards: 3500,
         epoch: 1,
         vestedUnixTime: 1658439940,
+        assetId: 386192725,
+      },
+    },
+    {
+      value: {
+        _id: 'a73c6696ac4a6e897daa3f101a02c3cf',
+        _rev: '2-1175a83b81ec74ebf467652df953e087',
+        ownerWallet:
+          'NN3BAWDPHEJAPIGO3IDB6I4ITGUMYG3QMN26ZYICXEZM3QRWISGXUK6J4Y',
+        vestedRewards: 3500,
+        epoch: 29,
+        vestedUnixTime: 1661807421,
         assetId: 386192725,
       },
     },
@@ -71,8 +207,8 @@ export const usePeriodsHook = ({ activeWallet }) => {
     await Promise.all([_rewards, _vestedRewards])
       .then((values) => {
         setLoading(false)
-        setRewards(values[0].rows)
-        setVestedRewards(values[1].rows)
+        setRewards([...dummyReward, ...values[0].rows])
+        setVestedRewards([...dummyVestedRewards, ...values[1].rows])
       })
       .catch((err) => {
         setLoading(false)
