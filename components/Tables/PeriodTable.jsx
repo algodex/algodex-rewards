@@ -21,6 +21,7 @@ import { WarningCard } from '../WarningCard'
 import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
 import { useTranslation } from 'next-i18next'
 import { PeriodContext } from 'context/periodContext'
+import { getEpochStart } from '../../lib/getRewards'
 
 const columns = [
   { id: 'epoch', label: 'Period' },
@@ -140,7 +141,8 @@ export const PeriodTable = ({
           x[value.epoch] = {
             ...x[value.epoch],
             ...value,
-            unvestedRewards: (value.earnedRewards - (value.vestedRewards || 0) || 0),
+            unvestedRewards:
+              value.earnedRewards - (value.vestedRewards || 0) || 0,
             assetId: x[value.epoch].assetId.includes(value.assetId)
               ? x[value.epoch].assetId
               : [...x[value.epoch].assetId, value.assetId],
@@ -148,7 +150,8 @@ export const PeriodTable = ({
         } else {
           x[value.epoch] = {
             ...value,
-            unvestedRewards: (value.earnedRewards - (value.vestedRewards || 0) || 0),
+            unvestedRewards:
+              value.earnedRewards - (value.vestedRewards || 0) || 0,
             assetId: [value.assetId],
           }
         }
@@ -172,7 +175,9 @@ export const PeriodTable = ({
 
   const getAssetsByEpoch = (_epoch) => {
     setActiveEpoch(_epoch)
-    const rewardsCopy = [...rewards]
+    const rewardsCopy = rewards.filter(
+      ({ value: { epoch } }) => epoch == _epoch
+    )
     const data = []
     const assets = {}
     if (rewardsCopy.length > 0) {
@@ -185,15 +190,30 @@ export const PeriodTable = ({
       })
     }
     for (const assetId in assets) {
-      const list = [...assets[assetId]].filter(({ epoch }) => epoch == _epoch)
+      const list = assets[assetId]
+      const now = new Date()
+      const lastWkUnixStart = Math.floor(
+        new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7) / 1000
+      )
+      const lastWkEpochStart =
+        (lastWkUnixStart - getEpochStart(1)) / 604800 + 1
+
+      const lastWkUnixEnd = Math.floor(Date.now() / 1000)
+      const lastWkEpochEnd = (lastWkUnixEnd - getEpochStart(1)) / 604800 + 1
+      //Filter out all rewards within last weeks' epoch
+      const x = list.filter(
+        ({ epoch }) =>
+          epoch >= lastWkEpochStart.toFixed(0) &&
+          epoch <= lastWkEpochEnd.toFixed(0)
+      )
+      const lastWkRwds = x.reduce((a, b) => a + b.earnedRewards, 0)
+
       data.push({
         assetId,
-        dailyRwd: (
-          list.find(({ epoch }) => epoch == _epoch)?.earnedRewards / 7 || 0
-        ).toFixed(2),
+        lastWeek: lastWkRwds.toFixed(2),
         depthSum: list.reduce((a, b) => a + b.depthSum, 0) / 10080,
-        assetName: tinymanAssets[assetId].name,
-        assetLogo: tinymanAssets[assetId].logo?.svg,
+        assetName: tinymanAssets[assetId]?.name,
+        assetLogo: tinymanAssets[assetId]?.logo?.svg,
       })
     }
     setPeriodAssets(data)

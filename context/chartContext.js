@@ -6,6 +6,7 @@ import { getEpochEnd } from '@/lib/getRewards'
 import { DateTime } from 'luxon'
 import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
 import { getAssets } from '@/lib/getTinymanPrice'
+import { getEpochStart } from '../lib/getRewards'
 
 export const ChartDataContext = createContext(undefined)
 
@@ -256,16 +257,25 @@ export function ChartDataProvider({ children }) {
 
     for (const assetId in assets) {
       const list = assets[assetId]
-      const max = Math.max(...list.map(({ epoch }) => epoch))
-      const maxRwd = list.find(({ epoch }) => epoch == max)
-      let dailyRwd = 0
-      if (maxRwd) {
-        dailyRwd = maxRwd.earnedRewards / 7
-      }
+      const lastWkUnixStart = Math.floor(
+        new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7) / 1000
+      )
+      const lastWkEpochStart =
+        (lastWkUnixStart - getEpochStart(1)) / 604800 + 1
 
+      const lastWkUnixEnd = Math.floor(Date.now() / 1000)
+      const lastWkEpochEnd = (lastWkUnixEnd - getEpochStart(1)) / 604800 + 1
+
+      //Filter out all rewards within last weeks' epoch
+      const x = list.filter(
+        ({ epoch }) =>
+          epoch >= lastWkEpochStart.toFixed(0) &&
+          epoch <= lastWkEpochEnd.toFixed(0)
+      )
+      const lastWkRwds = x.reduce((a, b) => a + b.earnedRewards, 0)
       data.push({
         assetId,
-        dailyRwd: dailyRwd.toFixed(2),
+        lastWeek: lastWkRwds.toFixed(2),
         depthSum: list.reduce((a, b) => a + b.depthSum, 0) / 10080,
         assetName: tinymanAssets[assetId].name,
         assetLogo: tinymanAssets[assetId].logo?.svg,
