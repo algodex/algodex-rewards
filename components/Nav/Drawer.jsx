@@ -66,13 +66,15 @@ const otherLinks = [
   // link:'/'
   // },
 ]
-function Drawer({ width, offset, ...props }) {
+function Drawer({ width, offset, isMobile, open, ...props }) {
   const { t: common } = useTranslation('common')
   return (
     <MUIDrawer
-      variant="permanent"
+      variant={isMobile ? 'temporary' : 'permanent'}
+      anchor="left"
+      open={open}
       sx={{
-        width,
+        width: !isMobile || open ? width : 0,
         flexShrink: 0,
         ['& .MuiDrawer-paper']: {
           width,
@@ -118,7 +120,7 @@ function Drawer({ width, offset, ...props }) {
               component="div"
               id="nested-list-subheader"
               sx={{
-                marginBlock:'20px',
+                marginBlock: '20px',
                 border: '2px solid',
                 borderColor: 'secondary.light',
               }}
@@ -149,6 +151,10 @@ Drawer.propTypes = {
    * offset
    */
   offset: PropTypes.number,
+
+  /** Mobile */
+  isMobile: PropTypes.bool,
+  open: PropTypes.bool,
 }
 
 Drawer.defaultProps = {
