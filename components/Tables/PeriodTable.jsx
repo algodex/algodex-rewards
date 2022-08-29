@@ -269,7 +269,11 @@ export const PeriodTable = ({
               >
                 {t('Previous Periods')}
               </Typography>
-              <TableContainer sx={{ maxHeight: 440 }}>
+              <TableContainer
+                sx={{
+                  maxHeight: 440,
+                }}
+              >
                 <Table stickyHeader aria-label="sticky table">
                   {(loading || mergedRewards.length > 0) && (
                     <TableHead>
