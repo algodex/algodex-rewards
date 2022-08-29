@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 
 // Material UI components
+import Box from '@mui/material/Box'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import Typography from '@mui/material/Typography'
@@ -9,7 +10,10 @@ import TableCell, { tableCellClasses } from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
+import TableSortLabel from '@mui/material/TableSortLabel'
 import { styled } from '@mui/material/styles'
+import visuallyHidden from '@mui/utils/visuallyHidden'
+
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 
 import { TableLoader } from '../Loaders/TableLoader'
@@ -19,7 +23,7 @@ import { useTranslation } from 'next-i18next'
 import { PeriodContext } from 'context/periodContext'
 
 const columns = [
-  { id: 'period', label: 'Period' },
+  { id: 'epoch', label: 'Period' },
   { id: 'earnedRewards', label: 'Earned Rewards' },
   { id: 'vestedRewards', label: 'Vested Rewards' },
   {
@@ -34,6 +38,11 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     borderColor: theme.palette.secondary.main,
     fontSize: 15,
     fontWeight: 600,
+    // eslint-disable-next-line max-len
+    ['.MuiButtonBase-root:hover, .MuiButtonBase-root.Mui-active, .MuiButtonBase-root .MuiSvgIcon-root']:
+      {
+        color: theme.palette.primary.light,
+      },
   },
   [`&.${tableCellClasses.body}`]: {
     fontSize: 14,
@@ -47,7 +56,7 @@ const activeRowStyles = {
     borderBottom: 'solid 0.1rem',
     borderTop: 'solid 0.1rem',
     borderColor: 'accent.main',
-    ['&:first-child']: {
+    ['&:first-of-type']: {
       borderLeft: 'solid 0.1rem',
       borderColor: 'accent.main',
       borderTopLeftRadius: '0.3rem',
@@ -76,6 +85,44 @@ export const PeriodTable = ({
   const [activeEpoch, setActiveEpoch] = useState('')
   const context = useContext(PeriodContext)
   const { setPeriodAssets, tinymanAssets } = context
+  const [order, setOrder] = useState('desc')
+  const [orderBy, setOrderBy] = useState('epoch')
+
+  const descendingComparator = (a, b, orderBy) => {
+    if (b[orderBy] < a[orderBy]) {
+      return -1
+    }
+    if (b[orderBy] > a[orderBy]) {
+      return 1
+    }
+    return 0
+  }
+
+  const getComparator = (order, orderBy) => {
+    return order === 'desc'
+      ? (a, b) => descendingComparator(a, b, orderBy)
+      : (a, b) => -descendingComparator(a, b, orderBy)
+  }
+
+  // This method is created for cross-browser compatibility, if you don't
+  // need to support IE11, you can use Array.prototype.sort() directly
+  const stableSort = (array, comparator) => {
+    const stabilizedThis = array.map((el, index) => [el, index])
+    stabilizedThis.sort((a, b) => {
+      const order = comparator(a[0], b[0])
+      if (order !== 0) {
+        return order
+      }
+      return a[1] - b[1]
+    })
+    return stabilizedThis.map((el) => el[0])
+  }
+
+  const createSortHandler = (property) => {
+    const isAsc = orderBy === property && order === 'asc'
+    setOrder(isAsc ? 'desc' : 'asc')
+    setOrderBy(property)
+  }
 
   const attachCurrency = (price) => {
     return `${(activeCurrency === 'ALGX'
@@ -93,6 +140,7 @@ export const PeriodTable = ({
           x[value.epoch] = {
             ...x[value.epoch],
             ...value,
+            unvestedRewards: (value.earnedRewards - (value.vestedRewards || 0) || 0),
             assetId: x[value.epoch].assetId.includes(value.assetId)
               ? x[value.epoch].assetId
               : [...x[value.epoch].assetId, value.assetId],
@@ -100,13 +148,14 @@ export const PeriodTable = ({
         } else {
           x[value.epoch] = {
             ...value,
+            unvestedRewards: (value.earnedRewards - (value.vestedRewards || 0) || 0),
             assetId: [value.assetId],
           }
         }
       })
     }
-    return Object.entries(x)
-  }, [rewards, vestedRewards])
+    return stableSort(Object.values(x), getComparator(order, orderBy))
+  }, [rewards, vestedRewards, order, orderBy])
 
   const currentPeriod = useMemo(() => {
     // return a reward whose epoch is current.
@@ -269,7 +318,11 @@ export const PeriodTable = ({
               >
                 {t('Previous Periods')}
               </Typography>
-              <TableContainer sx={{ maxHeight: 440 }}>
+              <TableContainer
+                sx={{
+                  maxHeight: 440,
+                }}
+              >
                 <Table stickyHeader aria-label="sticky table">
                   {(loading || mergedRewards.length > 0) && (
                     <TableHead>
@@ -282,7 +335,20 @@ export const PeriodTable = ({
                             component="th"
                             scope="row"
                           >
-                            {t(`${column.label}`)}
+                            <TableSortLabel
+                              active={orderBy === column.id}
+                              direction={orderBy === column.id ? order : 'asc'}
+                              onClick={() => createSortHandler(column.id)}
+                            >
+                              {t(`${column.label}`)}
+                              {orderBy === column.id ? (
+                                <Box component="span" sx={visuallyHidden}>
+                                  {order === 'desc'
+                                    ? 'sorted descending'
+                                    : 'sorted ascending'}
+                                </Box>
+                              ) : null}
+                            </TableSortLabel>
                           </StyledTableCell>
                         ))}
                         <StyledTableCell></StyledTableCell>
@@ -298,30 +364,27 @@ export const PeriodTable = ({
                           <TableRow
                             hover
                             tabIndex={-1}
-                            key={row[0]}
+                            key={row.epoch}
                             sx={[
                               {
                                 cursor: 'pointer',
                               },
-                              row[0] == activeEpoch && activeRowStyles,
+                              row.epoch == activeEpoch && activeRowStyles,
                             ]}
                             onClick={() => {
-                              getAssetsByEpoch(row[0])
+                              getAssetsByEpoch(row.epoch)
                             }}
                           >
                             <>
-                              <StyledTableCell>{row[0]}</StyledTableCell>
+                              <StyledTableCell>{row.epoch}</StyledTableCell>
                               <StyledTableCell>
-                                {attachCurrency(row[1].earnedRewards)}
+                                {attachCurrency(row.earnedRewards)}
                               </StyledTableCell>
                               <StyledTableCell>
-                                {attachCurrency(row[1].vestedRewards || 0)}
+                                {attachCurrency(row.vestedRewards || 0)}
                               </StyledTableCell>
                               <StyledTableCell>
-                                {attachCurrency(
-                                  row[1].earnedRewards -
-                                    (row[1].vestedRewards || 0)
-                                )}
+                                {attachCurrency(row.unvestedRewards)}
                               </StyledTableCell>
                               <StyledTableCell>
                                 <ChevronRightIcon />

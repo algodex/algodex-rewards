@@ -22,7 +22,7 @@ import { WalletDropdown } from '../WalletDropdown'
  * @returns {JSX.Element}
  * @constructor
  */
-function Toolbar({ height, isMobile, onClick, ...rest }) {
+function Toolbar({ height, isMobile, onClick, toggleDrawer, ...rest }) {
   return (
     <MUIToolbar
       sx={{ height, backgroundColor: 'background.default' }}
@@ -52,9 +52,7 @@ function Toolbar({ height, isMobile, onClick, ...rest }) {
           color="inherit"
           aria-label="menu"
           sx={{ ml: '5px' }}
-          onClick={() => {
-            alert('TODO: Make Menu Collapse')
-          }}
+          onClick={toggleDrawer}
         >
           <MenuIcon sx={{ fontSize: '2.4rem' }} />
         </IconButton>
@@ -76,6 +74,8 @@ Toolbar.propTypes = {
    * isMobile
    */
   isMobile: PropTypes.bool,
+
+  toggleDrawer: PropTypes.func.isRequired,
 }
 
 Toolbar.defaultProps = {

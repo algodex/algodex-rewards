@@ -23,6 +23,25 @@ const dark = createTheme({
         },
       },
     },
+    MuiTableContainer: {
+      styleOverrides: {
+        root: {
+          '@media(max-width: 992px)': {
+            '&::-webkit-scrollbar': {
+              height: '10px',
+            },
+            '&::-webkit-scrollbar-track': {
+              backgroundColor: '#1A202C',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              backgroundColor: '#A1AEC0',
+              borderRadius: '10px',
+              width: '10px',
+            },
+          },
+        },
+      },
+    },
   },
   palette: {
     type: 'dark',

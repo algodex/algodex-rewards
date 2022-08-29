@@ -10,6 +10,7 @@ import PropTypes from 'prop-types'
 import DefaultToolbar from '@/components/Nav/Toolbar'
 import DefaultBottomNavigation from '@/components/Nav/BottomNavigation'
 import DefaultDrawer from '@/components/Nav/Drawer'
+import { useState } from 'react'
 
 /**
  * Layout Component
@@ -32,14 +33,20 @@ export function Layout({ children, components, componentsProps }) {
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const toggleDrawer = () => {
+    console.log('first')
+    setDrawerOpen(!drawerOpen)
+  }
+
   // Example of a Responsive Layout with Fixed Viewport
   return (
     <Box
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        maxHeight: '100vh',
         height: '100vh',
+        maxHeight: '-webkit-fill-available',
       }}
     >
       <AppBar
@@ -49,6 +56,7 @@ export function Layout({ children, components, componentsProps }) {
       >
         <Toolbar
           isMobile={isMobile}
+          toggleDrawer={toggleDrawer}
           height={toolbarHeight}
           {...componentsProps.Toolbar}
         />
@@ -57,10 +65,12 @@ export function Layout({ children, components, componentsProps }) {
       <Box sx={{ display: 'flex', flex: 1, overflow: 'auto' }}>
         {
           // Show the Desktop Drawer
-          !isMobile && (
+          (!isMobile || drawerOpen) && (
             <Drawer
               width={drawerWidth}
               offset={toolbarHeight}
+              open={drawerOpen || !isMobile}
+              isMobile={isMobile}
               {...componentsProps.Drawer}
             />
           )
