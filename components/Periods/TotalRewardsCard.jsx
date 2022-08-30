@@ -31,7 +31,6 @@ export const TotalRewardsCard = ({
   }, [vestedRewards])
 
   const totalUnvested = useMemo(() => {
-    console.log(totalVested, totalEarned)
     return totalEarned - totalVested
   }, [totalEarned, totalVested])
 

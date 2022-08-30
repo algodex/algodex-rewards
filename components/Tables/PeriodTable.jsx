@@ -141,6 +141,7 @@ export const PeriodTable = ({
           x[value.epoch] = {
             ...x[value.epoch],
             ...value,
+            vestedRewards: value.vestedRewards || 0,
             unvestedRewards:
               value.earnedRewards - (value.vestedRewards || 0) || 0,
             assetId: x[value.epoch].assetId.includes(value.assetId)
@@ -150,6 +151,7 @@ export const PeriodTable = ({
         } else {
           x[value.epoch] = {
             ...value,
+            vestedRewards: value.vestedRewards || 0,
             unvestedRewards:
               value.earnedRewards - (value.vestedRewards || 0) || 0,
             assetId: [value.assetId],
@@ -163,7 +165,7 @@ export const PeriodTable = ({
   const currentPeriod = useMemo(() => {
     // return a reward whose epoch is current.
     const newR = Object.values(mergedRewards).filter(
-      (epoch) => epoch === pendingPeriod().number
+      ({ epoch }) => epoch >= parseInt(pendingPeriod.number)
     )
     return newR || []
   }, [mergedRewards, pendingPeriod])
@@ -290,29 +292,29 @@ export const PeriodTable = ({
                               <TableRow
                                 hover
                                 tabIndex={-1}
-                                key={row[0]}
+                                key={row.epoch}
                                 sx={[
                                   {
                                     cursor: 'pointer',
                                   },
-                                  row[0] == activeEpoch && activeRowStyles,
+                                  row.epoch == activeEpoch && activeRowStyles,
                                 ]}
                                 onClick={() => {
-                                  getAssetsByEpoch(row[0])
+                                  getAssetsByEpoch(row.epoch)
                                 }}
                               >
                                 <>
-                                  <StyledTableCell>{row[0]}</StyledTableCell>
+                                  <StyledTableCell>{row.epoch}</StyledTableCell>
                                   <StyledTableCell>
-                                    {attachCurrency(row[1].earnedRewards)}
+                                    {attachCurrency(row.earnedRewards)}
                                   </StyledTableCell>
                                   <StyledTableCell>
-                                    {attachCurrency(row[1].vestedRewards || 0)}
+                                    {attachCurrency(row.vestedRewards || 0)}
                                   </StyledTableCell>
                                   <StyledTableCell>
                                     {attachCurrency(
-                                      row[1].earnedRewards -
-                                        (row[1].vestedRewards || 0)
+                                      row.earnedRewards -
+                                        (row.vestedRewards || 0)
                                     )}
                                   </StyledTableCell>
                                   <StyledTableCell>
@@ -379,40 +381,44 @@ export const PeriodTable = ({
                     <TableLoader columnCount={5} />
                   ) : (
                     <TableBody>
-                      {mergedRewards.map((row) => {
-                        return (
-                          <TableRow
-                            hover
-                            tabIndex={-1}
-                            key={row.epoch}
-                            sx={[
-                              {
-                                cursor: 'pointer',
-                              },
-                              row.epoch == activeEpoch && activeRowStyles,
-                            ]}
-                            onClick={() => {
-                              getAssetsByEpoch(row.epoch)
-                            }}
-                          >
-                            <>
-                              <StyledTableCell>{row.epoch}</StyledTableCell>
-                              <StyledTableCell>
-                                {attachCurrency(row.earnedRewards)}
-                              </StyledTableCell>
-                              <StyledTableCell>
-                                {attachCurrency(row.vestedRewards || 0)}
-                              </StyledTableCell>
-                              <StyledTableCell>
-                                {attachCurrency(row.unvestedRewards)}
-                              </StyledTableCell>
-                              <StyledTableCell>
-                                <ChevronRightIcon />
-                              </StyledTableCell>
-                            </>
-                          </TableRow>
+                      {mergedRewards
+                        .filter(
+                          ({ epoch }) => epoch < parseInt(pendingPeriod.number)
                         )
-                      })}
+                        .map((row) => {
+                          return (
+                            <TableRow
+                              hover
+                              tabIndex={-1}
+                              key={row.epoch}
+                              sx={[
+                                {
+                                  cursor: 'pointer',
+                                },
+                                row.epoch == activeEpoch && activeRowStyles,
+                              ]}
+                              onClick={() => {
+                                getAssetsByEpoch(row.epoch)
+                              }}
+                            >
+                              <>
+                                <StyledTableCell>{row.epoch}</StyledTableCell>
+                                <StyledTableCell>
+                                  {attachCurrency(row.earnedRewards)}
+                                </StyledTableCell>
+                                <StyledTableCell>
+                                  {attachCurrency(row.vestedRewards || 0)}
+                                </StyledTableCell>
+                                <StyledTableCell>
+                                  {attachCurrency(row.unvestedRewards)}
+                                </StyledTableCell>
+                                <StyledTableCell>
+                                  <ChevronRightIcon />
+                                </StyledTableCell>
+                              </>
+                            </TableRow>
+                          )
+                        })}
                     </TableBody>
                   )}
                 </Table>
@@ -429,7 +435,7 @@ PeriodTable.propTypes = {
   isConnected: PropTypes.bool,
   loading: PropTypes.bool,
   rewards: PropTypes.array,
-  pendingPeriod: PropTypes.func,
+  pendingPeriod: PropTypes.object,
   vestedRewards: PropTypes.array,
   activeWallet: PropTypes.object,
 }

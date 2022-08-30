@@ -28,7 +28,7 @@ export const PendingEpochCard = ({
   const currentPeriod = useMemo(() => {
     // return a reward whose epoch is current.
     const newR = rewards.filter(
-      ({ value: { epoch } }) => epoch >= pendingPeriod().number
+      ({ value: { epoch } }) => epoch >= pendingPeriod.number
     )
     return newR || []
   }, [rewards, pendingPeriod])
@@ -71,7 +71,7 @@ export const PendingEpochCard = ({
               }}
             >
               <Typography fontSize={'1.1rem'} fontWeight={600}>
-                {t('Pending Period')} {pendingPeriod()?.number}:
+                {t('Pending Period')} {pendingPeriod?.number}:
               </Typography>
             </Box>
             <Typography
@@ -79,7 +79,7 @@ export const PendingEpochCard = ({
               fontWeight={700}
               sx={{ color: 'secondary.light', marginBottom: '1rem' }}
             >
-              {pendingPeriod()?.date}
+              {pendingPeriod?.date}
             </Typography>
           </Box>
         </Box>
@@ -216,7 +216,7 @@ PendingEpochCard.propTypes = {
   isMobile: PropTypes.bool,
   activeWallet: PropTypes.object,
   minAmount: PropTypes.number,
-  pendingPeriod: PropTypes.func,
+  pendingPeriod: PropTypes.object,
 }
 
 PendingEpochCard.defaultProps = {
