@@ -85,6 +85,7 @@ export default function Periods() {
               pendingPeriod={pendingPeriod}
               activeCurrency={activeCurrency}
               activeWallet={activeWallet}
+              isMobile={isMobile}
             />
           </Grid>
           <Grid

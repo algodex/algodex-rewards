@@ -13,15 +13,18 @@ import TableRow from '@mui/material/TableRow'
 import TableSortLabel from '@mui/material/TableSortLabel'
 import { styled } from '@mui/material/styles'
 import visuallyHidden from '@mui/utils/visuallyHidden'
-
+import Grid from '@mui/material/Grid'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 
+//Custom components and hooks
 import { TableLoader } from '../Loaders/TableLoader'
 import { WarningCard } from '../WarningCard'
 import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
 import { useTranslation } from 'next-i18next'
 import { PeriodContext } from 'context/periodContext'
 import { getEpochStart } from '../../lib/getRewards'
+import { AssetContainer } from '../AssetContainer'
 
 const columns = [
   { id: 'epoch', label: 'Period' },
@@ -80,14 +83,16 @@ export const PeriodTable = ({
   pendingPeriod,
   activeCurrency,
   activeWallet,
+  isMobile,
 }) => {
   const { t } = useTranslation('common')
   const { conversionRate } = usePriceConversionHook({})
   const [activeEpoch, setActiveEpoch] = useState('')
   const context = useContext(PeriodContext)
-  const { setPeriodAssets, tinymanAssets } = context
+  const { periodAssets, setPeriodAssets, tinymanAssets } = context
   const [order, setOrder] = useState('desc')
   const [orderBy, setOrderBy] = useState('epoch')
+  const [mobileAssets, setMobileAssets] = useState(false)
 
   const descendingComparator = (a, b, orderBy) => {
     if (b[orderBy] < a[orderBy]) {
@@ -219,6 +224,7 @@ export const PeriodTable = ({
       })
     }
     setPeriodAssets(data)
+    setMobileAssets(isMobile ? true : false)
   }
 
   return (
@@ -239,20 +245,102 @@ export const PeriodTable = ({
             />
           ) : (
             <>
-              <Typography
-                sx={{
-                  color: 'primary.light',
-                  fontWeight: 500,
-                  marginTop: '2rem',
-                }}
-              >
-                {t(
-                  'You can select a period from this list to view more information'
-                )}
-                .
-              </Typography>
-              {currentPeriod.length > 0 && (
+              {!mobileAssets ? (
                 <>
+                  <Typography
+                    sx={{
+                      color: 'primary.light',
+                      fontWeight: 500,
+                      marginTop: '2rem',
+                    }}
+                  >
+                    {t(
+                      'You can select a period from this list to view more information'
+                    )}
+                    .
+                  </Typography>
+                  {currentPeriod.length > 0 && (
+                    <>
+                      <Typography
+                        sx={{
+                          color: 'primary.contrastText',
+                          fontWeight: 700,
+                          fontSize: '1.2rem',
+                          marginTop: '2rem',
+                        }}
+                      >
+                        {t('Current Period')}
+                      </Typography>
+                      <TableContainer sx={{ maxHeight: 440 }}>
+                        <Table stickyHeader aria-label="sticky table">
+                          {(loading || currentPeriod.length > 0) && (
+                            <TableHead>
+                              <TableRow>
+                                {columns.map((column) => (
+                                  <StyledTableCell
+                                    key={column.id}
+                                    align={column.align}
+                                    style={{ minWidth: column.minWidth }}
+                                    component="th"
+                                    scope="row"
+                                  >
+                                    {t(`${column.label}`)}
+                                  </StyledTableCell>
+                                ))}
+                                <StyledTableCell></StyledTableCell>
+                              </TableRow>
+                            </TableHead>
+                          )}
+                          {loading ? (
+                            <TableLoader columnCount={5} />
+                          ) : (
+                            <TableBody>
+                              {currentPeriod.map((row) => {
+                                return (
+                                  <TableRow
+                                    hover
+                                    tabIndex={-1}
+                                    key={row.epoch}
+                                    sx={[
+                                      {
+                                        cursor: 'pointer',
+                                      },
+                                      row.epoch == activeEpoch &&
+                                        activeRowStyles,
+                                    ]}
+                                    onClick={() => {
+                                      getAssetsByEpoch(row.epoch)
+                                    }}
+                                  >
+                                    <>
+                                      <StyledTableCell>
+                                        {row.epoch}
+                                      </StyledTableCell>
+                                      <StyledTableCell>
+                                        {attachCurrency(row.earnedRewards)}
+                                      </StyledTableCell>
+                                      <StyledTableCell>
+                                        {attachCurrency(row.vestedRewards || 0)}
+                                      </StyledTableCell>
+                                      <StyledTableCell>
+                                        {attachCurrency(
+                                          row.earnedRewards -
+                                            (row.vestedRewards || 0)
+                                        )}
+                                      </StyledTableCell>
+                                      <StyledTableCell>
+                                        <ChevronRightIcon />
+                                      </StyledTableCell>
+                                    </>
+                                  </TableRow>
+                                )
+                              })}
+                            </TableBody>
+                          )}
+                        </Table>
+                      </TableContainer>
+                    </>
+                  )}
                   <Typography
                     sx={{
                       color: 'primary.contrastText',
@@ -261,11 +349,15 @@ export const PeriodTable = ({
                       marginTop: '2rem',
                     }}
                   >
-                    {t('Current Period')}
+                    {t('Previous Periods')}
                   </Typography>
-                  <TableContainer sx={{ maxHeight: 440 }}>
+                  <TableContainer
+                    sx={{
+                      maxHeight: 440,
+                    }}
+                  >
                     <Table stickyHeader aria-label="sticky table">
-                      {(loading || currentPeriod.length > 0) && (
+                      {(loading || mergedRewards.length > 0) && (
                         <TableHead>
                           <TableRow>
                             {columns.map((column) => (
@@ -276,7 +368,22 @@ export const PeriodTable = ({
                                 component="th"
                                 scope="row"
                               >
-                                {t(`${column.label}`)}
+                                <TableSortLabel
+                                  active={orderBy === column.id}
+                                  direction={
+                                    orderBy === column.id ? order : 'asc'
+                                  }
+                                  onClick={() => createSortHandler(column.id)}
+                                >
+                                  {t(`${column.label}`)}
+                                  {orderBy === column.id ? (
+                                    <Box component="span" sx={visuallyHidden}>
+                                      {order === 'desc'
+                                        ? 'sorted descending'
+                                        : 'sorted ascending'}
+                                    </Box>
+                                  ) : null}
+                                </TableSortLabel>
                               </StyledTableCell>
                             ))}
                             <StyledTableCell></StyledTableCell>
@@ -287,142 +394,85 @@ export const PeriodTable = ({
                         <TableLoader columnCount={5} />
                       ) : (
                         <TableBody>
-                          {currentPeriod.map((row) => {
-                            return (
-                              <TableRow
-                                hover
-                                tabIndex={-1}
-                                key={row.epoch}
-                                sx={[
-                                  {
-                                    cursor: 'pointer',
-                                  },
-                                  row.epoch == activeEpoch && activeRowStyles,
-                                ]}
-                                onClick={() => {
-                                  getAssetsByEpoch(row.epoch)
-                                }}
-                              >
-                                <>
-                                  <StyledTableCell>{row.epoch}</StyledTableCell>
-                                  <StyledTableCell>
-                                    {attachCurrency(row.earnedRewards)}
-                                  </StyledTableCell>
-                                  <StyledTableCell>
-                                    {attachCurrency(row.vestedRewards || 0)}
-                                  </StyledTableCell>
-                                  <StyledTableCell>
-                                    {attachCurrency(
-                                      row.earnedRewards -
-                                        (row.vestedRewards || 0)
-                                    )}
-                                  </StyledTableCell>
-                                  <StyledTableCell>
-                                    <ChevronRightIcon />
-                                  </StyledTableCell>
-                                </>
-                              </TableRow>
+                          {mergedRewards
+                            .filter(
+                              ({ epoch }) =>
+                                epoch < parseInt(pendingPeriod.number)
                             )
-                          })}
+                            .map((row) => {
+                              return (
+                                <TableRow
+                                  hover
+                                  tabIndex={-1}
+                                  key={row.epoch}
+                                  sx={[
+                                    {
+                                      cursor: 'pointer',
+                                    },
+                                    row.epoch == activeEpoch && activeRowStyles,
+                                  ]}
+                                  onClick={() => {
+                                    getAssetsByEpoch(row.epoch)
+                                  }}
+                                >
+                                  <>
+                                    <StyledTableCell>
+                                      {row.epoch}
+                                    </StyledTableCell>
+                                    <StyledTableCell>
+                                      {attachCurrency(row.earnedRewards)}
+                                    </StyledTableCell>
+                                    <StyledTableCell>
+                                      {attachCurrency(row.vestedRewards || 0)}
+                                    </StyledTableCell>
+                                    <StyledTableCell>
+                                      {attachCurrency(row.unvestedRewards)}
+                                    </StyledTableCell>
+                                    <StyledTableCell>
+                                      <ChevronRightIcon />
+                                    </StyledTableCell>
+                                  </>
+                                </TableRow>
+                              )
+                            })}
                         </TableBody>
                       )}
                     </Table>
                   </TableContainer>
                 </>
+              ) : (
+                <>
+                  <Typography
+                    sx={{
+                      color: 'secondary.light',
+                      marginTop: '2rem',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                    onClick={() => setMobileAssets(false)}
+                  >
+                    <ChevronLeftIcon /> {t('Return to Period List')}
+                  </Typography>
+                  {periodAssets.length > 0 && (
+                    <Grid container spacing={2}>
+                      {periodAssets.map((asset) => (
+                        <Grid
+                          key={asset.assetId}
+                          item
+                          xs={12}
+                          sm={12}
+                          md={12}
+                          lg={6}
+                          xl={6}
+                        >
+                          <AssetContainer asset={asset} />
+                        </Grid>
+                      ))}
+                    </Grid>
+                  )}
+                </>
               )}
-              <Typography
-                sx={{
-                  color: 'primary.contrastText',
-                  fontWeight: 700,
-                  fontSize: '1.2rem',
-                  marginTop: '2rem',
-                }}
-              >
-                {t('Previous Periods')}
-              </Typography>
-              <TableContainer
-                sx={{
-                  maxHeight: 440,
-                }}
-              >
-                <Table stickyHeader aria-label="sticky table">
-                  {(loading || mergedRewards.length > 0) && (
-                    <TableHead>
-                      <TableRow>
-                        {columns.map((column) => (
-                          <StyledTableCell
-                            key={column.id}
-                            align={column.align}
-                            style={{ minWidth: column.minWidth }}
-                            component="th"
-                            scope="row"
-                          >
-                            <TableSortLabel
-                              active={orderBy === column.id}
-                              direction={orderBy === column.id ? order : 'asc'}
-                              onClick={() => createSortHandler(column.id)}
-                            >
-                              {t(`${column.label}`)}
-                              {orderBy === column.id ? (
-                                <Box component="span" sx={visuallyHidden}>
-                                  {order === 'desc'
-                                    ? 'sorted descending'
-                                    : 'sorted ascending'}
-                                </Box>
-                              ) : null}
-                            </TableSortLabel>
-                          </StyledTableCell>
-                        ))}
-                        <StyledTableCell></StyledTableCell>
-                      </TableRow>
-                    </TableHead>
-                  )}
-                  {loading ? (
-                    <TableLoader columnCount={5} />
-                  ) : (
-                    <TableBody>
-                      {mergedRewards
-                        .filter(
-                          ({ epoch }) => epoch < parseInt(pendingPeriod.number)
-                        )
-                        .map((row) => {
-                          return (
-                            <TableRow
-                              hover
-                              tabIndex={-1}
-                              key={row.epoch}
-                              sx={[
-                                {
-                                  cursor: 'pointer',
-                                },
-                                row.epoch == activeEpoch && activeRowStyles,
-                              ]}
-                              onClick={() => {
-                                getAssetsByEpoch(row.epoch)
-                              }}
-                            >
-                              <>
-                                <StyledTableCell>{row.epoch}</StyledTableCell>
-                                <StyledTableCell>
-                                  {attachCurrency(row.earnedRewards)}
-                                </StyledTableCell>
-                                <StyledTableCell>
-                                  {attachCurrency(row.vestedRewards || 0)}
-                                </StyledTableCell>
-                                <StyledTableCell>
-                                  {attachCurrency(row.unvestedRewards)}
-                                </StyledTableCell>
-                                <StyledTableCell>
-                                  <ChevronRightIcon />
-                                </StyledTableCell>
-                              </>
-                            </TableRow>
-                          )
-                        })}
-                    </TableBody>
-                  )}
-                </Table>
-              </TableContainer>
             </>
           )}
         </>
@@ -438,6 +488,7 @@ PeriodTable.propTypes = {
   pendingPeriod: PropTypes.object,
   vestedRewards: PropTypes.array,
   activeWallet: PropTypes.object,
+  isMobile: PropTypes.bool,
 }
 
 PeriodTable.defaultProps = {

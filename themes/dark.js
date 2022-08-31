@@ -28,15 +28,25 @@ const dark = createTheme({
         root: {
           '@media(max-width: 992px)': {
             '&::-webkit-scrollbar': {
-              height: '10px',
+              width: '10px !important',
+              height: '12px !important',
             },
-            '&::-webkit-scrollbar-track': {
+
+            /* Track */
+            '&::-webkit-scrollbar-track ': {
+              WebkitBoxShadow: 'inset 0 0 6px rgba(0,0,0,0.3) !important',
+              WebkitBorderRadius: '10px !important',
+              borderRadius: '10px !important',
               backgroundColor: '#1A202C',
             },
+
+            /* Handle */
             '&::-webkit-scrollbar-thumb': {
+              WebkitBorderRadius: '10px !important',
+              borderRadius: '10px !important',
+              WebkitBoxShadow: 'inset 0 0 6px rgba(0,0,0,0.5) !important',
               backgroundColor: '#A1AEC0',
-              borderRadius: '10px',
-              width: '10px',
+              //   width: '10px',
             },
           },
         },
