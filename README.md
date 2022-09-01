@@ -29,3 +29,5 @@ The `pages/api` directory is mapped to `/api/*`. Files in this directory are tre
 Add this to the URL
 
 `?viewAsWallet=L7W6QQAW3KW3T7OEHNVQ36Z7WIDD33YAO2524IJGV47R3K426ZGJEQU6OQ`
+
+
