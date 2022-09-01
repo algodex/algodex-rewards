@@ -150,7 +150,7 @@ export const WalletList = () => {
                               fontSize={'0.8rem'}
                               textAlign={'right'}
                             >
-                              {asset.amount / 1000000}
+                              {(asset.amount / 1000000).toLocaleString()}
                             </Typography>
                           </Box>
                         ))}

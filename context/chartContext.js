@@ -85,7 +85,7 @@ export function ChartDataProvider({ children }) {
 
   const amoungSelected = (assetId) => {
     if (
-      selected.includes(tinymanAssets[assetId].name) ||
+      selected.includes(tinymanAssets[assetId]?.name) ||
       selected.includes('ALL')
     ) {
       return true
@@ -143,11 +143,11 @@ export function ChartDataProvider({ children }) {
   }, [rewards, includeUnvested, activeStage, activeRange, selected])
 
   const attachCurrency = (price) => {
-    return `${
+    return `${Number(
       activeCurrency === 'ALGX'
         ? price.toFixed(2)
         : (price * conversionRate).toFixed(2)
-    } ${activeCurrency}`
+    ).toLocaleString()} ${activeCurrency}`
   }
 
   const assetTableData = useMemo(() => {
@@ -222,7 +222,7 @@ export function ChartDataProvider({ children }) {
           : maxRwd.vestedRewards / 7
       }
       data.push({
-        asset: tinymanAssets[assetId].name,
+        asset: tinymanAssets[assetId]?.name,
         EDRewards: attachCurrency(dailyRwd),
         total: _includeUnvested
           ? attachCurrency(list.reduce((a, b) => a + b.earnedRewards, 0))
@@ -277,8 +277,10 @@ export function ChartDataProvider({ children }) {
         assetId,
         lastWeek: lastWkRwds.toFixed(2),
         depthSum: list.reduce((a, b) => a + b.depthSum, 0) / 10080,
-        assetName: tinymanAssets[assetId].name,
-        assetLogo: tinymanAssets[assetId].logo?.svg,
+        assetName: tinymanAssets[assetId]?.name || '??',
+        assetLogo:
+          tinymanAssets[assetId]?.logo?.svg ||
+          'https://asa-list.tinyman.org/assets/??',
       })
     }
 
