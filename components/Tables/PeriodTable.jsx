@@ -219,8 +219,10 @@ export const PeriodTable = ({
         assetId,
         lastWeek: lastWkRwds.toFixed(2),
         depthSum: list.reduce((a, b) => a + b.depthSum, 0) / 10080,
-        assetName: tinymanAssets[assetId]?.name,
-        assetLogo: tinymanAssets[assetId]?.logo?.svg,
+        assetName: tinymanAssets[assetId]?.name || '??',
+        assetLogo:
+          tinymanAssets[assetId]?.logo?.svg ||
+          'https://asa-list.tinyman.org/assets/??',
       })
     }
     setPeriodAssets(data)
