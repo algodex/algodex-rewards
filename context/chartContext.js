@@ -129,7 +129,6 @@ export function ChartDataProvider({ children }) {
       ]
 
       rewardsCopy.sort((a, b) => a.value.epoch - b.value.epoch)
-
       rewardsCopy.forEach(({ value }) => {
         data.push({
           time: DateTime.fromJSDate(
