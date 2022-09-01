@@ -116,7 +116,7 @@ export const WalletList = () => {
                       title="Not enough ALGX in wallet for rewards"
                       link={{
                         title: 'View info on earning rewards here',
-                        url: '/',
+                        url: 'https://docs.algodex.com/rewards-program/algx-liquidity-rewards-program',
                       }}
                     />
                   ) : (

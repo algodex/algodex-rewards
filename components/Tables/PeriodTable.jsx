@@ -242,7 +242,7 @@ export const PeriodTable = ({
               ]}
               link={{
                 title: 'View info on earning rewards here',
-                url: '/',
+                url: 'https://docs.algodex.com/rewards-program/algx-liquidity-rewards-program',
               }}
             />
           ) : (
