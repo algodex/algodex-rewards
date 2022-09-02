@@ -19,8 +19,6 @@
   "Last Week’s Rewards": "Last Week’s Rewards",
   "Total": "Total",
   "Period Pending": "Period Pending",
-  "New Earned Rewards": "New Earned Rewards",
-  "New Earned Vested": "New Earned Vested",
   "Vested Rewards": "Vested Rewards",
   "Connect a wallet to see your current pending rewards": "Connect a wallet to see your current pending rewards",
   "Rewards will be paid out two days after the end of one-week accrual periods": "Rewards will be paid out two days after the end of one-week accrual periods",
@@ -62,5 +60,8 @@
   "Complete": "Complete",
   "Click the arrow beside each wallet to expand for the option to disconnect and to view ALGO and ALGX balances. Other ASAs are not shown on this page": "Click the arrow beside each wallet to expand for the option to disconnect and to view ALGO and ALGX balances. Other ASAs are not shown on this page",
   "Return Home": "Return Home",
-  "Return to Period List":"Return to Period List"
+  "Return to Period List":"Return to Period List",
+  "ALGX Liquidity Rewards Program":"ALGX Liquidity Rewards Program",
+  "Rewards earned from Mainnet Version 1 and Mainnet Version 2 are subject to a vesting schedule. This vesting schedule is depicted in this document":"Rewards earned from Mainnet Version 1 and Mainnet Version 2 are subject to a vesting schedule. This vesting schedule is depicted in this document",
+  "Rewards were paid out on":"Rewards were paid out on"
 }

@@ -112,8 +112,6 @@ export default function Periods() {
             <CurrentEpochCard
               isConnected={isConnected}
               loading={loading}
-              rewards={rewards}
-              vestedRewards={vestedRewards}
               pendingPeriod={pendingPeriod}
               activeCurrency={activeCurrency}
               setActiveCurrency={setActiveCurrency}

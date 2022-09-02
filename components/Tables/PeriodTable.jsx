@@ -144,9 +144,13 @@ export const PeriodTable = ({
           x[value.epoch] = {
             ...x[value.epoch],
             ...value,
-            vestedRewards: value.vestedRewards || 0,
+            vestedRewards:
+              x[value.epoch].vestedRewards + (value.vestedRewards || 0),
+            earnedRewards:
+              x[value.epoch].earnedRewards + (value.earnedRewards || 0),
             unvestedRewards:
-              value.earnedRewards - (value.vestedRewards || 0) || 0,
+              x[value.epoch].unvestedRewards +
+              (value.earnedRewards - (value.vestedRewards || 0) || 0),
             assetId: x[value.epoch].assetId.includes(value.assetId)
               ? x[value.epoch].assetId
               : [...x[value.epoch].assetId, value.assetId],
@@ -262,13 +266,13 @@ export const PeriodTable = ({
                                       <StyledTableCell>
                                         {row.epoch}
                                       </StyledTableCell>
-                                      <StyledTableCell align='right'>
+                                      <StyledTableCell align="right">
                                         {attachCurrency(row.earnedRewards)}
                                       </StyledTableCell>
-                                      <StyledTableCell align='right'>
+                                      <StyledTableCell align="right">
                                         {attachCurrency(row.vestedRewards || 0)}
                                       </StyledTableCell>
-                                      <StyledTableCell align='right'>
+                                      <StyledTableCell align="right">
                                         {attachCurrency(
                                           row.earnedRewards -
                                             (row.vestedRewards || 0)
@@ -361,13 +365,13 @@ export const PeriodTable = ({
                                     <StyledTableCell>
                                       {row.epoch}
                                     </StyledTableCell>
-                                    <StyledTableCell align='right'>
+                                    <StyledTableCell align="right">
                                       {attachCurrency(row.earnedRewards)}
                                     </StyledTableCell>
-                                    <StyledTableCell align='right'>
+                                    <StyledTableCell align="right">
                                       {attachCurrency(row.vestedRewards || 0)}
                                     </StyledTableCell>
-                                    <StyledTableCell align='right'>
+                                    <StyledTableCell align="right">
                                       {attachCurrency(row.unvestedRewards)}
                                     </StyledTableCell>
                                     <StyledTableCell>

@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { getEpochEnd, getEpochStart } from '@/lib/getRewards'
 import { DateTime } from 'luxon'
 import { getAssets } from '@/lib/getTinymanPrice'
+import { dummyReward, dummyVestedRewards } from '@/lib/dummyChartData'
 
 export const usePeriodsHook = ({ activeWallet, isMobile }) => {
   const [rewards, setRewards] = useState([])
@@ -10,7 +11,7 @@ export const usePeriodsHook = ({ activeWallet, isMobile }) => {
   const [loading, setLoading] = useState(false)
   const [activeEpoch, setActiveEpoch] = useState(0)
   const [mobileAssets, setMobileAssets] = useState(false)
-  const [tinymanAssets, setTinymanAssets] = useState(null)
+  const [tinymanAssets, setTinymanAssets] = useState({})
   const [periodAssets, setPeriodAssets] = useState([])
 
   useEffect(() => {
@@ -39,33 +40,36 @@ export const usePeriodsHook = ({ activeWallet, isMobile }) => {
     }
   }, [])
 
-  const fetchRewards = useCallback(async (wallet) => {
-    setLoading(true)
-    const _rewards = new Promise((resolve) => {
-      resolve(getRewardsData(wallet))
-    })
-    const _vestedRewards = new Promise((resolve) => {
-      resolve(getVestedRewardsData(wallet))
-    })
-    await Promise.all([_rewards, _vestedRewards])
-      .then((values) => {
-        setLoading(false)
-        setRewards(values[0].rows)
-        setVestedRewards(values[1].rows)
-        setActiveEpoch(
-          isMobile
-            ? 0
-            : Math.max(...values[0].rows.map(({ value: { epoch } }) => epoch))
-        )
+  const fetchRewards = useCallback(
+    async (wallet) => {
+      setLoading(true)
+      const _rewards = new Promise((resolve) => {
+        resolve(getRewardsData(wallet))
       })
-      .catch((err) => {
-        setLoading(false)
-        console.error(err)
-        //TODO: This dummy data should be removed after production launch
-        // setRewards(dummyReward)
-        // setVestedRewards(dummyVestedRewards)
+      const _vestedRewards = new Promise((resolve) => {
+        resolve(getVestedRewardsData(wallet))
       })
-  }, [isMobile])
+      await Promise.all([_rewards, _vestedRewards])
+        .then((values) => {
+          setLoading(false)
+          setRewards(values[0].rows)
+          setVestedRewards(values[1].rows)
+          setActiveEpoch(
+            isMobile
+              ? 0
+              : Math.max(...values[0].rows.map(({ value: { epoch } }) => epoch))
+          )
+        })
+        .catch((err) => {
+          setLoading(false)
+          console.error(err)
+          //TODO: This dummy data should be removed after production launch
+          // setRewards(dummyReward)
+          // setVestedRewards(dummyVestedRewards)
+        })
+    },
+    [isMobile]
+  )
 
   const getAssetsByEpoch = useCallback(
     async (_epoch) => {
@@ -126,7 +130,7 @@ export const usePeriodsHook = ({ activeWallet, isMobile }) => {
         ...rewards.map(({ value: { epoch } }) => epoch)
       )
       const selected = list.filter(
-        ({ value: { epoch } }) => epoch == activeEpoch
+        ({ value: { epoch } }) => epoch === activeEpoch
       )
       const start = DateTime.fromJSDate(
         new Date(
@@ -137,6 +141,16 @@ export const usePeriodsHook = ({ activeWallet, isMobile }) => {
       const end = DateTime.fromJSDate(
         new Date(getEpochEnd(activeEpoch === 0 ? maxEpoch : activeEpoch) * 1000)
       ).toLocaleString(DateTime.DATE_MED)
+
+      const vestedUnixTime = vestedRewards.find(
+        ({ value: { epoch } }) => epoch == activeEpoch
+      )?.value?.vestedUnixTime
+
+      const vestedDate = vestedUnixTime
+        ? DateTime.fromJSDate(new Date(vestedUnixTime * 1000)).toLocaleString(
+          DateTime.DATE_MED
+        )
+        : null
 
       return {
         date: `${start} - ${end}`,
@@ -149,6 +163,7 @@ export const usePeriodsHook = ({ activeWallet, isMobile }) => {
           (a, b) => a + (b.value.vestedRewards || 0),
           0
         ),
+        vestedDate,
       }
     } else {
       return {

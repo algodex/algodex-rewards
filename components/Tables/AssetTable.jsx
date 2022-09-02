@@ -16,6 +16,7 @@ import Typography from '@mui/material/Typography'
 
 const timeRangeEnum = {
   '1Wk': '1 Week',
+  '1M': '1 Month',
   '3M': '3 Months',
   '1Y': '1 Year',
   YTD: 'Year Today',
@@ -94,7 +95,7 @@ export const AssetTable = ({ isConnected }) => {
 
   const isSelected = (name) => selected.indexOf(name) !== -1
 
-  console.log(assetTableData)
+  // console.log(assetTableData)
   return (
     <>
       {isConnected && (

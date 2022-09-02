@@ -113,6 +113,7 @@ export const PendingEpochCard = ({
                   // eslint-disable-next-line max-len
                   'Rewards will be paid out within two days after the end of one-week accrual periods'
                 )}
+                .
               </Typography>
             </Box>
           </Box>
