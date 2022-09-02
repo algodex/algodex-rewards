@@ -19,8 +19,6 @@
   "Last Week’s Rewards": "Recompensas de la semana pasada",
   "Total": "Total",
   "Period Pending": "Period Pending",
-  "New Earned Rewards": "Nuevas recompensas ganadas",
-  "New Earned Vested": "Nuevo ganado adquirido",
   "Vested Rewards": "Recompensas adquiridas",
   "Connect a wallet to see your current pending rewards": "Conecte una billetera para ver sus recompensas pendientes actuales",
   "Rewards will be paid out two days after the end of one-week accrual periods": "Las recompensas se pagarán dos días después del final de los períodos de acumulación de una semana",
@@ -62,5 +60,8 @@
   "Complete": "Completa",
   "Click the arrow beside each wallet to expand for the option to disconnect and to view ALGO and ALGX balances. Other ASAs are not shown on this page": "Haga clic en la flecha al lado de cada billetera para expandir la opción de desconectarse y ver los saldos de ALGO y ALGX. Otros ASA no se muestran en esta página",
   "Return Home": "Volver a casa",
-  "Return to Period List":"Volver a la lista de períodos"
+  "Return to Period List":"Volver a la lista de períodos",
+  "ALGX Liquidity Rewards Program":"Programa de recompensas de liquidez ALGX",
+  "Rewards earned from Mainnet Version 1 and Mainnet Version 2 are subject to a vesting schedule. This vesting schedule is depicted in this document":"Las recompensas obtenidas de Mainnet Versión 1 y Mainnet Versión 2 están sujetas a un cronograma de adquisición. Este cronograma de adjudicación se describe en este documento.",
+  "Rewards were paid out on":"Las recompensas se pagaron el"
 }

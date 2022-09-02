@@ -16,9 +16,10 @@ import Typography from '@mui/material/Typography'
 
 const timeRangeEnum = {
   '1Wk': '1 Week',
+  '1M': '1 Month',
   '3M': '3 Months',
   '1Y': '1 Year',
-  'YTD': 'Year Today',
+  YTD: 'Year Today',
 }
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -49,11 +50,13 @@ export const AssetTable = ({ isConnected }) => {
       id: 'EDRewards',
       label: 'Est Daily Rewards',
       format: (value) => value.toLocaleString('en-US'),
+      align: 'right',
     },
     {
       id: 'total',
       label: `Total (${timeRangeEnum[activeRange]})`,
       format: (value) => value.toLocaleString('en-US'),
+      align: 'right',
     },
   ]
 
@@ -92,6 +95,7 @@ export const AssetTable = ({ isConnected }) => {
 
   const isSelected = (name) => selected.indexOf(name) !== -1
 
+  // console.log(assetTableData)
   return (
     <>
       {isConnected && (
@@ -107,12 +111,12 @@ export const AssetTable = ({ isConnected }) => {
             {t('Select Assets to Include in Chart')}.
           </Typography>
           <TableContainer>
-            <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
+            <Table aria-labelledby="tableTitle">
               <TableHead>
                 <TableRow>
                   <StyledTableCell></StyledTableCell>
                   {columns.map((item) => (
-                    <StyledTableCell key={item.id}>
+                    <StyledTableCell key={item.id} align={item.align}>
                       {item.label}
                     </StyledTableCell>
                   ))}

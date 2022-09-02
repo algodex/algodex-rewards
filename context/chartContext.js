@@ -1,11 +1,17 @@
-import { createContext, useEffect, useMemo, useState } from 'react'
+import {
+  createContext,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import PropTypes from 'prop-types'
 import { usePeriodsHook } from '@/hooks/usePeriodsHook'
 import useRewardsAddresses from '@/hooks/useRewardsAddresses'
 import { getEpochEnd } from '@/lib/getRewards'
 import { DateTime } from 'luxon'
 import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
-import { getAssets } from '@/lib/getTinymanPrice'
+import { getAlgoExplorerAssets, getAssets } from '@/lib/getTinymanPrice'
 import { getEpochStart } from '../lib/getRewards'
 
 export const ChartDataContext = createContext(undefined)
@@ -23,6 +29,13 @@ export function ChartDataProvider({ children }) {
       name: '1 Week',
       epoch: Date.parse(
         new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7)
+      ),
+    },
+    '1M': {
+      value: '1M',
+      name: '1 Month',
+      epoch: Date.parse(
+        new Date(now.getFullYear(), now.getMonth() - 1, now.getDate())
       ),
     },
     '3M': {
@@ -53,8 +66,16 @@ export function ChartDataProvider({ children }) {
   const { conversionRate } = usePriceConversionHook({})
   const { activeWallet } = useRewardsAddresses()
   const { rewards, vestedRewards } = usePeriodsHook({ activeWallet })
-  const [tinymanAssets, setTinymanAssets] = useState(null)
+  const [tinymanAssets, setTinymanAssets] = useState({})
   const [selected, setSelected] = useState(['ALL'])
+  const [assetTableData, setAssetTableData] = useState([
+    {
+      asset: 'ALL',
+      EDRewards: 0,
+      total: 0,
+    },
+  ])
+  const [availableAssets, setAvailableAssets] = useState({})
 
   useEffect(() => {
     const getAllAssets = async () => {
@@ -85,7 +106,7 @@ export function ChartDataProvider({ children }) {
 
   const amoungSelected = (assetId) => {
     if (
-      selected.includes(tinymanAssets[assetId]?.name) ||
+      selected.includes(availableAssets[assetId]?.unit_name) ||
       selected.includes('ALL')
     ) {
       return true
@@ -129,7 +150,6 @@ export function ChartDataProvider({ children }) {
       ]
 
       rewardsCopy.sort((a, b) => a.value.epoch - b.value.epoch)
-
       rewardsCopy.forEach(({ value }) => {
         data.push({
           time: DateTime.fromJSDate(
@@ -150,7 +170,7 @@ export function ChartDataProvider({ children }) {
     ).toLocaleString()} ${activeCurrency}`
   }
 
-  const assetTableData = useMemo(() => {
+  const getAssetTableData = useCallback(async () => {
     let _includeUnvested = includeUnvested
     let rewardsCopy = includeUnvested
       ? [
@@ -210,27 +230,50 @@ export function ChartDataProvider({ children }) {
         }
       })
     }
+    await Promise.all(
+      Object.keys(assets).map(async (assetId) => {
+        const list = assets[assetId]
+        const max = Math.max(...list.map(({ epoch }) => epoch))
+        const maxRwd = list.find(({ epoch }) => epoch == max)
+        let dailyRwd = 0
+        if (maxRwd) {
+          dailyRwd = _includeUnvested
+            ? maxRwd.earnedRewards / 7
+            : maxRwd.vestedRewards / 7
+        }
 
-    for (const assetId in assets) {
-      const list = assets[assetId]
-      const max = Math.max(...list.map(({ epoch }) => epoch))
-      const maxRwd = list.find(({ epoch }) => epoch == max)
-      let dailyRwd = 0
-      if (maxRwd) {
-        dailyRwd = _includeUnvested
-          ? maxRwd.earnedRewards / 7
-          : maxRwd.vestedRewards / 7
-      }
-      data.push({
-        asset: tinymanAssets[assetId]?.name,
-        EDRewards: attachCurrency(dailyRwd),
-        total: _includeUnvested
-          ? attachCurrency(list.reduce((a, b) => a + b.earnedRewards, 0))
-          : attachCurrency(list.reduce((a, b) => a + b.vestedRewards, 0)),
+        try {
+          const assetInfo = await getAlgoExplorerAssets(assetId)
+
+          setAvailableAssets((prev) => ({
+            ...prev,
+            [`${assetId}`]: { unit_name: assetInfo['unit-name'] },
+          }))
+
+          data.push({
+            asset: assetInfo?.['unit-name'] || '??',
+            EDRewards: attachCurrency(dailyRwd),
+            total: _includeUnvested
+              ? attachCurrency(list.reduce((a, b) => a + b.earnedRewards, 0))
+              : attachCurrency(list.reduce((a, b) => a + b.vestedRewards, 0)),
+          })
+        } catch (e) {
+          console.error(e)
+        }
       })
-    }
+    )
+    setAssetTableData(data)
+  }, [
+    rewards,
+    vestedRewards,
+    includeUnvested,
+    activeCurrency,
+    activeStage,
+    activeRange,
+  ])
 
-    return data
+  useEffect(() => {
+    getAssetTableData()
   }, [
     rewards,
     vestedRewards,
@@ -277,7 +320,7 @@ export function ChartDataProvider({ children }) {
         assetId,
         lastWeek: lastWkRwds.toFixed(2),
         depthSum: list.reduce((a, b) => a + b.depthSum, 0) / 10080,
-        assetName: tinymanAssets[assetId]?.name || '??',
+        assetName: tinymanAssets[assetId]?.unit_name || '??',
         assetLogo:
           tinymanAssets[assetId]?.logo?.svg ||
           'https://asa-list.tinyman.org/assets/??',

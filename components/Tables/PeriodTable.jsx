@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 
 // Material UI components
@@ -22,17 +22,16 @@ import { TableLoader } from '../Loaders/TableLoader'
 import { WarningCard } from '../WarningCard'
 import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
 import { useTranslation } from 'next-i18next'
-import { PeriodContext } from 'context/periodContext'
-import { getEpochStart } from '../../lib/getRewards'
 import { AssetContainer } from '../AssetContainer'
 
 const columns = [
   { id: 'epoch', label: 'Period' },
-  { id: 'earnedRewards', label: 'Earned Rewards' },
-  { id: 'vestedRewards', label: 'Vested Rewards' },
+  { id: 'earnedRewards', label: 'Earned Rewards', align: 'right' },
+  { id: 'vestedRewards', label: 'Vested Rewards', align: 'right' },
   {
     id: 'unvestedRewards',
     label: 'Unvested Rewards',
+    align: 'right',
   },
 ]
 
@@ -82,17 +81,16 @@ export const PeriodTable = ({
   vestedRewards,
   pendingPeriod,
   activeCurrency,
-  activeWallet,
-  isMobile,
+  activeEpoch,
+  setActiveEpoch,
+  mobileAssets,
+  periodAssets,
+  setMobileAssets,
 }) => {
   const { t } = useTranslation('common')
   const { conversionRate } = usePriceConversionHook({})
-  const [activeEpoch, setActiveEpoch] = useState('')
-  const context = useContext(PeriodContext)
-  const { periodAssets, setPeriodAssets, tinymanAssets } = context
   const [order, setOrder] = useState('desc')
   const [orderBy, setOrderBy] = useState('epoch')
-  const [mobileAssets, setMobileAssets] = useState(false)
 
   const descendingComparator = (a, b, orderBy) => {
     if (b[orderBy] < a[orderBy]) {
@@ -146,9 +144,13 @@ export const PeriodTable = ({
           x[value.epoch] = {
             ...x[value.epoch],
             ...value,
-            vestedRewards: value.vestedRewards || 0,
+            vestedRewards:
+              x[value.epoch].vestedRewards + (value.vestedRewards || 0),
+            earnedRewards:
+              x[value.epoch].earnedRewards + (value.earnedRewards || 0),
             unvestedRewards:
-              value.earnedRewards - (value.vestedRewards || 0) || 0,
+              x[value.epoch].unvestedRewards +
+              (value.earnedRewards - (value.vestedRewards || 0) || 0),
             assetId: x[value.epoch].assetId.includes(value.assetId)
               ? x[value.epoch].assetId
               : [...x[value.epoch].assetId, value.assetId],
@@ -175,60 +177,6 @@ export const PeriodTable = ({
     return newR || []
   }, [mergedRewards, pendingPeriod])
 
-  useEffect(() => {
-    setPeriodAssets([])
-  }, [activeWallet])
-  // console.log({ mergedRewards })
-
-  const getAssetsByEpoch = (_epoch) => {
-    setActiveEpoch(_epoch)
-    const rewardsCopy = rewards.filter(
-      ({ value: { epoch } }) => epoch == _epoch
-    )
-    const data = []
-    const assets = {}
-    if (rewardsCopy.length > 0) {
-      rewardsCopy.forEach(({ value }) => {
-        if (assets[value.assetId]) {
-          assets[value.assetId] = [...assets[value.assetId], value]
-        } else {
-          assets[value.assetId] = [value]
-        }
-      })
-    }
-    for (const assetId in assets) {
-      const list = assets[assetId]
-      const now = new Date()
-      const lastWkUnixStart = Math.floor(
-        new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7) / 1000
-      )
-      const lastWkEpochStart =
-        (lastWkUnixStart - getEpochStart(1)) / 604800 + 1
-
-      const lastWkUnixEnd = Math.floor(Date.now() / 1000)
-      const lastWkEpochEnd = (lastWkUnixEnd - getEpochStart(1)) / 604800 + 1
-      //Filter out all rewards within last weeks' epoch
-      const x = list.filter(
-        ({ epoch }) =>
-          epoch >= lastWkEpochStart.toFixed(0) &&
-          epoch <= lastWkEpochEnd.toFixed(0)
-      )
-      const lastWkRwds = x.reduce((a, b) => a + b.earnedRewards, 0)
-
-      data.push({
-        assetId,
-        lastWeek: lastWkRwds.toFixed(2),
-        depthSum: list.reduce((a, b) => a + b.depthSum, 0) / 10080,
-        assetName: tinymanAssets[assetId]?.name || '??',
-        assetLogo:
-          tinymanAssets[assetId]?.logo?.svg ||
-          'https://asa-list.tinyman.org/assets/??',
-      })
-    }
-    setPeriodAssets(data)
-    setMobileAssets(isMobile ? true : false)
-  }
-
   return (
     <>
       {isConnected && (
@@ -242,7 +190,7 @@ export const PeriodTable = ({
               ]}
               link={{
                 title: 'View info on earning rewards here',
-                url: '/',
+                url: 'https://docs.algodex.com/rewards-program/algx-liquidity-rewards-program',
               }}
             />
           ) : (
@@ -273,7 +221,7 @@ export const PeriodTable = ({
                       >
                         {t('Current Period')}
                       </Typography>
-                      <TableContainer sx={{ maxHeight: 440 }}>
+                      <TableContainer>
                         <Table stickyHeader aria-label="sticky table">
                           {(loading || currentPeriod.length > 0) && (
                             <TableHead>
@@ -311,20 +259,20 @@ export const PeriodTable = ({
                                         activeRowStyles,
                                     ]}
                                     onClick={() => {
-                                      getAssetsByEpoch(row.epoch)
+                                      setActiveEpoch(row.epoch)
                                     }}
                                   >
                                     <>
                                       <StyledTableCell>
                                         {row.epoch}
                                       </StyledTableCell>
-                                      <StyledTableCell>
+                                      <StyledTableCell align="right">
                                         {attachCurrency(row.earnedRewards)}
                                       </StyledTableCell>
-                                      <StyledTableCell>
+                                      <StyledTableCell align="right">
                                         {attachCurrency(row.vestedRewards || 0)}
                                       </StyledTableCell>
-                                      <StyledTableCell>
+                                      <StyledTableCell align="right">
                                         {attachCurrency(
                                           row.earnedRewards -
                                             (row.vestedRewards || 0)
@@ -353,11 +301,7 @@ export const PeriodTable = ({
                   >
                     {t('Previous Periods')}
                   </Typography>
-                  <TableContainer
-                    sx={{
-                      maxHeight: 440,
-                    }}
-                  >
+                  <TableContainer>
                     <Table stickyHeader aria-label="sticky table">
                       {(loading || mergedRewards.length > 0) && (
                         <TableHead>
@@ -414,20 +358,20 @@ export const PeriodTable = ({
                                     row.epoch == activeEpoch && activeRowStyles,
                                   ]}
                                   onClick={() => {
-                                    getAssetsByEpoch(row.epoch)
+                                    setActiveEpoch(row.epoch)
                                   }}
                                 >
                                   <>
                                     <StyledTableCell>
                                       {row.epoch}
                                     </StyledTableCell>
-                                    <StyledTableCell>
+                                    <StyledTableCell align="right">
                                       {attachCurrency(row.earnedRewards)}
                                     </StyledTableCell>
-                                    <StyledTableCell>
+                                    <StyledTableCell align="right">
                                       {attachCurrency(row.vestedRewards || 0)}
                                     </StyledTableCell>
-                                    <StyledTableCell>
+                                    <StyledTableCell align="right">
                                       {attachCurrency(row.unvestedRewards)}
                                     </StyledTableCell>
                                     <StyledTableCell>
@@ -487,10 +431,14 @@ PeriodTable.propTypes = {
   isConnected: PropTypes.bool,
   loading: PropTypes.bool,
   rewards: PropTypes.array,
-  pendingPeriod: PropTypes.object,
   vestedRewards: PropTypes.array,
-  activeWallet: PropTypes.object,
-  isMobile: PropTypes.bool,
+  pendingPeriod: PropTypes.object,
+  activeCurrency: PropTypes.string,
+  activeEpoch: PropTypes.number,
+  setActiveEpoch: PropTypes.func,
+  mobileAssets: PropTypes.bool,
+  periodAssets: PropTypes.array,
+  setMobileAssets: PropTypes.func,
 }
 
 PeriodTable.defaultProps = {

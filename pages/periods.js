@@ -17,7 +17,6 @@ import { PeriodTable } from '@/components/Tables/PeriodTable'
 import useRewardsAddresses from '@/hooks/useRewardsAddresses'
 import { usePeriodsHook } from '@/hooks/usePeriodsHook'
 import { AssetContainer } from '@/components/AssetContainer'
-import { PeriodContext } from 'context/periodContext'
 
 export async function getServerSideProps({ locale }) {
   return {
@@ -31,13 +30,23 @@ export default function Periods() {
   const { t } = useTranslation('periods')
   const { addresses, activeWallet } = useRewardsAddresses()
   const isConnected = addresses.length > 0
-  const { rewards, vestedRewards, loading, pendingPeriod } = usePeriodsHook({
-    activeWallet,
-  })
-  const context = useContext(PeriodContext)
-  const { periodAssets } = context
   const isMobile = useMediaQuery(useTheme().breakpoints.down('sm'))
   const [activeCurrency, setActiveCurrency] = useState('ALGX')
+  const {
+    rewards,
+    vestedRewards,
+    loading,
+    pendingPeriod,
+    mobileAssets,
+    activeEpoch,
+    setActiveEpoch,
+    periodAssets,
+    setMobileAssets,
+    completedPeriod
+  } = usePeriodsHook({
+    activeWallet,
+    isMobile,
+  })
   return (
     <>
       <Head>
@@ -84,8 +93,11 @@ export default function Periods() {
               vestedRewards={vestedRewards}
               pendingPeriod={pendingPeriod}
               activeCurrency={activeCurrency}
-              activeWallet={activeWallet}
-              isMobile={isMobile}
+              mobileAssets={mobileAssets}
+              activeEpoch={activeEpoch}
+              setActiveEpoch={setActiveEpoch}
+              periodAssets={periodAssets}
+              setMobileAssets={setMobileAssets}
             />
           </Grid>
           <Grid
@@ -100,11 +112,10 @@ export default function Periods() {
             <CurrentEpochCard
               isConnected={isConnected}
               loading={loading}
-              rewards={rewards}
-              vestedRewards={vestedRewards}
               pendingPeriod={pendingPeriod}
               activeCurrency={activeCurrency}
               setActiveCurrency={setActiveCurrency}
+              completedPeriod={completedPeriod}
             />
             {!isMobile && periodAssets.length > 0 && (
               <Grid container spacing={2}>

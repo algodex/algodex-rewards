@@ -9,11 +9,11 @@ import Box from '@mui/material/Box'
 import LaunchRoundedIcon from '@mui/icons-material/LaunchRounded'
 import InfoRoundedIcon from '@mui/icons-material/InfoRounded'
 import CircularProgress from '@mui/material/CircularProgress'
+import styled from '@emotion/styled'
+import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip'
 
 // custom hook and libs
 import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
-import { getEpochEnd, getEpochStart } from '@/lib/getRewards'
-import { DateTime } from 'luxon'
 
 const styles = {
   selectorContainer: {
@@ -40,48 +40,22 @@ const styles = {
   },
 }
 
+const HtmlTooltip = styled(({ className, ...props }) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+  [`& .${tooltipClasses.tooltip}`]: {
+    backgroundColor: theme.palette.secondary.dark,
+  },
+}))
+
 export const CurrentEpochCard = ({
   isConnected,
-  rewards,
-  vestedRewards,
   loading,
   activeCurrency,
   setActiveCurrency,
+  completedPeriod,
 }) => {
   const { t } = useTranslation('common')
-  const getLastWeekEpoch = () => {
-    const now = new Date()
-    return Date.parse(
-      new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7)
-    )
-  }
-
-  const newEarnedReward = useMemo(() => {
-    // Find a reward whose epoch is not over a week from now
-    const allNew = rewards.filter(
-      ({ value: { epoch } }) => getEpochEnd(epoch) * 1000 >= getLastWeekEpoch()
-    )
-    const max = Math.max(...allNew.map(({ value: { epoch } }) => epoch))
-    const newR = rewards.find(({ value: { epoch } }) => epoch == max)
-    return newR?.value?.earnedRewards || 0
-  }, [rewards])
-
-  const sumVestedRewards = useMemo(() => {
-    return vestedRewards.reduce((a, b) => {
-      return a + b.value.vestedRewards
-    }, 0)
-  }, [vestedRewards])
-
-  const newEarnedVestedReward = useMemo(() => {
-    // Find a vested reward whose unix time is not over a week from now
-    const allNew = vestedRewards.filter(
-      ({ value: { vestedUnixTime } }) =>
-        vestedUnixTime * 1000 >= getLastWeekEpoch()
-    )
-    const max = Math.max(...allNew.map(({ value: { epoch } }) => epoch))
-    const newR = vestedRewards.find(({ value: { epoch } }) => epoch == max)
-    return newR?.value?.vestedRewards || 0
-  }, [vestedRewards])
 
   const { conversionRate } = usePriceConversionHook({})
 
@@ -92,31 +66,7 @@ export const CurrentEpochCard = ({
     ).toLocaleString()} ${activeCurrency}`
   }
 
-  const completedPeriod = useMemo(() => {
-    if (rewards.length > 0) {
-      const maxEpoch = Math.max(
-        ...rewards.map(({ value: { epoch } }) => epoch)
-      )
-      const start = DateTime.fromJSDate(
-        new Date(getEpochStart(maxEpoch) * 1000)
-      ).toLocaleString(DateTime.DATE_MED)
-
-      const end = DateTime.fromJSDate(
-        new Date(getEpochEnd(maxEpoch) * 1000)
-      ).toLocaleString(DateTime.DATE_MED)
-
-      return {
-        date: `${start} - ${end}`,
-        number: maxEpoch.toFixed(0),
-      }
-    } else {
-      return {
-        date: '---',
-        number: 0,
-      }
-    }
-  }, [rewards])
-
+  console.log({ completedPeriod })
   return (
     <>
       <Box
@@ -187,16 +137,69 @@ export const CurrentEpochCard = ({
           }}
         >
           <Typography fontSize={'0.95rem'} fontWeight={600}>
-            {t('New Earned Rewards')}:
+            {t('Earned Rewards')}:
           </Typography>
           {isConnected && (
-            <Typography fontSize={'1rem'} fontWeight={600}>
+            <Typography
+              fontSize={'1rem'}
+              fontWeight={600}
+              textAlign={'right'}
+              sx={{
+                // display: 'flex',
+                // alignItems: 'flex-start',
+                lineHeight: '1rem',
+              }}
+            >
+              <HtmlTooltip
+                arrow
+                title={
+                  <Box
+                    sx={{
+                      width: '300px',
+                      maxWidth: '100%',
+                      padding: '.5rem',
+                    }}
+                  >
+                    <Typography
+                      fontWeight={700}
+                      marginBottom={'.6rem'}
+                      fontSize={'.9rem'}
+                    >
+                      {
+                        // eslint-disable-next-line max-len
+                        'Rewards earned from Mainnet Version 1 and Mainnet Version 2 are subject to a vesting schedule. This vesting schedule is depicted in this document'
+                      }
+                      :
+                    </Typography>
+                    <Link
+                      href="https://docs.algodex.com/rewards-program/algx-liquidity-rewards-program"
+                      sx={{
+                        fontSize: '.9rem',
+                        fontWeight: 700,
+                        color: 'accent.main',
+                      }}
+                      target={'_blanc'}
+                    >
+                      {t('ALGX Liquidity Rewards Program')}
+                    </Link>
+                  </Box>
+                }
+              >
+                <InfoRoundedIcon
+                  sx={{
+                    fontSize: '1rem',
+                    marginRight: '0.3rem',
+                    color: 'secondary.light',
+                    cursor: 'pointer',
+                  }}
+                />
+              </HtmlTooltip>
               {loading ? (
                 <>
                   <CircularProgress size={'1rem'} />
                 </>
               ) : (
-                <>{attachCurrency(newEarnedReward)}</>
+                <>{attachCurrency(completedPeriod.earnedRewards || 0)}</>
               )}
             </Typography>
           )}
@@ -208,105 +211,35 @@ export const CurrentEpochCard = ({
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            color: 'secondary.light',
-          }}
-        >
-          <Typography fontSize={'0.95rem'} fontWeight={600}>
-            {t('New Earned Vested')}:
-          </Typography>
-          {isConnected && (
-            <Typography
-              fontSize={'1rem'}
-              fontWeight={600}
-              textAlign={'right'}
-              sx={{
-                display: 'flex',
-                alignItems: 'flex-start',
-                lineHeight: '1rem',
-              }}
-            >
-              <InfoRoundedIcon
-                sx={{
-                  fontSize: '1rem',
-                  marginRight: '0.3rem',
-                }}
-              />
-              {loading ? (
-                <>
-                  <CircularProgress size={'1rem'} />
-                </>
-              ) : (
-                <>{attachCurrency(newEarnedVestedReward)}</>
-              )}
-            </Typography>
-          )}
-        </Box>
-        <Box
-          marginBottom={'2rem'}
-          marginLeft={'0.6rem'}
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
           }}
         >
           <Typography fontSize={'0.95rem'} fontWeight={600}>
             {t('Vested Rewards')}:
           </Typography>
-          {isConnected ? (
-            <Box>
+          {isConnected && (
+            <Typography fontSize={'1rem'} fontWeight={600}>
               {loading ? (
                 <>
                   <CircularProgress size={'1rem'} />
                 </>
               ) : (
-                <>
-                  <Typography
-                    fontSize={'1rem'}
-                    textAlign={'right'}
-                    fontWeight={600}
-                  >
-                    {sumVestedRewards.toLocaleString()} ALGX
-                  </Typography>
-
-                  <Typography
-                    fontSize={'0.85rem'}
-                    fontWeight={700}
-                    textAlign={'right'}
-                    sx={{ color: 'secondary.light' }}
-                  >
-                    {(sumVestedRewards * conversionRate).toLocaleString()} USD
-                  </Typography>
-                </>
+                <>{attachCurrency(completedPeriod.vestedRewards || 0)}</>
               )}
-            </Box>
-          ) : (
-            <Typography
-              fontSize={'0.85rem'}
-              fontWeight={500}
-              textAlign={'right'}
-              sx={{
-                color: 'secondary.light',
-                width: '7rem',
-                textAlign: 'center',
-                marginTop: '-2rem',
-              }}
-            >
-              {t('Connect a wallet to see your current pending rewards')}
             </Typography>
           )}
         </Box>
+
         <>
-          <Typography
-            variant="p"
-            fontSize={'0.8rem'}
-            fontStyle={'italic'}
-            marginLeft={'0.5rem'}
-          >
-            {t(
-              'Rewards will be paid out two days after the end of one-week accrual periods'
-            )}
-          </Typography>
+          {completedPeriod.vestedDate && (
+            <Typography
+              variant="p"
+              fontSize={'0.8rem'}
+              fontStyle={'italic'}
+              marginLeft={'0.5rem'}
+            >
+              {t('Rewards were paid out on')} {completedPeriod.vestedDate}.
+            </Typography>
+          )}
 
           <Box textAlign={'center'} marginTop={'1.5rem'}>
             <Link
@@ -339,14 +272,13 @@ export const CurrentEpochCard = ({
 
 CurrentEpochCard.propTypes = {
   isConnected: PropTypes.bool,
-  rewards: PropTypes.array,
-  vestedRewards: PropTypes.array,
   loading: PropTypes.bool,
+  completedPeriod: PropTypes.object,
+  activeCurrency: PropTypes.string,
+  setActiveCurrency: PropTypes.func,
 }
 
 CurrentEpochCard.defaultProps = {
   isConnected: false,
-  rewards: [],
-  vestedRewards: [],
   loading: true,
 }

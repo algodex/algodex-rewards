@@ -113,6 +113,7 @@ export const PendingEpochCard = ({
                   // eslint-disable-next-line max-len
                   'Rewards will be paid out within two days after the end of one-week accrual periods'
                 )}
+                .
               </Typography>
             </Box>
           </Box>
@@ -146,7 +147,12 @@ export const PendingEpochCard = ({
             fontWeight={600}
             sx={{ textDecoration: 'underline', marginBottom: '0.7rem' }}
           >
-            {tc('How are Rewards Calculated?')}
+            <Link
+              href="https://docs.algodex.com/rewards-program/algx-liquidity-rewards-program"
+              target={'_blanc'}
+            >
+              {tc('How are Rewards Calculated?')}
+            </Link>
           </Typography>
         </Box>
       </Box>
