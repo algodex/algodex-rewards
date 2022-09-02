@@ -12,8 +12,6 @@ import CircularProgress from '@mui/material/CircularProgress'
 
 // custom hook and libs
 import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
-import { getEpochEnd, getEpochStart } from '@/lib/getRewards'
-import { DateTime } from 'luxon'
 
 const styles = {
   selectorContainer: {
@@ -47,6 +45,7 @@ export const CurrentEpochCard = ({
   loading,
   activeCurrency,
   setActiveCurrency,
+  completedPeriod,
 }) => {
   const { t } = useTranslation('common')
   const getLastWeekEpoch = () => {
@@ -56,31 +55,10 @@ export const CurrentEpochCard = ({
     )
   }
 
-  const newEarnedReward = useMemo(() => {
-    // Find a reward whose epoch is not over a week from now
-    const allNew = rewards.filter(
-      ({ value: { epoch } }) => getEpochEnd(epoch) * 1000 >= getLastWeekEpoch()
-    )
-    const max = Math.max(...allNew.map(({ value: { epoch } }) => epoch))
-    const newR = rewards.find(({ value: { epoch } }) => epoch == max)
-    return newR?.value?.earnedRewards || 0
-  }, [rewards])
-
   const sumVestedRewards = useMemo(() => {
     return vestedRewards.reduce((a, b) => {
       return a + b.value.vestedRewards
     }, 0)
-  }, [vestedRewards])
-
-  const newEarnedVestedReward = useMemo(() => {
-    // Find a vested reward whose unix time is not over a week from now
-    const allNew = vestedRewards.filter(
-      ({ value: { vestedUnixTime } }) =>
-        vestedUnixTime * 1000 >= getLastWeekEpoch()
-    )
-    const max = Math.max(...allNew.map(({ value: { epoch } }) => epoch))
-    const newR = vestedRewards.find(({ value: { epoch } }) => epoch == max)
-    return newR?.value?.vestedRewards || 0
   }, [vestedRewards])
 
   const { conversionRate } = usePriceConversionHook({})
@@ -92,31 +70,7 @@ export const CurrentEpochCard = ({
     ).toLocaleString()} ${activeCurrency}`
   }
 
-  const completedPeriod = useMemo(() => {
-    if (rewards.length > 0) {
-      const maxEpoch = Math.max(
-        ...rewards.map(({ value: { epoch } }) => epoch)
-      )
-      const start = DateTime.fromJSDate(
-        new Date(getEpochStart(maxEpoch) * 1000)
-      ).toLocaleString(DateTime.DATE_MED)
-
-      const end = DateTime.fromJSDate(
-        new Date(getEpochEnd(maxEpoch) * 1000)
-      ).toLocaleString(DateTime.DATE_MED)
-
-      return {
-        date: `${start} - ${end}`,
-        number: maxEpoch.toFixed(0),
-      }
-    } else {
-      return {
-        date: '---',
-        number: 0,
-      }
-    }
-  }, [rewards])
-
+  // console.log({ completedPeriod })
   return (
     <>
       <Box
@@ -187,7 +141,7 @@ export const CurrentEpochCard = ({
           }}
         >
           <Typography fontSize={'0.95rem'} fontWeight={600}>
-            {t('New Earned Rewards')}:
+            {t('Earned Rewards')}:
           </Typography>
           {isConnected && (
             <Typography fontSize={'1rem'} fontWeight={600}>
@@ -196,7 +150,7 @@ export const CurrentEpochCard = ({
                   <CircularProgress size={'1rem'} />
                 </>
               ) : (
-                <>{attachCurrency(newEarnedReward)}</>
+                <>{attachCurrency(completedPeriod.earnedRewards || 0)}</>
               )}
             </Typography>
           )}
@@ -212,7 +166,7 @@ export const CurrentEpochCard = ({
           }}
         >
           <Typography fontSize={'0.95rem'} fontWeight={600}>
-            {t('New Earned Vested')}:
+            {t('Earned Vested')}:
           </Typography>
           {isConnected && (
             <Typography
@@ -236,7 +190,7 @@ export const CurrentEpochCard = ({
                   <CircularProgress size={'1rem'} />
                 </>
               ) : (
-                <>{attachCurrency(newEarnedVestedReward)}</>
+                <>{attachCurrency(completedPeriod.vestedRewards || 0)}</>
               )}
             </Typography>
           )}
@@ -342,6 +296,7 @@ CurrentEpochCard.propTypes = {
   rewards: PropTypes.array,
   vestedRewards: PropTypes.array,
   loading: PropTypes.bool,
+  completedPeriod: PropTypes.object,
 }
 
 CurrentEpochCard.defaultProps = {
