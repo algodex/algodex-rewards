@@ -127,12 +127,25 @@ export function ChartDataProvider({ children }) {
     ]
     rewardsCopy.sort((a, b) => a.value.epoch - b.value.epoch)
     rewardsCopy.forEach(({ value }) => {
-      data.push({
-        time: DateTime.fromJSDate(
-          new Date(value.vestedUnixTime * 1000)
-        ).toFormat('yyyy-LL-dd'),
-        value: value.vestedRewards,
-      })
+      const time = DateTime.fromJSDate(
+        new Date(value.vestedUnixTime * 1000)
+      ).toFormat('yyyy-LL-dd')
+      const _value = value.vestedRewards
+
+      // Check if the current time exist in the data. If found, sum up the data
+      const found = data.find(({ time: _time }) => _time == time)
+      const foundIndex = data.findIndex(({ time: _time }) => _time == time)
+      if (found) {
+        data.splice(foundIndex, 1, {
+          time,
+          value: _value + found.value,
+        })
+      } else {
+        data.push({
+          time,
+          value: _value,
+        })
+      }
     })
     return data
   }, [vestedRewards, activeStage, activeRange, selected])
@@ -151,12 +164,25 @@ export function ChartDataProvider({ children }) {
 
       rewardsCopy.sort((a, b) => a.value.epoch - b.value.epoch)
       rewardsCopy.forEach(({ value }) => {
-        data.push({
-          time: DateTime.fromJSDate(
-            new Date(getEpochEnd(value.epoch) * 1000)
-          ).toFormat('yyyy-LL-dd'),
-          value: value.earnedRewards,
-        })
+        const time = DateTime.fromJSDate(
+          new Date(getEpochEnd(value.epoch) * 1000)
+        ).toFormat('yyyy-LL-dd')
+        const _value = value.earnedRewards
+
+        // Check if the current time exist in the data. If found, sum up the data
+        const found = data.find(({ time: _time }) => _time == time)
+        const foundIndex = data.findIndex(({ time: _time }) => _time == time)
+        if (found) {
+          data.splice(foundIndex, 1, {
+            time,
+            value: _value + found.value,
+          })
+        } else {
+          data.push({
+            time,
+            value: _value,
+          })
+        }
       })
     }
     return data

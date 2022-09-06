@@ -66,7 +66,7 @@ export const CurrentEpochCard = ({
     ).toLocaleString()} ${activeCurrency}`
   }
 
-  console.log({ completedPeriod })
+  // console.log({ completedPeriod })
   return (
     <>
       <Box
