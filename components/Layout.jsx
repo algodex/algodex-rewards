@@ -35,7 +35,6 @@ export function Layout({ children, components, componentsProps }) {
 
   const [drawerOpen, setDrawerOpen] = useState(false)
   const toggleDrawer = () => {
-    console.log('first')
     setDrawerOpen(!drawerOpen)
   }
 

@@ -31,7 +31,7 @@ export default function AreaChart({ isConnected }) {
       height: 350,
       localization: {
         priceFormatter: (price) => {
-          return '$' + price.toFixed(2)
+          return '$' + price.toLocaleString()
         },
       },
       layout: {
@@ -59,8 +59,8 @@ export default function AreaChart({ isConnected }) {
       priceScale: {
         borderColor: '#485c7b',
         scaleMargins: {
-          top: 0.3,
-          bottom: 0.25,
+          top: 0.2,
+          bottom: 0,
         },
         borderVisible: true,
       },
@@ -95,8 +95,8 @@ export default function AreaChart({ isConnected }) {
         localization: {
           priceFormatter: (price) => {
             return activeCurrency == 'USD'
-              ? `$ ${(price * conversionRate).toFixed(2)}`
-              : `ALGX ${price.toFixed(2)}`
+              ? `$ ${(price * conversionRate).toLocaleString()}`
+              : `ALGX ${price.toLocaleString()}`
           },
         },
       })
