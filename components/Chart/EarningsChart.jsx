@@ -78,6 +78,7 @@ export const EarningsChart = ({ isConnected, isMobile, isHome }) => {
         }}
       >
         <Typography
+          data-testid={'earnings-overtime'}
           fontSize={'1rem'}
           fontWeight={600}
           color={'secondary.contrastText'}
@@ -119,6 +120,7 @@ export const EarningsChart = ({ isConnected, isMobile, isHome }) => {
       >
         {!isConnected && (
           <Box
+            data-testid={'connect-wallet'}
             sx={{
               color: 'primary.contrastText',
               position: 'absolute',

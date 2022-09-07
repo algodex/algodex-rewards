@@ -56,24 +56,28 @@ function BottomNavigation({ onChange, ...rest }) {
       <BottomNavigationAction
         to="/"
         value="/"
+        data-testid={'mb-home-link'}
         label={common('home')}
         sx={styles.link}
       />
       <BottomNavigationAction
         to="/chart"
         value="/chart"
+        data-testid={'mb-chart-link'}
         label={common('chart')}
         sx={styles.link}
       />
       <BottomNavigationAction
         to="#!"
         value="/periods"
+        data-testid={'mb-period-link'}
         label={common('periods')}
         sx={styles.link}
       />
       <BottomNavigationAction
         to="/wallet"
         value="/wallet"
+        data-testid={'mb-wallet-link'}
         label={common('wallet')}
         sx={{ ...styles.link, border: 'none' }}
       />

@@ -42,6 +42,7 @@ export default function Wallet() {
           alignItems: 'center',
           textDecoration: 'none',
         }}
+        data-testid={'return-home'}
       >
         <ChevronLeftIcon /> {t('Return Home')}
       </Link>
@@ -69,7 +70,16 @@ export default function Wallet() {
             marginY={'1rem'}
           >
             <Grid>
-              <Grid item xs={12} sm={12} md={8} lg={7} xl={6} marginX={'auto'}>
+              <Grid
+                item
+                xs={12}
+                sm={12}
+                md={8}
+                lg={7}
+                xl={6}
+                marginX={'auto'}
+                data-testid={'connect-wallet'}
+              >
                 <WalletDropdown screen={'wallet'} />
               </Grid>
             </Grid>

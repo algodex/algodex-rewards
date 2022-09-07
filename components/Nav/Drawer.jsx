@@ -93,16 +93,19 @@ function Drawer({ width, offset, isMobile, open, ...props }) {
             to="/"
             icon={<HomeIcon sx={{ color: 'secondary.light' }} />}
             primary={common('home')}
+            data-testid={'home-link'}
           />
           <ListItemLink
             to="/chart"
             icon={<StackedBarChartIcon sx={{ color: 'secondary.light' }} />}
             primary={common('chart')}
+            data-testid={'chart-link'}
           />
           <ListItemLink
             to="/periods"
             icon={<AccessTimeFilledIcon sx={{ color: 'secondary.light' }} />}
             primary={common('periods')}
+            data-testid={'period-link'}
           />
           <ListItemLink
             to="/wallet"
@@ -110,6 +113,7 @@ function Drawer({ width, offset, isMobile, open, ...props }) {
               <AccountBalanceWalletIcon sx={{ color: 'secondary.light' }} />
             }
             primary={common('wallet')}
+            data-testid={'wallet-link'}
           />
         </List>
         <Divider />

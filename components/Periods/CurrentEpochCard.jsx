@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import Link from '../Nav/Link'
 import { useTranslation } from 'next-i18next'
@@ -10,7 +10,7 @@ import LaunchRoundedIcon from '@mui/icons-material/LaunchRounded'
 import InfoRoundedIcon from '@mui/icons-material/InfoRounded'
 import CircularProgress from '@mui/material/CircularProgress'
 import styled from '@emotion/styled'
-import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip'
+import Tooltip, { tooltipClasses } from '@mui/material/Tooltip'
 
 // custom hook and libs
 import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
@@ -127,121 +127,135 @@ export const CurrentEpochCard = ({
             {completedPeriod.date}
           </Typography>
         )}
-        <Box
-          marginBottom={'0.5rem'}
-          marginLeft={'0.6rem'}
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <Typography fontSize={'0.95rem'} fontWeight={600}>
-            {t('Earned Rewards')}:
-          </Typography>
-          {isConnected && (
-            <Typography
-              fontSize={'1rem'}
-              fontWeight={600}
-              textAlign={'right'}
+        {isConnected ? (
+          <>
+            <Box
+              marginBottom={'0.5rem'}
+              marginLeft={'0.6rem'}
               sx={{
-                // display: 'flex',
-                // alignItems: 'flex-start',
-                lineHeight: '1rem',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
               }}
             >
-              <HtmlTooltip
-                arrow
-                title={
-                  <Box
-                    sx={{
-                      width: '300px',
-                      maxWidth: '100%',
-                      padding: '.5rem',
-                    }}
-                  >
-                    <Typography
-                      fontWeight={700}
-                      marginBottom={'.6rem'}
-                      fontSize={'.9rem'}
-                    >
-                      {
-                        // eslint-disable-next-line max-len
-                        'Rewards earned from Mainnet Version 1 and Mainnet Version 2 are subject to a vesting schedule. This vesting schedule is depicted in this document'
-                      }
-                      :
-                    </Typography>
-                    <Link
-                      href="https://docs.algodex.com/rewards-program/algx-liquidity-rewards-program"
-                      sx={{
-                        fontSize: '.9rem',
-                        fontWeight: 700,
-                        color: 'accent.main',
-                      }}
-                      target={'_blanc'}
-                    >
-                      {t('ALGX Liquidity Rewards Program')}
-                    </Link>
-                  </Box>
-                }
+              <Typography fontSize={'0.95rem'} fontWeight={600}>
+                {t('Earned Rewards')}:
+              </Typography>
+              <Typography
+                fontSize={'1rem'}
+                fontWeight={600}
+                textAlign={'right'}
+                sx={{
+                  // display: 'flex',
+                  // alignItems: 'flex-start',
+                  lineHeight: '1rem',
+                }}
               >
-                <InfoRoundedIcon
-                  sx={{
-                    fontSize: '1rem',
-                    marginRight: '0.3rem',
-                    color: 'secondary.light',
-                    cursor: 'pointer',
-                  }}
-                />
-              </HtmlTooltip>
-              {loading ? (
-                <>
-                  <CircularProgress size={'1rem'} />
-                </>
-              ) : (
-                <>{attachCurrency(completedPeriod.earnedRewards || 0)}</>
-              )}
-            </Typography>
-          )}
-        </Box>
-        <Box
-          marginBottom={'0.5rem'}
-          marginLeft={'0.6rem'}
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <Typography fontSize={'0.95rem'} fontWeight={600}>
-            {t('Vested Rewards')}:
-          </Typography>
-          {isConnected && (
-            <Typography fontSize={'1rem'} fontWeight={600}>
-              {loading ? (
-                <>
-                  <CircularProgress size={'1rem'} />
-                </>
-              ) : (
-                <>{attachCurrency(completedPeriod.vestedRewards || 0)}</>
-              )}
-            </Typography>
-          )}
-        </Box>
-
-        <>
-          {completedPeriod.vestedDate && (
-            <Typography
-              variant="p"
-              fontSize={'0.8rem'}
-              fontStyle={'italic'}
-              marginLeft={'0.5rem'}
+                <HtmlTooltip
+                  arrow
+                  title={
+                    <Box
+                      sx={{
+                        width: '300px',
+                        maxWidth: '100%',
+                        padding: '.5rem',
+                      }}
+                    >
+                      <Typography
+                        fontWeight={700}
+                        marginBottom={'.6rem'}
+                        fontSize={'.9rem'}
+                      >
+                        {
+                          // eslint-disable-next-line max-len
+                          'Rewards earned from Mainnet Version 1 and Mainnet Version 2 are subject to a vesting schedule. This vesting schedule is depicted in this document'
+                        }
+                        :
+                      </Typography>
+                      <Link
+                        // eslint-disable-next-line max-len
+                        href="https://docs.algodex.com/rewards-program/algx-liquidity-rewards-program"
+                        sx={{
+                          fontSize: '.9rem',
+                          fontWeight: 700,
+                          color: 'accent.main',
+                        }}
+                        target={'_blanc'}
+                      >
+                        {t('ALGX Liquidity Rewards Program')}
+                      </Link>
+                    </Box>
+                  }
+                >
+                  <InfoRoundedIcon
+                    sx={{
+                      fontSize: '1rem',
+                      marginRight: '0.3rem',
+                      color: 'secondary.light',
+                      cursor: 'pointer',
+                    }}
+                  />
+                </HtmlTooltip>
+                {loading ? (
+                  <>
+                    <CircularProgress size={'1rem'} />
+                  </>
+                ) : (
+                  <>{attachCurrency(completedPeriod.earnedRewards || 0)}</>
+                )}
+              </Typography>
+            </Box>
+            <Box
+              marginBottom={'0.5rem'}
+              marginLeft={'0.6rem'}
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
             >
-              {t('Rewards were paid out on')} {completedPeriod.vestedDate}.
-            </Typography>
-          )}
+              <Typography fontSize={'0.95rem'} fontWeight={600}>
+                {t('Vested Rewards')}:
+              </Typography>
+              <Typography fontSize={'1rem'} fontWeight={600}>
+                {loading ? (
+                  <>
+                    <CircularProgress size={'1rem'} />
+                  </>
+                ) : (
+                  <>{attachCurrency(completedPeriod.vestedRewards || 0)}</>
+                )}
+              </Typography>
+            </Box>
+          </>
+        ) : (
+          <Typography
+            fontSize={'0.85rem'}
+            fontWeight={500}
+            sx={{
+              color: 'secondary.light',
+              width: '80%',
+              marginBlock: '1rem',
+            }}
+            data-testid={'connect-wallet'}
+          >
+            {t('Connect a wallet to see your pending rewards for each period')}
+          </Typography>
+        )}
 
-          <Box textAlign={'center'} marginTop={'1.5rem'}>
+        {completedPeriod.vestedDate && (
+          <Typography
+            variant="p"
+            fontSize={'0.8rem'}
+            fontStyle={'italic'}
+            marginLeft={'0.5rem'}
+          >
+            {t('Rewards were paid out on')} {completedPeriod.vestedDate}.
+          </Typography>
+        )}
+
+        <Box textAlign={'center'} marginTop={'1.5rem'}>
+          {isConnected && (
             <Link
               href="http://algoexplorer.io/"
               target={'_blanc'}
@@ -263,8 +277,8 @@ export const CurrentEpochCard = ({
                 }}
               />
             </Link>
-          </Box>
-        </>
+          )}
+        </Box>
       </Box>
     </>
   )

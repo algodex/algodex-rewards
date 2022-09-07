@@ -60,7 +60,12 @@ export const TotalRewardsCard = ({
           />
         </Box>
         <Box sx={{ width: '100%' }}>
-          <Typography variant="p" fontSize={'1.1rem'} fontWeight={600}>
+          <Typography
+            variant="p"
+            fontSize={'1.1rem'}
+            fontWeight={600}
+            data-testid={'total-rewards'}
+          >
             {t('Total Rewards Earned')}:
           </Typography>
           <Box
