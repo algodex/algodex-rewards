@@ -25,7 +25,6 @@ export const useSignUpHook = ({ setWalletSignedUp, activeWallet }) => {
   }
 
   useEffect(() => {
-    console.log('first')
     if (activeWallet) {
       checkStatus(activeWallet)
     }
