@@ -11,7 +11,7 @@ export const useSignUpHook = ({ setWalletSignedUp, activeWallet }) => {
   })
   const [loading, setLoading] = useState(false)
   const [openModal, setOpenModal] = useState(false)
-  const [optinStatus, setOptinStatus] = useState(false)
+  const [optinStatus, setOptinStatus] = useState(null)
 
   const checkStatus = async ({ address }) => {
     if (address) {
@@ -19,6 +19,7 @@ export const useSignUpHook = ({ setWalletSignedUp, activeWallet }) => {
         const res = await CheckOptinStatus(address)
         setOptinStatus(res.data?.optedIn)
       } catch (error) {
+        setOptinStatus(false)
         console.error(error)
       }
     }
