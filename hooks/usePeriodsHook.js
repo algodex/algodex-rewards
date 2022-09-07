@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { getEpochEnd, getEpochStart } from '@/lib/getRewards'
 import { DateTime } from 'luxon'
 import { getAssets } from '@/lib/getTinymanPrice'
-import { dummyReward, dummyVestedRewards } from '@/lib/dummyChartData'
+// import { dummyReward, dummyVestedRewards } from '@/lib/dummyChartData'
 
 export const usePeriodsHook = ({ activeWallet, isMobile }) => {
   const [rewards, setRewards] = useState([])
@@ -16,8 +16,13 @@ export const usePeriodsHook = ({ activeWallet, isMobile }) => {
 
   useEffect(() => {
     const getAllAssets = async () => {
-      const res = await getAssets()
-      setTinymanAssets(res)
+      try {
+        const res = await getAssets()
+        setTinymanAssets(res)
+      } catch (error) {
+        console.error('tinymanAsset error', error)
+        getAllAssets()
+      }
     }
     getAllAssets()
   }, [])

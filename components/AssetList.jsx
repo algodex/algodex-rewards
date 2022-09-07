@@ -23,6 +23,7 @@ export const AssetList = ({ isConnected }) => {
     <Box sx={{ paddingBlock: '1.5rem' }}>
       {!isConnected ? (
         <Typography
+          data-testid={'connect-wallet'}
           fontSize={'0.95rem'}
           fontStyle={'italic'}
           color={'primary.contrastText'}

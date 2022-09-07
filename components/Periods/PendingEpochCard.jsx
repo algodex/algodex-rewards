@@ -70,7 +70,11 @@ export const PendingEpochCard = ({
                 alignItems: 'center',
               }}
             >
-              <Typography fontSize={'1.1rem'} fontWeight={600}>
+              <Typography
+                fontSize={'1.1rem'}
+                fontWeight={600}
+                data-testid={'pending-period'}
+              >
                 {t('Pending Period')} {pendingPeriod?.number}:
               </Typography>
             </Box>
@@ -121,7 +125,6 @@ export const PendingEpochCard = ({
           <Typography
             fontSize={'0.85rem'}
             fontWeight={500}
-            textAlign={'right'}
             sx={{
               color: 'secondary.light',
               width: '80%',

@@ -18,12 +18,18 @@
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended"
   ],
-  "plugins": ["jest", "@typescript-eslint"],
+  "plugins": ["jest", "@typescript-eslint", "cypress"],
   "rules": {
     "semi": ["error", "never"],
     "quotes": ["error", "single"],
     "max-len": ["error", 100],
     "comma-dangle": ["error", "only-multiline"],
-    "indent": ["error", 2]
+    "indent": ["error", 2],
+    "cypress/no-assigning-return-values": "error",
+    "cypress/no-unnecessary-waiting": "error",
+    "cypress/assertion-before-screenshot": "warn",
+    "cypress/no-force": "warn",
+    "cypress/no-async-tests": "error",
+    "cypress/no-pause": "error"
   }
 }
