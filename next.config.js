@@ -11,6 +11,10 @@ const rewrites = () => {
       source: '/pouch/:db*',
       destination: `${process.env.DB_BASE_URL}/:db*`,
     },
+    {
+      source: '/optin/:db*',
+      destination: `${process.env.ALGODEX_PROXY_API}/rewards/optin/:db*`,
+    },
   ]
 }
 
