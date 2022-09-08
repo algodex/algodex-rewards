@@ -42,11 +42,17 @@ export default function Home() {
   const [walletSignedUp, setWalletSignedUp] = useState(activeWallet?.signedUp)
   const isMobile = useMediaQuery(useTheme().breakpoints.down('sm'))
   const isWebLarge = useMediaQuery(useTheme().breakpoints.down('lg'))
-  const { loading, openModal, setOpenModal, actionStatus, signUp } =
-    useSignUpHook({
-      setWalletSignedUp,
-      activeWallet,
-    })
+  const {
+    loading,
+    openModal,
+    setOpenModal,
+    actionStatus,
+    signUp,
+    optinStatus,
+  } = useSignUpHook({
+    setWalletSignedUp,
+    activeWallet,
+  })
   const {
     rewards,
     loading: loadingReward,
@@ -94,7 +100,7 @@ export default function Home() {
                 handleClose={() => setOpenModal(!openModal)}
               />
             </Box>
-            {!walletSignedUp && isConnected && (
+            {!walletSignedUp && isConnected && optinStatus == false && (
               <LoadingButton
                 variant="outline"
                 sx={{

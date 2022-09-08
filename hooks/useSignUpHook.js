@@ -1,5 +1,6 @@
+import { CheckOptinStatus } from '@/lib/getRewards'
 import { signUpForRewards } from '@/lib/send_transaction'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { WalletsContext } from './useWallets'
 
 export const useSignUpHook = ({ setWalletSignedUp, activeWallet }) => {
@@ -10,6 +11,25 @@ export const useSignUpHook = ({ setWalletSignedUp, activeWallet }) => {
   })
   const [loading, setLoading] = useState(false)
   const [openModal, setOpenModal] = useState(false)
+  const [optinStatus, setOptinStatus] = useState(null)
+
+  const checkStatus = async ({ address }) => {
+    if (address) {
+      try {
+        const res = await CheckOptinStatus(address)
+        setOptinStatus(res.data?.optedIn)
+      } catch (error) {
+        setOptinStatus(false)
+        console.error(error)
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (activeWallet) {
+      checkStatus(activeWallet)
+    }
+  }, [activeWallet])
 
   const signUp = async () => {
     setLoading(true)
@@ -81,5 +101,12 @@ export const useSignUpHook = ({ setWalletSignedUp, activeWallet }) => {
     }
     setOpenModal(true)
   }
-  return { loading, openModal, setOpenModal, actionStatus, signUp }
+  return {
+    loading,
+    openModal,
+    setOpenModal,
+    actionStatus,
+    signUp,
+    optinStatus,
+  }
 }
