@@ -145,12 +145,14 @@ export const PeriodTable = ({
             ...x[value.epoch],
             ...value,
             vestedRewards:
-              x[value.epoch].vestedRewards + (value.vestedRewards || 0),
+              x[value.epoch].vestedRewards +
+              (value.formattedVestedRewards || 0),
             earnedRewards:
               x[value.epoch].earnedRewards + (value.earnedRewards || 0),
             unvestedRewards:
               x[value.epoch].unvestedRewards +
-              (value.earnedRewards - (value.vestedRewards || 0) || 0),
+              ((value.earnedRewards || 0) -
+                (value.formattedVestedRewards || 0) || 0),
             assetId: x[value.epoch].assetId.includes(value.assetId)
               ? x[value.epoch].assetId
               : [...x[value.epoch].assetId, value.assetId],
@@ -158,9 +160,10 @@ export const PeriodTable = ({
         } else {
           x[value.epoch] = {
             ...value,
-            vestedRewards: value.vestedRewards || 0,
+            vestedRewards: value.formattedVestedRewards || 0,
             unvestedRewards:
-              value.earnedRewards - (value.vestedRewards || 0) || 0,
+              (value.earnedRewards || 0) -
+                (value.formattedVestedRewards || 0) || 0,
             assetId: [value.assetId],
           }
         }
@@ -168,6 +171,8 @@ export const PeriodTable = ({
     }
     return stableSort(Object.values(x), getComparator(order, orderBy))
   }, [rewards, vestedRewards, order, orderBy])
+
+  // console.log(mergedRewards)
 
   const currentPeriod = useMemo(() => {
     // return a reward whose epoch is current.
@@ -270,12 +275,14 @@ export const PeriodTable = ({
                                         {attachCurrency(row.earnedRewards)}
                                       </StyledTableCell>
                                       <StyledTableCell align="right">
-                                        {attachCurrency(row.vestedRewards || 0)}
+                                        {attachCurrency(
+                                          row.formattedVestedRewards || 0
+                                        )}
                                       </StyledTableCell>
                                       <StyledTableCell align="right">
                                         {attachCurrency(
                                           row.earnedRewards -
-                                            (row.vestedRewards || 0)
+                                            (row.formattedVestedRewards || 0)
                                         )}
                                       </StyledTableCell>
                                       <StyledTableCell>

@@ -43,12 +43,12 @@ const otherLinks = [
   {
     text: 'DOCS',
     icon: () => <ArticleIcon sx={{ color: 'secondary.light' }} />,
-    link: 'https://app.algodex.com/docs',
+    link: 'https://docs.algodex.com',
   },
   {
     text: 'ABOUT',
     icon: () => <InfoIcon sx={{ color: 'secondary.light' }} />,
-    link: 'https://app.algodex.com',
+    link: 'https://app.algodex.com/about',
   },
   {
     text: 'SUPPORT',

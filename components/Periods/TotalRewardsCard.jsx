@@ -26,7 +26,7 @@ export const TotalRewardsCard = ({
 
   const totalVested = useMemo(() => {
     return vestedRewards.reduce((a, b) => {
-      return a + b.value.vestedRewards
+      return a + b.value.formattedVestedRewards
     }, 0)
   }, [vestedRewards])
 

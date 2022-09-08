@@ -223,7 +223,11 @@ export const CurrentEpochCard = ({
                     <CircularProgress size={'1rem'} />
                   </>
                 ) : (
-                  <>{attachCurrency(completedPeriod.vestedRewards || 0)}</>
+                  <>
+                    {attachCurrency(
+                      completedPeriod.formattedVestedRewards || 0
+                    )}
+                  </>
                 )}
               </Typography>
             </Box>
@@ -255,9 +259,9 @@ export const CurrentEpochCard = ({
         )}
 
         <Box textAlign={'center'} marginTop={'1.5rem'}>
-          {isConnected && (
+          {isConnected && completedPeriod.transactionId && (
             <Link
-              href="http://algoexplorer.io/"
+              href={`http://algoexplorer.io/tx/${completedPeriod.transactionId}`}
               target={'_blanc'}
               sx={{
                 textDecoration: 'none',
