@@ -64,6 +64,8 @@ export const usePeriodsHook = ({ activeWallet, isMobile }) => {
               ? 0
               : Math.max(...values[0].rows.map(({ value: { epoch } }) => epoch))
           )
+          // setRewards(dummyReward)
+          // setVestedRewards(dummyVestedRewards)
         })
         .catch((err) => {
           setLoading(false)
@@ -156,7 +158,6 @@ export const usePeriodsHook = ({ activeWallet, isMobile }) => {
           DateTime.DATE_MED
         )
         : null
-
       return {
         date: `${start} - ${end}`,
         number: (activeEpoch === 0 ? maxEpoch : activeEpoch).toFixed(0),
@@ -165,10 +166,12 @@ export const usePeriodsHook = ({ activeWallet, isMobile }) => {
           0
         ),
         vestedRewards: selected.reduce(
-          (a, b) => a + (b.value.vestedRewards || 0),
+          (a, b) => a + (b.value.formattedVestedRewards || 0),
           0
         ),
         vestedDate,
+        transactionId: selected.find(({ value }) => value.transactionId != null)
+          ?.value?.transactionId,
       }
     } else {
       return {
@@ -176,7 +179,7 @@ export const usePeriodsHook = ({ activeWallet, isMobile }) => {
         number: 0,
       }
     }
-  }, [rewards, activeEpoch])
+  }, [rewards, activeEpoch, vestedRewards])
 
   useEffect(() => {
     if (activeWallet) {

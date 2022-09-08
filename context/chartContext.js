@@ -130,7 +130,7 @@ export function ChartDataProvider({ children }) {
       const time = DateTime.fromJSDate(
         new Date(value.vestedUnixTime * 1000)
       ).toFormat('yyyy-LL-dd')
-      const _value = value.vestedRewards
+      const _value = value.formattedVestedRewards
 
       // Check if the current time exist in the data. If found, sum up the data
       const found = data.find(({ time: _time }) => _time == time)
@@ -232,7 +232,7 @@ export function ChartDataProvider({ children }) {
     if (totalMaxRwd) {
       totalDailyRwd = _includeUnvested
         ? totalMaxRwd.value.earnedRewards / 7
-        : totalMaxRwd.value.vestedRewards / 7
+        : totalMaxRwd.value.formattedVestedRewards / 7
     }
     const data = [
       {
@@ -241,7 +241,7 @@ export function ChartDataProvider({ children }) {
         total: attachCurrency(
           _includeUnvested
             ? rewardsCopy.reduce((a, b) => a + b.value.earnedRewards, 0)
-            : rewardsCopy.reduce((a, b) => a + b.value.vestedRewards, 0)
+            : rewardsCopy.reduce((a, b) => a + b.value.formattedVestedRewards, 0)
         ),
       },
     ]
@@ -265,7 +265,7 @@ export function ChartDataProvider({ children }) {
         if (maxRwd) {
           dailyRwd = _includeUnvested
             ? maxRwd.earnedRewards / 7
-            : maxRwd.vestedRewards / 7
+            : maxRwd.formattedVestedRewards / 7
         }
 
         try {
@@ -281,7 +281,7 @@ export function ChartDataProvider({ children }) {
             EDRewards: attachCurrency(dailyRwd),
             total: _includeUnvested
               ? attachCurrency(list.reduce((a, b) => a + b.earnedRewards, 0))
-              : attachCurrency(list.reduce((a, b) => a + b.vestedRewards, 0)),
+              : attachCurrency(list.reduce((a, b) => a + b.formattedVestedRewards, 0)),
           })
         } catch (e) {
           console.error(e)
