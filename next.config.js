@@ -13,7 +13,11 @@ const rewrites = () => {
     },
     {
       source: '/optin/:db*',
-      destination: `${process.env.ALGODEX_PROXY_API}/rewards/optin/:db*`,
+      destination: `${
+        process.env.ALGODEX_PROXY_API
+          ? `${process.env.ALGODEX_PROXY_API}/rewards/optin/:db*`
+          : '/rewards/optin/:db*'
+      }`,
     },
   ]
 }
