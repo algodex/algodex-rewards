@@ -60,7 +60,7 @@ export default function AreaChart({ isConnected }) {
         borderColor: '#485c7b',
         scaleMargins: {
           top: 0.2,
-          bottom: 0,
+          bottom: 0.05,
         },
         borderVisible: true,
       },
