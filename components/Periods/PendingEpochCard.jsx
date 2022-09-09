@@ -8,7 +8,7 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded'
 import InfoRoundedIcon from '@mui/icons-material/InfoRounded'
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
+import ErrorOutlineOutlinedIcon from '@mui/icons-material/ErrorOutlineOutlined'
 
 // Custom Component and hooks
 import Link from '../Nav/Link'
@@ -89,7 +89,7 @@ export const PendingEpochCard = ({
         </Box>
         {isConnected ? (
           <Box sx={{ display: 'flex' }}>
-            <CheckCircleOutlineIcon
+            <ErrorOutlineOutlinedIcon
               sx={{
                 marginRight: '6px',
                 fontSize: '1.2rem',
