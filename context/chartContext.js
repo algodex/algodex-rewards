@@ -119,10 +119,10 @@ export function ChartDataProvider({ children }) {
     const data = []
     const rewardsCopy = [
       ...vestedRewards.filter(
-        ({ value: { epoch, vestedUnixTime, assetId } }) =>
+        ({ value: { epoch, vestedUnixTime, accrualAssetId } }) =>
           withinStageData(epoch) &&
           withinTimeRange(vestedUnixTime) &&
-          amoungSelected(assetId)
+          amoungSelected(accrualAssetId)
       ),
     ]
     rewardsCopy.sort((a, b) => a.value.epoch - b.value.epoch)
@@ -189,11 +189,19 @@ export function ChartDataProvider({ children }) {
   }, [rewards, includeUnvested, activeStage, activeRange, selected])
 
   const attachCurrency = (price) => {
-    return `${Number(
+    // console.log(price)
+    // console.log((2.8058973651428566).toLocaleString())
+    return `${
       activeCurrency === 'ALGX'
-        ? price.toFixed(2)
-        : (price * conversionRate).toFixed(2)
-    ).toLocaleString()} ${activeCurrency}`
+        ? price.toLocaleString(undefined, {
+          minimumFractionDigits: 3,
+          maximumFractionDigits: 3,
+        })
+        : (price * conversionRate).toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })
+    } ${activeCurrency}`
   }
 
   const getAssetTableData = useCallback(async () => {
@@ -223,36 +231,47 @@ export function ChartDataProvider({ children }) {
       ]
     }
 
+    // Get epoch with the haighest number
     const totalMaxRwd = rewardsCopy.find(
       ({ value: { epoch } }) =>
-        epoch == Math.max(...rewardsCopy.map(({ value: { epoch } }) => epoch))
+        epoch === Math.max(...rewardsCopy.map(({ value: { epoch } }) => epoch))
     )
 
-    let totalDailyRwd = 0
+    let estDailyRwd = 0
     if (totalMaxRwd) {
-      totalDailyRwd = _includeUnvested
+      estDailyRwd = _includeUnvested
         ? totalMaxRwd.value.earnedRewards / 7
         : totalMaxRwd.value.formattedVestedRewards / 7
     }
+
     const data = [
       {
         asset: 'ALL',
-        EDRewards: attachCurrency(totalDailyRwd),
+        EDRewards: attachCurrency(estDailyRwd),
         total: attachCurrency(
           _includeUnvested
             ? rewardsCopy.reduce((a, b) => a + b.value.earnedRewards, 0)
-            : rewardsCopy.reduce((a, b) => a + b.value.formattedVestedRewards, 0)
+            : rewardsCopy.reduce(
+              (a, b) => a + b.value.formattedVestedRewards,
+              0
+            )
         ),
       },
     ]
 
     const assets = {}
     if (rewardsCopy.length > 0) {
-      rewardsCopy.forEach(({ value }) => {
-        if (assets[value.assetId]) {
-          assets[value.assetId] = [...assets[value.assetId], value]
+      rewardsCopy.forEach(({ value, value: { assetId, accrualAssetId } }) => {
+        if (assets[assetId]) {
+          assets[assetId] = [...assets[assetId], value]
+        } else if (assets[accrualAssetId]) {
+          assets[accrualAssetId] = [...assets[accrualAssetId], value]
         } else {
-          assets[value.assetId] = [value]
+          if (assetId) {
+            assets[assetId] = [value]
+          } else {
+            assets[accrualAssetId] = [value]
+          }
         }
       })
     }
@@ -281,7 +300,9 @@ export function ChartDataProvider({ children }) {
             EDRewards: attachCurrency(dailyRwd),
             total: _includeUnvested
               ? attachCurrency(list.reduce((a, b) => a + b.earnedRewards, 0))
-              : attachCurrency(list.reduce((a, b) => a + b.formattedVestedRewards, 0)),
+              : attachCurrency(
+                list.reduce((a, b) => a + b.formattedVestedRewards, 0)
+              ),
           })
         } catch (e) {
           console.error(e)
