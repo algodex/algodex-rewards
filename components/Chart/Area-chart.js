@@ -59,7 +59,7 @@ export default function AreaChart({ isConnected }) {
       priceScale: {
         borderColor: '#485c7b',
         scaleMargins: {
-          top: 0.2,
+          top: 0.1,
           bottom: 0.05,
         },
         borderVisible: true,
