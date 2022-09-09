@@ -125,7 +125,7 @@ export const AssetContainer = ({ asset }) => {
             lineHeight={'1.5rem'}
           >
             {asset.depthSum.toFixed(2)} {asset.assetName} <br />
-            {(algoPrices[asset.assetId] * asset.depthSum || 0).toFixed(2)} ALGO
+            {(algoPrices[asset.assetId] * asset.depthSum || 0).toFixed(3)} ALGO
           </Typography>
         </Box>
         <Divider
