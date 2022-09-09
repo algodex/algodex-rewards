@@ -76,7 +76,6 @@ export default function useRewardsAddresses() {
     throw new Error('Must be inside of a Rewards Addresses Provider')
   }
   const { addresses, setAddresses, activeWallet, setActiveWallet } = context
-  const [temporaryWalletMode, setTemporaryWalletMode] = useState(false)
 
   const updateAddresses = useCallback(
     (_addresses) => {
@@ -88,33 +87,29 @@ export default function useRewardsAddresses() {
     [addresses]
   )
 
-  const removeAddress = useCallback(
-    async (_address) => {
-      const _addresses = await addressessDb.getAddresses()
-      const parsedAddresses =
+  const removeAddress = useCallback(async (_address) => {
+    const _addresses = await addressessDb.getAddresses()
+    const parsedAddresses =
       _addresses.map(({ doc }) => JSON.parse(doc.wallet)) || []
-      addressessDb.removeAddress(_address)
-      const _activeWallet = (await activeWalletDb.getAddresses())[0]?.doc
-      const parsedActiveWallet = JSON.parse(_activeWallet?.wallet)
-      if (parsedAddresses.length > 1) {
-        const remainder = parsedAddresses.filter(
-          ({ address }) => address != _address
-        )
-        setAddresses(remainder)
-        _setAddresses(remainder)
-        if (_address == parsedActiveWallet?.address) {
-          activeWalletDb.removeAddress(_address)
-          setActiveWallet(remainder[0])
-        }
-      } else {
-        activeWalletDb.removeAddress(_address)
-        setAddresses([])
-        _setAddresses([])
-        setActiveWallet()
+    addressessDb.removeAddress(_address)
+    const _activeWallet = (await activeWalletDb.getAddresses())[0]?.doc
+    const parsedActiveWallet = JSON.parse(_activeWallet?.wallet)
+    if (parsedAddresses.length > 1) {
+      const remainder = parsedAddresses.filter(
+        ({ address }) => address != _address
+      )
+      setAddresses(remainder)
+      _setAddresses(remainder)
+      if (_address === parsedActiveWallet?.address) {
+        setActiveWallet(remainder[0])
       }
-    },
-    []
-  )
+    } else {
+      activeWalletDb.removeAddress(_address)
+      setAddresses([])
+      _setAddresses([])
+      setActiveWallet()
+    }
+  }, [])
 
   const {
     setAddresses: _setAddresses,
@@ -137,17 +132,11 @@ export default function useRewardsAddresses() {
     getDBData()
   }, [])
 
-  // Look out for the URL Search params
-  useEffect(() => {
-    // if (viewAsWallet && process.env.NEXT_PUBLIC_ENVIRONMENT === 'development') {
-    //   activateWalletTemp(viewAsWallet)
-    // }
-  }, [viewAsWallet])
-
-  const activateWalletTemp = async (address) => {
-    setTemporaryWalletMode(true)
+  // Login as another wallet
+  const loginAsAnother = async (address) => {
     const result = await getAccountInfo([{ address }])
     setActiveWallet(result[0])
+    updateStorage([result[0], ...addresses])
   }
 
   // Save active wallet when updated
@@ -158,8 +147,7 @@ export default function useRewardsAddresses() {
       if (
         addresses.length > 0 &&
         activeWallet &&
-        _activeWallet?.address !== activeWallet?.address &&
-        temporaryWalletMode === false
+        _activeWallet?.address !== activeWallet?.address
       ) {
         const result = await getAccountInfo([activeWallet])
         if (result[0]) {
@@ -226,8 +214,11 @@ export default function useRewardsAddresses() {
       _setAddresses(_mergeAddresses(parsedAddresses, result))
       addressessDb.updateAddresses(result)
       const _activeWallet = (await activeWalletDb.getAddresses())[0]?.doc
-      if (viewAsWallet && process.env.NEXT_PUBLIC_ENVIRONMENT === 'development') {
-        activateWalletTemp(viewAsWallet)
+      if (
+        viewAsWallet &&
+        process.env.NEXT_PUBLIC_ENVIRONMENT === 'development'
+      ) {
+        loginAsAnother(viewAsWallet)
         return
       }
       if (result.length > 0 && !_activeWallet) {
