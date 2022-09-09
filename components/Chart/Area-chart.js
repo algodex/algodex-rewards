@@ -95,7 +95,10 @@ export default function AreaChart({ isConnected }) {
         localization: {
           priceFormatter: (price) => {
             return activeCurrency == 'USD'
-              ? `$ ${(price * conversionRate).toLocaleString()}`
+              ? `$ ${(price * conversionRate).toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}`
               : `ALGX ${price.toLocaleString()}`
           },
         },
