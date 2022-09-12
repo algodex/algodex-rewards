@@ -110,7 +110,7 @@ export default function useRewardsAddresses() {
       setActiveWallet()
     }
   }, [])
-
+  
   const {
     setAddresses: _setAddresses,
     myAlgoConnect,
@@ -118,7 +118,7 @@ export default function useRewardsAddresses() {
     peraDisconnect,
     myAlgoDisconnect,
   } = useWallets(updateAddresses, removeAddress)
-
+  
   // Fetch saved and active wallets from storage
   useEffect(() => {
     const getDBData = async () => {
