@@ -106,7 +106,7 @@ export default function AreaChart({ isConnected }) {
     } else {
       setTimeout(() => {
         areaSeries.vested.setData(dummyChartData)
-      }, 4000)
+      }, 2500)
     }
   }, [
     vestedChartData,
