@@ -28,8 +28,7 @@ export async function getServerSideProps({ locale }) {
 
 export default function Chart() {
   const { t } = useTranslation('chart')
-  const { addresses } = useContext(RewardsAddressesContext)
-  const isConnected = addresses.length > 0
+  const { isConnected } = useContext(RewardsAddressesContext)
   // const isConnected = false
   const isMobile = useMediaQuery(useTheme().breakpoints.down('sm'))
 
