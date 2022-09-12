@@ -8,6 +8,7 @@ import Box from '@mui/material/Box'
 import Modal from '@mui/material/Modal'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
+import { shortenAddress } from '../../lib/helper'
 
 export const SignUpResponse = ({
   open,
@@ -16,13 +17,6 @@ export const SignUpResponse = ({
   handleClose,
 }) => {
   const { t } = useTranslation('common')
-
-  const shortenAddress = (address) => {
-    const list = address.split('')
-    const first = list.slice(0, 6)
-    const last = list.slice(list.length - 6, list.length)
-    return `${first.join('')}...${last.join('')}`
-  }
 
   return (
     <>
@@ -69,7 +63,7 @@ export const SignUpResponse = ({
                 fontWeight: 'bold',
               }}
             >
-              {shortenAddress(address)}
+              {shortenAddress({address})}
             </Button>
           )}
           <Divider
@@ -96,7 +90,9 @@ export const SignUpResponse = ({
             }}
             onClick={handleClose}
           >
-            {actionStatus.success ? `${t('View Rewards')}` : `${t('Try Again')}`}
+            {actionStatus.success
+              ? `${t('View Rewards')}`
+              : `${t('Try Again')}`}
           </Button>
         </Box>
       </Modal>

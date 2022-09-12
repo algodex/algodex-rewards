@@ -104,9 +104,9 @@ export function ChartDataProvider({ children }) {
     }
   }
 
-  const amoungSelected = (assetId) => {
+  const amoungSelected = (accrualAssetId) => {
     if (
-      selected.includes(availableAssets[assetId]?.unit_name) ||
+      selected.includes(availableAssets[accrualAssetId]?.unit_name) ||
       selected.includes('ALL')
     ) {
       return true
@@ -155,10 +155,10 @@ export function ChartDataProvider({ children }) {
     if (includeUnvested) {
       const rewardsCopy = [
         ...rewards.filter(
-          ({ value: { epoch, assetId } }) =>
+          ({ value: { epoch, accrualAssetId } }) =>
             withinStageData(epoch) &&
             withinTimeRange(getEpochEnd(epoch)) &&
-            amoungSelected(assetId)
+            amoungSelected(accrualAssetId)
         ),
       ]
 
@@ -167,7 +167,7 @@ export function ChartDataProvider({ children }) {
         const time = DateTime.fromJSDate(
           new Date(getEpochEnd(value.epoch) * 1000)
         ).toFormat('yyyy-LL-dd')
-        const _value = value.earnedRewards
+        const _value = value.earnedRewardsFormatted
 
         // Check if the current time exist in the data. If found, sum up the data
         const found = data.find(({ time: _time }) => _time == time)
@@ -189,8 +189,6 @@ export function ChartDataProvider({ children }) {
   }, [rewards, includeUnvested, activeStage, activeRange, selected])
 
   const attachCurrency = (price) => {
-    // console.log(price)
-    // console.log((2.8058973651428566).toLocaleString())
     return `${
       activeCurrency === 'ALGX'
         ? price.toLocaleString(undefined, {
@@ -240,7 +238,7 @@ export function ChartDataProvider({ children }) {
     let estDailyRwd = 0
     if (totalMaxRwd) {
       estDailyRwd = _includeUnvested
-        ? totalMaxRwd.value.earnedRewards / 7
+        ? totalMaxRwd.value.earnedRewardsFormatted / 7
         : totalMaxRwd.value.formattedVestedRewards / 7
     }
 
@@ -250,7 +248,10 @@ export function ChartDataProvider({ children }) {
         EDRewards: attachCurrency(estDailyRwd),
         total: attachCurrency(
           _includeUnvested
-            ? rewardsCopy.reduce((a, b) => a + b.value.earnedRewards, 0)
+            ? rewardsCopy.reduce(
+              (a, b) => a + b.value.earnedRewardsFormatted,
+              0
+            )
             : rewardsCopy.reduce(
               (a, b) => a + b.value.formattedVestedRewards,
               0
@@ -261,45 +262,49 @@ export function ChartDataProvider({ children }) {
 
     const assets = {}
     if (rewardsCopy.length > 0) {
-      rewardsCopy.forEach(({ value, value: { assetId, accrualAssetId } }) => {
-        if (assets[assetId]) {
-          assets[assetId] = [...assets[assetId], value]
-        } else if (assets[accrualAssetId]) {
+      rewardsCopy.forEach(({ value, value: { accrualAssetId } }) => {
+        // if (assets[assetId]) {
+        //   assets[assetId] = [...assets[assetId], value]
+        // } else
+        if (assets[accrualAssetId]) {
           assets[accrualAssetId] = [...assets[accrualAssetId], value]
         } else {
-          if (assetId) {
-            assets[assetId] = [value]
-          } else {
-            assets[accrualAssetId] = [value]
-          }
+          assets[accrualAssetId] = [value]
+          // if (assetId) {
+          //   assets[assetId] = [value]
+          // } else {
+          // }
         }
       })
     }
+    console.log(assets)
     await Promise.all(
-      Object.keys(assets).map(async (assetId) => {
-        const list = assets[assetId]
+      Object.keys(assets).map(async (accrualAssetId) => {
+        const list = assets[accrualAssetId]
         const max = Math.max(...list.map(({ epoch }) => epoch))
         const maxRwd = list.find(({ epoch }) => epoch == max)
         let dailyRwd = 0
         if (maxRwd) {
           dailyRwd = _includeUnvested
-            ? maxRwd.earnedRewards / 7
+            ? maxRwd.earnedRewardsFormatted / 7
             : maxRwd.formattedVestedRewards / 7
         }
 
         try {
-          const assetInfo = await getAlgoExplorerAssets(assetId)
+          const assetInfo = await getAlgoExplorerAssets(accrualAssetId)
 
           setAvailableAssets((prev) => ({
             ...prev,
-            [`${assetId}`]: { unit_name: assetInfo['unit-name'] },
+            [`${accrualAssetId}`]: { unit_name: assetInfo['unit-name'] },
           }))
 
           data.push({
             asset: assetInfo?.['unit-name'] || '??',
             EDRewards: attachCurrency(dailyRwd),
             total: _includeUnvested
-              ? attachCurrency(list.reduce((a, b) => a + b.earnedRewards, 0))
+              ? attachCurrency(
+                list.reduce((a, b) => a + b.earnedRewardsFormatted, 0)
+              )
               : attachCurrency(
                 list.reduce((a, b) => a + b.formattedVestedRewards, 0)
               ),
@@ -337,16 +342,19 @@ export function ChartDataProvider({ children }) {
 
     if (rewardsCopy.length > 0) {
       rewardsCopy.forEach(({ value }) => {
-        if (assets[value.assetId]) {
-          assets[value.assetId] = [...assets[value.assetId], value]
+        if (assets[value.accrualAssetId]) {
+          assets[value.accrualAssetId] = [
+            ...assets[value.accrualAssetId],
+            value,
+          ]
         } else {
-          assets[value.assetId] = [value]
+          assets[value.accrualAssetId] = [value]
         }
       })
     }
 
-    for (const assetId in assets) {
-      const list = assets[assetId]
+    for (const accrualAssetId in assets) {
+      const list = assets[accrualAssetId]
       const lastWkUnixStart = Math.floor(
         new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7) / 1000
       )
@@ -362,14 +370,14 @@ export function ChartDataProvider({ children }) {
           epoch >= lastWkEpochStart.toFixed(0) &&
           epoch <= lastWkEpochEnd.toFixed(0)
       )
-      const lastWkRwds = x.reduce((a, b) => a + b.earnedRewards, 0)
+      const lastWkRwds = x.reduce((a, b) => a + b.earnedRewardsFormatted, 0)
       data.push({
-        assetId,
+        accrualAssetId,
         lastWeek: lastWkRwds.toFixed(2),
         depthSum: list.reduce((a, b) => a + b.depthSum, 0) / 10080,
-        assetName: tinymanAssets[assetId]?.unit_name || '??',
+        assetName: tinymanAssets[accrualAssetId]?.unit_name || '??',
         assetLogo:
-          tinymanAssets[assetId]?.logo?.svg ||
+          tinymanAssets[accrualAssetId]?.logo?.svg ||
           'https://asa-list.tinyman.org/assets/??',
       })
     }

@@ -19,11 +19,11 @@ export const AssetContainer = ({ asset }) => {
   const { t } = useTranslation('common')
   const { conversionRate } = usePriceConversionHook({})
 
-  const convertToAlgo = useCallback(async (assetId) => {
+  const convertToAlgo = useCallback(async (accrualAssetId) => {
     const prices = {}
-    const res = await getAlgoPrice(assetId)
-    if (!prices[assetId]) {
-      prices[assetId] = res
+    const res = await getAlgoPrice(accrualAssetId)
+    if (!prices[accrualAssetId]) {
+      prices[accrualAssetId] = res
       setAlgoPrices((prevState) => {
         return {
           ...prevState,
@@ -35,7 +35,7 @@ export const AssetContainer = ({ asset }) => {
 
   useEffect(() => {
     if (asset) {
-      convertToAlgo(asset.assetId)
+      convertToAlgo(asset.accrualAssetId)
     }
   }, [asset])
 
@@ -83,12 +83,12 @@ export const AssetContainer = ({ asset }) => {
             fontWeight={700}
             sx={{ color: 'secondary.light3' }}
           >
-            {t('Asset ID')}: {asset.assetId}
+            {t('Asset ID')}: {asset.accrualAssetId}
           </Typography>
         </Box>
         <Box sx={{ marginLeft: 'auto', alignSelf: 'flex-start' }}>
           <Link
-            href={`https://algoexplorer.io/asset/${asset.assetId}`}
+            href={`https://algoexplorer.io/asset/${asset.accrualAssetId}`}
             target={'_blanc'}
           >
             <LaunchRoundedIcon
@@ -125,7 +125,7 @@ export const AssetContainer = ({ asset }) => {
             lineHeight={'1.5rem'}
           >
             {asset.depthSum.toFixed(2)} {asset.assetName} <br />
-            {(algoPrices[asset.assetId] * asset.depthSum || 0).toFixed(3)} ALGO
+            {(algoPrices[asset.accrualAssetId] * asset.depthSum || 0).toFixed(3)} ALGO
           </Typography>
         </Box>
         <Divider

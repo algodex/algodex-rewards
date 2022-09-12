@@ -19,6 +19,14 @@ const rewrites = () => {
           : '/rewards/optin/:db*'
       }`,
     },
+    {
+      source: '/is_accruing/:db*',
+      destination: `${
+        process.env.ALGODEX_PROXY_API
+          ? `${process.env.ALGODEX_PROXY_API}/rewards/is_accruing/:db*`
+          : '/rewards/is_accruing/:db*'
+      }`,
+    },
   ]
 }
 

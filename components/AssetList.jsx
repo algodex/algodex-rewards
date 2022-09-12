@@ -37,7 +37,7 @@ export const AssetList = ({ isConnected }) => {
           <Grid container spacing={2}>
             {earnedAssetData.map((asset) => (
               <Grid
-                key={asset.assetId}
+                key={asset.accrualAssetId}
                 item
                 xs={12}
                 sm={10}

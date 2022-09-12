@@ -37,7 +37,9 @@ export async function getServerSideProps({ locale }) {
 export default function Home() {
   const { t } = useTranslation('index')
   const { t: tc } = useTranslation('common')
-  const { activeWallet, minAmount, isConnected } = useContext(RewardsAddressesContext)
+  const { activeWallet, minAmount, isConnected } = useContext(
+    RewardsAddressesContext
+  )
   const [walletSignedUp, setWalletSignedUp] = useState(activeWallet?.signedUp)
   const isMobile = useMediaQuery(useTheme().breakpoints.down('sm'))
   const isWebLarge = useMediaQuery(useTheme().breakpoints.down('lg'))
@@ -57,6 +59,7 @@ export default function Home() {
     loading: loadingReward,
     vestedRewards,
     pendingPeriod,
+    currentlyEarning,
   } = usePeriodsHook({ activeWallet })
 
   return (
@@ -127,6 +130,7 @@ export default function Home() {
               isConnected={isConnected}
               rewards={rewards}
               pendingPeriod={pendingPeriod}
+              currentlyEarning={currentlyEarning}
               isMobile={isMobile}
               activeWallet={activeWallet}
               minAmount={minAmount}

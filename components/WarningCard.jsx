@@ -7,7 +7,7 @@ import Box from '@mui/material/Box'
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded'
 import Link from './Nav/Link'
 
-export const WarningCard = ({ title, warnings, link }) => {
+export const WarningCard = ({ title, warnings, link, icon: IconComponent }) => {
   return (
     <Box
       sx={{
@@ -22,7 +22,11 @@ export const WarningCard = ({ title, warnings, link }) => {
         alignItems: 'flex-start',
       }}
     >
-      <WarningRoundedIcon sx={{ marginRight: '5px' }} />
+      {IconComponent ? (
+        <IconComponent />
+      ) : (
+        <WarningRoundedIcon sx={{ marginRight: '5px' }} />
+      )}
       <Box>
         {title && (
           <Typography variant="p" fontSize={'0.85rem'} fontWeight={700}>
@@ -63,4 +67,5 @@ WarningCard.propTypes = {
   title: PropTypes.string,
   warnings: PropTypes.arrayOf(PropTypes.string),
   link: PropTypes.object,
+  IconComponent: PropTypes.element,
 }
