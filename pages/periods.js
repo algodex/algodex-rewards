@@ -14,9 +14,9 @@ import { useTheme } from '@mui/material/styles'
 import { WalletDropdown } from '@/components/WalletDropdown'
 import { CurrentEpochCard } from '@/components/Periods/CurrentEpochCard'
 import { PeriodTable } from '@/components/Tables/PeriodTable'
-import useRewardsAddresses from '@/hooks/useRewardsAddresses'
 import { usePeriodsHook } from '@/hooks/usePeriodsHook'
 import { AssetContainer } from '@/components/AssetContainer'
+import { RewardsAddressesContext } from '../hooks/useRewardsAddresses'
 
 export async function getServerSideProps({ locale }) {
   return {
@@ -28,8 +28,7 @@ export async function getServerSideProps({ locale }) {
 
 export default function Periods() {
   const { t } = useTranslation('periods')
-  const { addresses, activeWallet } = useRewardsAddresses()
-  const isConnected = addresses.length > 0
+  const { activeWallet, isConnected } = useContext(RewardsAddressesContext)
   const isMobile = useMediaQuery(useTheme().breakpoints.down('sm'))
   const [activeCurrency, setActiveCurrency] = useState('ALGX')
   const {

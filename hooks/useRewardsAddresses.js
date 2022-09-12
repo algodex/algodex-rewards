@@ -17,7 +17,12 @@ export const RewardsAddressesContext = createContext(undefined)
 
 export function RewardsAddressesProvider({ children }) {
   const [addresses, setAddresses] = useState([])
+  const [isConnected, setIsConnected] = useState(false)
   const [activeWallet, setActiveWallet] = useState()
+  const minAmount = 1000
+  useEffect(() => {
+    setIsConnected(addresses.length > 0 ? true : false)
+  }, [addresses])
 
   return (
     <RewardsAddressesContext.Provider
@@ -26,6 +31,9 @@ export function RewardsAddressesProvider({ children }) {
         setAddresses,
         activeWallet,
         setActiveWallet,
+        minAmount,
+        isConnected,
+        setIsConnected,
       }}
     >
       {children}
@@ -71,11 +79,17 @@ export default function useRewardsAddresses() {
   const addressessDb = new DB('algodex_user_wallet_addresses')
   const activeWalletDb = new DB('activeWallet')
   const context = useContext(RewardsAddressesContext)
-  const minAmount = 1000
   if (context === undefined) {
     throw new Error('Must be inside of a Rewards Addresses Provider')
   }
-  const { addresses, setAddresses, activeWallet, setActiveWallet } = context
+  const {
+    addresses,
+    setAddresses,
+    activeWallet,
+    setActiveWallet,
+    minAmount,
+    setIsConnected,
+  } = context
 
   const updateAddresses = useCallback(
     (_addresses) => {
@@ -110,7 +124,7 @@ export default function useRewardsAddresses() {
       setActiveWallet()
     }
   }, [])
-  
+
   const {
     setAddresses: _setAddresses,
     myAlgoConnect,
@@ -118,7 +132,7 @@ export default function useRewardsAddresses() {
     peraDisconnect,
     myAlgoDisconnect,
   } = useWallets(updateAddresses, removeAddress)
-  
+
   // Fetch saved and active wallets from storage
   useEffect(() => {
     const getDBData = async () => {
@@ -208,6 +222,7 @@ export default function useRewardsAddresses() {
       const DBaddresses = await addressessDb.getAddresses()
       const parsedAddresses =
         DBaddresses.map(({ doc }) => JSON.parse(doc.wallet)) || []
+      setIsConnected(parsedAddresses.length > 0 ? true : false)
       // setAddresses(_mergeAddresses(parsedAddresses, _addresses))
       const result = await getAccountInfo(_addresses)
       setAddresses(_mergeAddresses(parsedAddresses, result))

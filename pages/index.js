@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { defaults } from '../next-i18next.config'
@@ -23,9 +23,9 @@ import { WarningCard } from '@/components/WarningCard'
 import { SignUpResponse } from '@/components/Modals/SignUpResponse'
 
 //Custom hooks
-import useRewardsAddresses from '@/hooks/useRewardsAddresses'
 import { useSignUpHook } from '@/hooks/useSignUpHook'
 import { usePeriodsHook } from '@/hooks/usePeriodsHook'
+import { RewardsAddressesContext } from '../hooks/useRewardsAddresses'
 
 export async function getServerSideProps({ locale }) {
   return {
@@ -37,8 +37,7 @@ export async function getServerSideProps({ locale }) {
 export default function Home() {
   const { t } = useTranslation('index')
   const { t: tc } = useTranslation('common')
-  const { addresses, activeWallet, minAmount } = useRewardsAddresses()
-  const isConnected = addresses.length > 0
+  const { activeWallet, minAmount, isConnected } = useContext(RewardsAddressesContext)
   const [walletSignedUp, setWalletSignedUp] = useState(activeWallet?.signedUp)
   const isMobile = useMediaQuery(useTheme().breakpoints.down('sm'))
   const isWebLarge = useMediaQuery(useTheme().breakpoints.down('lg'))
