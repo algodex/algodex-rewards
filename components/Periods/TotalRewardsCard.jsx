@@ -101,7 +101,14 @@ export const TotalRewardsCard = ({
                       textAlign={'right'}
                       sx={{ color: 'secondary.light' }}
                     >
-                      {(totalEarned * conversionRate).toLocaleString()} USD
+                      {(totalEarned * conversionRate).toLocaleString(
+                        undefined,
+                        {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        }
+                      )}{' '}
+                      USD
                     </Typography>
                   </>
                 )}
@@ -139,7 +146,14 @@ export const TotalRewardsCard = ({
                       textAlign={'right'}
                       sx={{ color: 'secondary.light' }}
                     >
-                      {(totalUnvested * conversionRate).toLocaleString()} USD
+                      {(totalUnvested * conversionRate).toLocaleString(
+                        undefined,
+                        {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        }
+                      )}{' '}
+                      USD
                     </Typography>
                   </>
                 )}

@@ -263,21 +263,14 @@ export function ChartDataProvider({ children }) {
     const assets = {}
     if (rewardsCopy.length > 0) {
       rewardsCopy.forEach(({ value, value: { accrualAssetId } }) => {
-        // if (assets[assetId]) {
-        //   assets[assetId] = [...assets[assetId], value]
-        // } else
         if (assets[accrualAssetId]) {
           assets[accrualAssetId] = [...assets[accrualAssetId], value]
         } else {
           assets[accrualAssetId] = [value]
-          // if (assetId) {
-          //   assets[assetId] = [value]
-          // } else {
-          // }
         }
       })
     }
-    console.log(assets)
+    // console.log(assets)
     await Promise.all(
       Object.keys(assets).map(async (accrualAssetId) => {
         const list = assets[accrualAssetId]
