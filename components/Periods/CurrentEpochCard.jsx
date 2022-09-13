@@ -66,7 +66,6 @@ export const CurrentEpochCard = ({
     ).toLocaleString()} ${activeCurrency}`
   }
 
-  // console.log({ completedPeriod })
   return (
     <>
       <Box
@@ -223,11 +222,7 @@ export const CurrentEpochCard = ({
                     <CircularProgress size={'1rem'} />
                   </>
                 ) : (
-                  <>
-                    {attachCurrency(
-                      completedPeriod.formattedVestedRewards || 0
-                    )}
-                  </>
+                  <>{attachCurrency(completedPeriod.vestedRewards || 0)}</>
                 )}
               </Typography>
             </Box>
