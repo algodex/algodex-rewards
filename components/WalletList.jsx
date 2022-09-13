@@ -15,6 +15,7 @@ import Button from '@mui/material/Button'
 //Custom hook
 import useRewardsAddresses from '@/hooks/useRewardsAddresses'
 import { WarningCard } from './WarningCard'
+import { shortenAddress } from '../lib/helper'
 
 const styles = {
   accordionStyles: {
@@ -29,13 +30,6 @@ export const WalletList = () => {
   const { t } = useTranslation('common')
   const { addresses, activeWallet, handleDisconnect, minAmount } =
     useRewardsAddresses()
-
-  const shortenAddress = (address) => {
-    const list = address.split('')
-    const first = list.slice(0, 6)
-    const last = list.slice(list.length - 6, list.length)
-    return `${first.join('')}...${last.join('')}`
-  }
 
   const formattedAddresses = useMemo(() => {
     const copy = [...addresses]
@@ -106,7 +100,7 @@ export const WalletList = () => {
                       alt="wallet"
                     />
                     <span style={{ marginLeft: '10px' }}>
-                      {shortenAddress(address)}
+                      {shortenAddress({ address })}
                     </span>
                   </Typography>
                 </AccordionSummary>
@@ -162,7 +156,7 @@ export const WalletList = () => {
                       sx={{ fontSize: '0.8rem' }}
                       onClick={() => handleDisconnect(address, type)}
                     >
-                      {t('Disconnect')} {shortenAddress(address)}
+                      {t('Disconnect')} {shortenAddress({ address })}
                     </Button>
                   </Box>
                 </AccordionDetails>

@@ -41,7 +41,8 @@ export default function Periods() {
     setActiveEpoch,
     periodAssets,
     setMobileAssets,
-    completedPeriod
+    completedPeriod,
+    currentlyEarning,
   } = usePeriodsHook({
     activeWallet,
     isMobile,
@@ -97,6 +98,7 @@ export default function Periods() {
               setActiveEpoch={setActiveEpoch}
               periodAssets={periodAssets}
               setMobileAssets={setMobileAssets}
+              currentlyEarning={currentlyEarning}
             />
           </Grid>
           <Grid
@@ -120,7 +122,7 @@ export default function Periods() {
               <Grid container spacing={2}>
                 {periodAssets.map((asset) => (
                   <Grid
-                    key={asset.assetId}
+                    key={asset.accrualAssetId}
                     item
                     xs={12}
                     sm={12}

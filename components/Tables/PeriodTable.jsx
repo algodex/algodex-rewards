@@ -16,6 +16,7 @@ import visuallyHidden from '@mui/utils/visuallyHidden'
 import Grid from '@mui/material/Grid'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
+import ErrorOutlineOutlinedIcon from '@mui/icons-material/ErrorOutlineOutlined'
 
 //Custom components and hooks
 import { TableLoader } from '../Loaders/TableLoader'
@@ -23,10 +24,11 @@ import { WarningCard } from '../WarningCard'
 import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
 import { useTranslation } from 'next-i18next'
 import { AssetContainer } from '../AssetContainer'
+import { shortenAddress } from '../../lib/helper'
 
 const columns = [
   { id: 'epoch', label: 'Period' },
-  { id: 'earnedRewards', label: 'Earned Rewards', align: 'right' },
+  { id: 'earnedRewardsFormatted', label: 'Earned Rewards', align: 'right' },
   { id: 'vestedRewards', label: 'Vested Rewards', align: 'right' },
   {
     id: 'unvestedRewards',
@@ -86,6 +88,7 @@ export const PeriodTable = ({
   mobileAssets,
   periodAssets,
   setMobileAssets,
+  currentlyEarning,
 }) => {
   const { t } = useTranslation('common')
   const { conversionRate } = usePriceConversionHook({})
@@ -147,32 +150,33 @@ export const PeriodTable = ({
             vestedRewards:
               x[value.epoch].vestedRewards +
               (value.formattedVestedRewards || 0),
-            earnedRewards:
-              x[value.epoch].earnedRewards + (value.earnedRewards || 0),
+            earnedRewardsFormatted:
+              x[value.epoch].earnedRewardsFormatted +
+              (value.earnedRewardsFormatted || 0),
             unvestedRewards:
               x[value.epoch].unvestedRewards +
-              ((value.earnedRewards || 0) -
+              ((value.earnedRewardsFormatted || 0) -
                 (value.formattedVestedRewards || 0) || 0),
-            assetId: x[value.epoch].assetId.includes(value.assetId)
-              ? x[value.epoch].assetId
-              : [...x[value.epoch].assetId, value.assetId],
+            accrualAssetId: x[value.epoch].accrualAssetId.includes(
+              value.accrualAssetId
+            )
+              ? x[value.epoch].accrualAssetId
+              : [...x[value.epoch].accrualAssetId, value.accrualAssetId],
           }
         } else {
           x[value.epoch] = {
             ...value,
             vestedRewards: value.formattedVestedRewards || 0,
             unvestedRewards:
-              (value.earnedRewards || 0) -
+              (value.earnedRewardsFormatted || 0) -
                 (value.formattedVestedRewards || 0) || 0,
-            assetId: [value.assetId],
+            accrualAssetId: [value.accrualAssetId],
           }
         }
       })
     }
     return stableSort(Object.values(x), getComparator(order, orderBy))
   }, [rewards, vestedRewards, order, orderBy])
-
-  // console.log(mergedRewards)
 
   const currentPeriod = useMemo(() => {
     // return a reward whose epoch is current.
@@ -187,21 +191,85 @@ export const PeriodTable = ({
       {isConnected && (
         <>
           {!loading && rewards.length < 1 ? (
-            <WarningCard
-              title="Not enough ALGX in wallet for rewards"
-              warnings={[
-                // eslint-disable-next-line max-len
-                'At least 100 ALGX must be held for a wallet to vest retroactive rewards and/or earn new rewards.',
-              ]}
-              link={{
-                title: 'View info on earning rewards here',
-                url: 'https://docs.algodex.com/rewards-program/algx-liquidity-rewards-program',
-              }}
-            />
+            <>
+              {currentlyEarning.notAccruingReason ? (
+                <>
+                  {currentlyEarning.isAccruingRewards == false && (
+                    <WarningCard
+                      title={currentlyEarning.notAccruingReason}
+                      link={{
+                        title: 'View info on earning rewards here',
+                        // eslint-disable-next-line max-len
+                        url: 'https://docs.algodex.com/rewards-program/algx-liquidity-rewards-program',
+                      }}
+                    />
+                  )}
+                </>
+              ) : (
+                <>
+                  <WarningCard
+                    title="Not enough ALGX in wallet for rewards"
+                    warnings={[
+                      // eslint-disable-next-line max-len
+                      'At least 100 ALGX must be held for a wallet to vest retroactive rewards and/or earn new rewards.',
+                    ]}
+                    link={{
+                      title: 'View info on earning rewards here',
+                      // eslint-disable-next-line max-len
+                      url: 'https://docs.algodex.com/rewards-program/algx-liquidity-rewards-program',
+                    }}
+                  />
+                </>
+              )}
+            </>
           ) : (
             <>
               {!mobileAssets ? (
                 <>
+                  {currentlyEarning.isAccruingRewards == false ? (
+                    <WarningCard
+                      title={currentlyEarning.notAccruingReason}
+                      link={{
+                        title: 'View info on earning rewards here',
+                        // eslint-disable-next-line max-len
+                        url: 'https://docs.algodex.com/rewards-program/algx-liquidity-rewards-program',
+                      }}
+                    />
+                  ) : (
+                    <WarningCard
+                      icon={() => {
+                        return (
+                          <ErrorOutlineOutlinedIcon
+                            sx={{
+                              marginRight: '6px',
+                              fontSize: '1.2rem',
+                              marginTop: '2px',
+                            }}
+                          />
+                        )
+                      }}
+                      title={currentlyEarning.notAccruingReason}
+                      warnings={[
+                        ` Wallet ${
+                          currentlyEarning.wallet
+                            ? shortenAddress({
+                              address: currentlyEarning.wallet,
+                            })
+                            : ''
+                        } ${t('is')} ${
+                          currentlyEarning.isAccruingRewards === false ? (
+                            <>{t('NOT')} </>
+                          ) : (
+                            ''
+                          )
+                        }
+                    ${t(
+                      // eslint-disable-next-line max-len
+                      'currently earning rewards for this period. Number of rewards will be updated when they are paid out'
+                    )}.`,
+                      ]}
+                    />
+                  )}
                   <Typography
                     sx={{
                       color: 'primary.light',
@@ -272,7 +340,9 @@ export const PeriodTable = ({
                                         {row.epoch}
                                       </StyledTableCell>
                                       <StyledTableCell align="right">
-                                        {attachCurrency(row.earnedRewards)}
+                                        {attachCurrency(
+                                          row.earnedRewardsFormatted
+                                        )}
                                       </StyledTableCell>
                                       <StyledTableCell align="right">
                                         {attachCurrency(
@@ -281,7 +351,7 @@ export const PeriodTable = ({
                                       </StyledTableCell>
                                       <StyledTableCell align="right">
                                         {attachCurrency(
-                                          row.earnedRewards -
+                                          row.earnedRewardsFormatted -
                                             (row.formattedVestedRewards || 0)
                                         )}
                                       </StyledTableCell>
@@ -373,7 +443,9 @@ export const PeriodTable = ({
                                       {row.epoch}
                                     </StyledTableCell>
                                     <StyledTableCell align="right">
-                                      {attachCurrency(row.earnedRewards)}
+                                      {attachCurrency(
+                                        row.earnedRewardsFormatted
+                                      )}
                                     </StyledTableCell>
                                     <StyledTableCell align="right">
                                       {attachCurrency(row.vestedRewards || 0)}
@@ -411,7 +483,7 @@ export const PeriodTable = ({
                     <Grid container spacing={2}>
                       {periodAssets.map((asset) => (
                         <Grid
-                          key={asset.assetId}
+                          key={asset.accrualAssetId}
                           item
                           xs={12}
                           sm={12}
@@ -446,6 +518,7 @@ PeriodTable.propTypes = {
   mobileAssets: PropTypes.bool,
   periodAssets: PropTypes.array,
   setMobileAssets: PropTypes.func,
+  currentlyEarning: PropTypes.object,
 }
 
 PeriodTable.defaultProps = {

@@ -15,6 +15,7 @@ import { ConnectWalletPrompt } from './Modals/ConnectWalletPrompt'
 import useRewardsAddresses from '@/hooks/useRewardsAddresses'
 import { NewWalletPrompt } from './Modals/NewWalletPrompt'
 import { WalletsContext } from '@/hooks/useWallets'
+import { shortenAddress } from '../lib/helper'
 
 export const WalletDropdown = ({ screen, sx, fontSize }) => {
   const dropdownRef = useRef(null)
@@ -56,13 +57,6 @@ export const WalletDropdown = ({ screen, sx, fontSize }) => {
 
   const toggleModal = () => {
     setOpenModal(!openModal)
-  }
-
-  const shortenAddress = ({ address }) => {
-    const list = address.split('')
-    const first = list.slice(0, 6)
-    const last = list.slice(list.length - 6, list.length)
-    return `${first.join('')}...${last.join('')}`
   }
 
   const connectWallet = (type) => {

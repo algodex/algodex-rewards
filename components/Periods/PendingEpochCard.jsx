@@ -13,32 +13,19 @@ import ErrorOutlineOutlinedIcon from '@mui/icons-material/ErrorOutlineOutlined'
 // Custom Component and hooks
 import Link from '../Nav/Link'
 import { WarningCard } from '../WarningCard'
+import { shortenAddress } from '../../lib/helper'
 
 export const PendingEpochCard = ({
   isConnected,
   rewards,
   pendingPeriod,
+  currentlyEarning,
   isMobile,
   activeWallet,
   minAmount,
 }) => {
   const { t } = useTranslation('index')
   const { t: tc } = useTranslation('common')
-
-  const currentPeriod = useMemo(() => {
-    // return a reward whose epoch is current.
-    const newR = rewards.filter(
-      ({ value: { epoch } }) => epoch >= pendingPeriod.number
-    )
-    return newR || []
-  }, [rewards, pendingPeriod])
-
-  const shortenAddress = ({ address }) => {
-    const list = address.split('')
-    const first = list.slice(0, 6)
-    const last = list.slice(list.length - 6, list.length)
-    return `${first.join('')}...${last.join('')}`
-  }
 
   return (
     <>
@@ -88,39 +75,47 @@ export const PendingEpochCard = ({
           </Box>
         </Box>
         {isConnected ? (
-          <Box sx={{ display: 'flex' }}>
-            <ErrorOutlineOutlinedIcon
-              sx={{
-                marginRight: '6px',
-                fontSize: '1.2rem',
-                marginTop: '2px',
-              }}
-            />
-            <Box marginBottom={'2rem'}>
-              <Typography fontSize={'0.8rem'} fontWeight={600}>
-                Wallet {activeWallet?.address && shortenAddress(activeWallet)}{' '}
-                {tc('is')} {currentPeriod.length == 0 && <>{tc('NOT')} </>}
-                {tc(
-                  // eslint-disable-next-line max-len
-                  'currently earning rewards for this period. Number of rewards will be updated when they are paid out'
-                )}
-                .
-              </Typography>
+          <>
+            {currentlyEarning?.wallet && (
+              <Box sx={{ display: 'flex' }}>
+                <ErrorOutlineOutlinedIcon
+                  sx={{
+                    marginRight: '6px',
+                    fontSize: '1.2rem',
+                    marginTop: '2px',
+                  }}
+                />
+                <Box marginBottom={'2rem'}>
+                  <Typography fontSize={'0.8rem'} fontWeight={600}>
+                    Wallet{' '}
+                    {activeWallet?.address && shortenAddress(activeWallet)}{' '}
+                    {tc('is')}{' '}
+                    {currentlyEarning.isAccruingRewards === false && (
+                      <>{tc('NOT')} </>
+                    )}
+                    {tc(
+                      // eslint-disable-next-line max-len
+                      'currently earning rewards for this period. Number of rewards will be updated when they are paid out'
+                    )}
+                    .
+                  </Typography>
 
-              <Typography
-                variant="p"
-                fontSize={'0.8rem'}
-                fontStyle={'italic'}
-                sx={{ color: 'secondary.light' }}
-              >
-                {tc(
-                  // eslint-disable-next-line max-len
-                  'Rewards will be paid out within two days after the end of one-week accrual periods'
-                )}
-                .
-              </Typography>
-            </Box>
-          </Box>
+                  <Typography
+                    variant="p"
+                    fontSize={'0.8rem'}
+                    fontStyle={'italic'}
+                    sx={{ color: 'secondary.light' }}
+                  >
+                    {tc(
+                      // eslint-disable-next-line max-len
+                      'Rewards will be paid out within two days after the end of one-week accrual periods'
+                    )}
+                    .
+                  </Typography>
+                </Box>
+              </Box>
+            )}
+          </>
         ) : (
           <Typography
             fontSize={'0.85rem'}
@@ -226,6 +221,7 @@ PendingEpochCard.propTypes = {
   activeWallet: PropTypes.object,
   minAmount: PropTypes.number,
   pendingPeriod: PropTypes.object,
+  currentlyEarning: PropTypes.object,
 }
 
 PendingEpochCard.defaultProps = {

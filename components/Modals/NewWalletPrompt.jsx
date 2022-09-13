@@ -9,17 +9,11 @@ import Modal from '@mui/material/Modal'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
 import useRewardsAddresses from '@/hooks/useRewardsAddresses'
+import { shortenAddress } from '../../lib/helper'
 
 export const NewWalletPrompt = ({ open, handleClose, address, type }) => {
   const { peraConnect, handleDisconnect } = useRewardsAddresses()
   const { t } = useTranslation('common')
-
-  const shortenAddress = (address) => {
-    const list = address.split('')
-    const first = list.slice(0, 6)
-    const last = list.slice(list.length - 6, list.length)
-    return `${first.join('')}...${last.join('')}`
-  }
 
   return (
     <Modal
@@ -66,7 +60,7 @@ export const NewWalletPrompt = ({ open, handleClose, address, type }) => {
               fontWeight: 'bold',
             }}
           >
-            {shortenAddress(address)}
+            {shortenAddress({ address })}
           </Button>
         )}
         <Divider

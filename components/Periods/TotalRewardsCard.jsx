@@ -20,7 +20,7 @@ export const TotalRewardsCard = ({
   const { t } = useTranslation('index')
   const totalEarned = useMemo(() => {
     return rewards.reduce((a, b) => {
-      return a + b.value.earnedRewards
+      return a + b.value.earnedRewardsFormatted
     }, 0)
   }, [rewards])
 
@@ -154,6 +154,7 @@ export const TotalRewardsCard = ({
                   width: '8rem',
                   textAlign: 'center',
                   marginTop: '-2rem',
+                  marginLeft: '1rem',
                 }}
               >
                 {t('Connect a wallet to see your total rewards add up here')}
