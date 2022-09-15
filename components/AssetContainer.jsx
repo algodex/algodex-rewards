@@ -125,7 +125,10 @@ export const AssetContainer = ({ asset }) => {
             lineHeight={'1.5rem'}
           >
             {asset.depthSum.toFixed(2)} {asset.assetName} <br />
-            {(algoPrices[asset.accrualAssetId] * asset.depthSum || 0).toFixed(3)} ALGO
+            {(algoPrices[asset.accrualAssetId] * asset.depthSum || 0).toFixed(
+              3
+            )}{' '}
+            ALGO
           </Typography>
         </Box>
         <Divider
@@ -154,7 +157,11 @@ export const AssetContainer = ({ asset }) => {
             textAlign={'right'}
             sx={{ color: 'secondary.light' }}
           >
-            {(asset.lastWeek * conversionRate).toLocaleString()} USD
+            {(asset.lastWeek * conversionRate).toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}{' '}
+            USD
           </Typography>
         </Box>
       </Box>

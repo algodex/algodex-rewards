@@ -60,10 +60,14 @@ export const CurrentEpochCard = ({
   const { conversionRate } = usePriceConversionHook({})
 
   const attachCurrency = (price) => {
-    return `${(activeCurrency === 'ALGX'
-      ? price
-      : price * conversionRate
-    ).toLocaleString()} ${activeCurrency}`
+    return `${
+      activeCurrency === 'ALGX'
+        ? price.toLocaleString()
+        : (price * conversionRate).toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })
+    } ${activeCurrency}`
   }
 
   return (
