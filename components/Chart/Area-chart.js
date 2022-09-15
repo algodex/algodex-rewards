@@ -147,7 +147,7 @@ export default function AreaChart({ isConnected }) {
 
   return (
     <>
-      <div ref={chartContainerRef} className="chart-container" />
+      <div ref={chartContainerRef} className="chart-container" data-testid={'chart'} />
     </>
   )
 }

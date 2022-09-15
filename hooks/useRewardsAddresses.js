@@ -54,7 +54,7 @@ const indexerClient = new algosdk.Indexer(
  * @return {Object}
  * @private
  */
-const _getEmptyAccountInfo = (wallet) => {
+export const _getEmptyAccountInfo = (wallet) => {
   return {
     amount: 0,
     'amount-without-pending-rewards': 0,

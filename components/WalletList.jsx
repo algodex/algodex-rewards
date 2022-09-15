@@ -99,7 +99,10 @@ export const WalletList = () => {
                       width={14}
                       alt="wallet"
                     />
-                    <span style={{ marginLeft: '10px' }}>
+                    <span
+                      style={{ marginLeft: '10px' }}
+                      data-testid={'address'}
+                    >
                       {shortenAddress({ address })}
                     </span>
                   </Typography>
@@ -143,6 +146,7 @@ export const WalletList = () => {
                               color={'primary.light2'}
                               fontSize={'0.8rem'}
                               textAlign={'right'}
+                              data-testid={'balance'}
                             >
                               {(asset.amount / 1000000).toLocaleString()}
                             </Typography>
@@ -155,6 +159,7 @@ export const WalletList = () => {
                       variant="outlined"
                       sx={{ fontSize: '0.8rem' }}
                       onClick={() => handleDisconnect(address, type)}
+                      data-testid={'disconnect'}
                     >
                       {t('Disconnect')} {shortenAddress({ address })}
                     </Button>
