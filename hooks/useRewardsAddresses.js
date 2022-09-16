@@ -230,9 +230,9 @@ export default function useRewardsAddresses() {
       addressessDb.updateAddresses(result)
       const _activeWallet = (await activeWalletDb.getAddresses())[0]?.doc
       if (
-        (viewAsWallet &&
-          process.env.NEXT_PUBLIC_ENVIRONMENT === 'development') ||
-        typeof window.end2end !== 'undefined'
+        viewAsWallet &&
+        (process.env.NEXT_PUBLIC_ENVIRONMENT === 'development' ||
+          typeof window.end2end !== 'undefined')
       ) {
         loginAsAnother(viewAsWallet)
         return
