@@ -9,7 +9,9 @@ const rewrites = () => {
   return [
     {
       source: '/pouch/:db*',
-      destination: `${process.env.DB_BASE_URL}/:db*`,
+      destination: `${
+        process.env.DB_BASE_URL ? `${process.env.DB_BASE_URL}/:db*` : '/:db*'
+      }`,
     },
     {
       source: '/optin/:db*',
