@@ -204,15 +204,7 @@ export const PeriodTable = ({
                         url: 'https://docs.algodex.com/rewards-program/algx-liquidity-rewards-program',
                       }}
                       icon={() => {
-                        return currentlyEarning.isAccruingRewards ? (
-                          <CheckCircleOutlineRoundedIcon
-                            sx={{
-                              marginRight: '6px',
-                              fontSize: '1.2rem',
-                              marginTop: '2px',
-                            }}
-                          />
-                        ) : (
+                        return (
                           <ErrorOutlineOutlinedIcon
                             sx={{
                               marginRight: '6px',
@@ -294,9 +286,10 @@ export const PeriodTable = ({
                             ''
                           )
                         }
-                    ${t(
-                      // eslint-disable-next-line max-len
-                      'currently earning rewards for this period. Number of rewards will be updated when they are paid out'
+                    ${t('currently earning rewards for this period')} ${
+                      pendingPeriod.number
+                    }. ${t(
+                      'Number of rewards will be updated when they are paid out'
                     )}.`,
                       ]}
                     />

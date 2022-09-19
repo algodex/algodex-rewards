@@ -49,6 +49,8 @@
   "Previous Periods": "Períodos anteriores",
   "Select Assets to Include in Chart": "Seleccionar activos para incluir en el gráfico",
   "currently earning rewards for this period. Number of rewards will be updated when they are paid out": "actualmente ganando recompensas por este período. El número de recompensas se actualizará cuando se paguen",
+  "currently earning rewards for this period": "actualmente ganando recompensas por este período",
+  "Number of rewards will be updated when they are paid out": "El número de recompensas se actualizará cuando se paguen",
   "is": "es",
   "NOT": "NO",
   "You have an active walletconnect session, do you want to disconnect the current session to connect another":"Tienes una sesión activa de walletconnect, ¿quieres desconectar la sesión actual para conectar otra?",

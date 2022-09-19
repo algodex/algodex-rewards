@@ -49,6 +49,8 @@
   "Previous Periods": "Previous Periods",
   "Select Assets to Include in Chart": "Select Assets to Include in Chart",
   "currently earning rewards for this period. Number of rewards will be updated when they are paid out": "currently earning rewards for this period. Number of rewards will be updated when they are paid out",
+  "currently earning rewards for this period": "currently earning rewards for this period",
+  "Number of rewards will be updated when they are paid out": "Number of rewards will be updated when they are paid out",
   "is": "is",
   "NOT": "NOT",
   "You have an active walletconnect session, do you want to disconnect the current session to connect another":"You have an active walletconnect session, do you want to disconnect the current session to connect another",
