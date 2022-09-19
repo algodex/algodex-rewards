@@ -286,7 +286,7 @@ export const PeriodTable = ({
                             ''
                           )
                         }
-                    ${t('currently earning rewards for this period')}  ${
+                    ${t('currently earning rewards for this period')} ${
                       pendingPeriod.number
                     }. ${t(
                       'Number of rewards will be updated when they are paid out'
