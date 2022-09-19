@@ -14,11 +14,11 @@ describe('Algodex Rewards Wallet page', () => {
     })
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(4000)
-    cy.get('[data-testid=addr]').click()
+    cy.get('[data-testid=addr-summary]').click({ multiple: true })
     cy.get('[data-testid=balance]').should('be.visible')
     cy.get('[data-testid=disconnect]').should('be.visible')
     cy.fixture('wallet').then(function (walletData) {
-      cy.get('[data-testid=address]').contains(
+      cy.get('[data-testid=addr]').contains(
         shortenAddress({ address: walletData.address })
       )
     })

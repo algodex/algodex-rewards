@@ -72,6 +72,7 @@ export const WalletList = () => {
               </Box>
               <Accordion sx={styles.accordionStyles}>
                 <AccordionSummary
+                  data-testid={'addr-summary'}
                   expandIcon={
                     <ExpandMoreIcon sx={{ color: 'primary.contrastText' }} />
                   }
@@ -99,10 +100,7 @@ export const WalletList = () => {
                       width={14}
                       alt="wallet"
                     />
-                    <span
-                      style={{ marginLeft: '10px' }}
-                      data-testid={'addr'}
-                    >
+                    <span style={{ marginLeft: '10px' }} data-testid={'addr'}>
                       {shortenAddress({ address })}
                     </span>
                   </Typography>
