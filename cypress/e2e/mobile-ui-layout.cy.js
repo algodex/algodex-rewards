@@ -24,7 +24,6 @@ describe('Algodex Rewards Mobile Layout', () => {
       cy.get('[data-testid=toolbar-links]').should('not.exist')
       cy.url().should('include', '/chart')
       cy.get('[data-testid=earnings-overtime]').should('be.visible')
-      cy.get('[data-testid=connect-wallet]').should('be.visible')
     })
 
     it(`Should render period page on ${size} screen`, () => {
@@ -34,7 +33,6 @@ describe('Algodex Rewards Mobile Layout', () => {
       cy.get('[data-testid=menu-btn]').should('be.visible')
       cy.get('[data-testid=toolbar-links]').should('not.exist')
       cy.url().should('include', '/periods')
-      cy.get('[data-testid=connect-wallet]').should('be.visible')
     })
 
     it(`Should render wallet page on ${size} screen`, () => {
@@ -45,7 +43,6 @@ describe('Algodex Rewards Mobile Layout', () => {
       cy.get('[data-testid=toolbar-links]').should('not.exist')
       cy.url().should('include', '/wallet')
       cy.get('[data-testid=return-home]').should('be.visible')
-      cy.get('[data-testid=connect-wallet]').should('be.visible')
     })
   })
 })
