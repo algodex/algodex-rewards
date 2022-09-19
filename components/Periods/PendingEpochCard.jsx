@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { useTranslation } from 'next-i18next'
 
@@ -9,6 +9,7 @@ import Button from '@mui/material/Button'
 import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded'
 import InfoRoundedIcon from '@mui/icons-material/InfoRounded'
 import ErrorOutlineOutlinedIcon from '@mui/icons-material/ErrorOutlineOutlined'
+import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded'
 
 // Custom Component and hooks
 import Link from '../Nav/Link'
@@ -78,13 +79,23 @@ export const PendingEpochCard = ({
           <>
             {currentlyEarning?.wallet && (
               <Box sx={{ display: 'flex' }}>
-                <ErrorOutlineOutlinedIcon
-                  sx={{
-                    marginRight: '6px',
-                    fontSize: '1.2rem',
-                    marginTop: '2px',
-                  }}
-                />
+                {currentlyEarning.isAccruingRewards ? (
+                  <CheckCircleOutlineRoundedIcon
+                    sx={{
+                      marginRight: '6px',
+                      fontSize: '1.2rem',
+                      marginTop: '2px',
+                    }}
+                  />
+                ) : (
+                  <ErrorOutlineOutlinedIcon
+                    sx={{
+                      marginRight: '6px',
+                      fontSize: '1.2rem',
+                      marginTop: '2px',
+                    }}
+                  />
+                )}
                 <Box marginBottom={'2rem'}>
                   <Typography fontSize={'0.8rem'} fontWeight={600}>
                     Wallet{' '}
