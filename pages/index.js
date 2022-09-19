@@ -104,6 +104,7 @@ export default function Home() {
             </Box>
             {!walletSignedUp && isConnected && optinStatus == false && (
               <LoadingButton
+                data-testid={'signup-btn'}
                 variant="outline"
                 sx={{
                   textDecoration: 'capitalize',

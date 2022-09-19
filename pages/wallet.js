@@ -78,7 +78,6 @@ export default function Wallet() {
                 lg={7}
                 xl={6}
                 marginX={'auto'}
-                data-testid={'connect-wallet'}
               >
                 <WalletDropdown screen={'wallet'} />
               </Grid>

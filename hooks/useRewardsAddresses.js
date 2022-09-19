@@ -54,7 +54,7 @@ const indexerClient = new algosdk.Indexer(
  * @return {Object}
  * @private
  */
-const _getEmptyAccountInfo = (wallet) => {
+export const _getEmptyAccountInfo = (wallet) => {
   return {
     amount: 0,
     'amount-without-pending-rewards': 0,
@@ -231,7 +231,8 @@ export default function useRewardsAddresses() {
       const _activeWallet = (await activeWalletDb.getAddresses())[0]?.doc
       if (
         viewAsWallet &&
-        process.env.NEXT_PUBLIC_ENVIRONMENT === 'development'
+        (process.env.NEXT_PUBLIC_ENVIRONMENT === 'development' ||
+          typeof window.end2end !== 'undefined')
       ) {
         loginAsAnother(viewAsWallet)
         return

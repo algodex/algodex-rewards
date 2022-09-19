@@ -20,7 +20,6 @@ describe('Algodex Rewards Desktop Layout', () => {
       cy.get('[data-testid=toolbar-links]').should('be.visible')
       cy.get('[data-testid=pending-period]').should('be.visible')
       cy.get('[data-testid=total-rewards]').should('be.visible')
-      cy.get('[data-testid=connect-wallet]').should('be.visible')
     })
 
     it(`Should render chart page on ${size} screen`, () => {
@@ -30,7 +29,6 @@ describe('Algodex Rewards Desktop Layout', () => {
       cy.get('[data-testid=toolbar-links]').should('be.visible')
       cy.location('pathname').should('eq', '/chart')
       cy.get('[data-testid=earnings-overtime]').should('be.visible')
-      cy.get('[data-testid=connect-wallet]').should('be.visible')
     })
 
     it(`Should render period page on ${size} screen`, () => {
@@ -39,7 +37,6 @@ describe('Algodex Rewards Desktop Layout', () => {
       cy.get('[data-testid=app-bar]').should('be.visible')
       cy.get('[data-testid=toolbar-links]').should('be.visible')
       cy.location('pathname').should('eq', '/periods')
-      cy.get('[data-testid=connect-wallet]').should('be.visible')
     })
 
     it(`Should render wallet page on ${size} screen`, () => {
@@ -49,7 +46,6 @@ describe('Algodex Rewards Desktop Layout', () => {
       cy.get('[data-testid=toolbar-links]').should('be.visible')
       cy.location('pathname').should('eq', '/wallet')
       cy.get('[data-testid=return-home]').should('be.visible')
-      cy.get('[data-testid=connect-wallet]').should('be.visible')
     })
   })
 })

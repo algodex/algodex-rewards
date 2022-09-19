@@ -4,7 +4,7 @@ import { getEpochEnd, getEpochStart } from '@/lib/getRewards'
 import { DateTime } from 'luxon'
 import { getAssets } from '@/lib/getTinymanPrice'
 import { getAccruingStatus } from '../lib/getRewards'
-// import { dummyReward, dummyVestedRewards } from '@/lib/dummyChartData'
+import { dummyReward, dummyVestedRewards } from '@/lib/dummyChartData'
 
 export const usePeriodsHook = ({ activeWallet, isMobile }) => {
   const [rewards, setRewards] = useState([])
@@ -59,15 +59,25 @@ export const usePeriodsHook = ({ activeWallet, isMobile }) => {
       await Promise.all([_rewards, _vestedRewards])
         .then((values) => {
           setLoading(false)
-          setRewards(values[0].rows)
-          setVestedRewards(values[1].rows)
-          setActiveEpoch(
-            isMobile
-              ? 0
-              : Math.max(...values[0].rows.map(({ value: { epoch } }) => epoch))
-          )
-          // setRewards(dummyReward)
-          // setVestedRewards(dummyVestedRewards)
+          if (typeof window.end2end !== 'undefined') {
+            setRewards(dummyReward)
+            setVestedRewards(dummyVestedRewards)
+            setActiveEpoch(
+              isMobile
+                ? 0
+                : Math.max(...dummyReward.map(({ value: { epoch } }) => epoch))
+            )
+          } else {
+            setRewards(values[0].rows)
+            setVestedRewards(values[1].rows)
+            setActiveEpoch(
+              isMobile
+                ? 0
+                : Math.max(
+                  ...values[0].rows.map(({ value: { epoch } }) => epoch)
+                )
+            )
+          }
         })
         .catch((err) => {
           setLoading(false)

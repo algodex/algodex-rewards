@@ -18,3 +18,11 @@ import './commands'
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
+
+Cypress.on('window:before:load', (win) => {
+  win.end2end = {
+    wallet: {
+      address: 'XPUFT2FVG3M5LYRBYJKK2YJ5BR5NOTHH3J5NRIO3VHY5J3DJZMMBKA27HQ',
+    },
+  }
+})
