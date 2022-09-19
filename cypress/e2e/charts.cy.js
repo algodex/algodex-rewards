@@ -14,7 +14,6 @@ describe('Algodex Rewards Chart ', () => {
 
     cy.get('[data-testid=chart]').should('be.visible')
     cy.get('[data-testid=column-asset-USDC]').contains('USDC')
-    // cy.get('[data-testid=column-asset-GEMS]').contains('GEMS')
     cy.get('[data-testid=column-asset-goBTC]').contains('goBTC')
   })
 })
