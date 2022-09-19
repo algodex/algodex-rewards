@@ -101,7 +101,7 @@ export const WalletList = () => {
                     />
                     <span
                       style={{ marginLeft: '10px' }}
-                      data-testid={'address'}
+                      data-testid={'addr'}
                     >
                       {shortenAddress({ address })}
                     </span>

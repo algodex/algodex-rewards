@@ -14,7 +14,7 @@ describe('Algodex Rewards Wallet page', () => {
     })
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(4000)
-    cy.get('[data-testid=address]').click()
+    cy.get('[data-testid=addr]').click()
     cy.get('[data-testid=balance]').should('be.visible')
     cy.get('[data-testid=disconnect]').should('be.visible')
     cy.fixture('wallet').then(function (walletData) {
