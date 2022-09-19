@@ -17,6 +17,7 @@ import Grid from '@mui/material/Grid'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ErrorOutlineOutlinedIcon from '@mui/icons-material/ErrorOutlineOutlined'
+import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded'
 
 //Custom components and hooks
 import { TableLoader } from '../Loaders/TableLoader'
@@ -202,6 +203,25 @@ export const PeriodTable = ({
                         // eslint-disable-next-line max-len
                         url: 'https://docs.algodex.com/rewards-program/algx-liquidity-rewards-program',
                       }}
+                      icon={() => {
+                        return currentlyEarning.isAccruingRewards ? (
+                          <CheckCircleOutlineRoundedIcon
+                            sx={{
+                              marginRight: '6px',
+                              fontSize: '1.2rem',
+                              marginTop: '2px',
+                            }}
+                          />
+                        ) : (
+                          <ErrorOutlineOutlinedIcon
+                            sx={{
+                              marginRight: '6px',
+                              fontSize: '1.2rem',
+                              marginTop: '2px',
+                            }}
+                          />
+                        )
+                      }}
                     />
                   )}
                 </>
@@ -228,6 +248,17 @@ export const PeriodTable = ({
                 <>
                   {currentlyEarning.isAccruingRewards == false ? (
                     <WarningCard
+                      icon={() => {
+                        return (
+                          <ErrorOutlineOutlinedIcon
+                            sx={{
+                              marginRight: '6px',
+                              fontSize: '1.2rem',
+                              marginTop: '2px',
+                            }}
+                          />
+                        )
+                      }}
                       title={currentlyEarning.notAccruingReason}
                       link={{
                         title: 'View info on earning rewards here',
@@ -239,7 +270,7 @@ export const PeriodTable = ({
                     <WarningCard
                       icon={() => {
                         return (
-                          <ErrorOutlineOutlinedIcon
+                          <CheckCircleOutlineRoundedIcon
                             sx={{
                               marginRight: '6px',
                               fontSize: '1.2rem',
