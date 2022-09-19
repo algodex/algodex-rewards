@@ -66,7 +66,7 @@ export const TotalRewardsCard = ({
             fontWeight={600}
             data-testid={'total-rewards'}
           >
-            {t('Total Rewards Earned')}:
+            {t('All Time Rewards')}:
           </Typography>
           <Box
             marginBottom={'0.5rem'}
