@@ -36,6 +36,14 @@ export const TotalRewardsCard = ({
 
   const { conversionRate } = usePriceConversionHook({})
 
+  const formatter = (amount) => {
+    const count = amount.toString().split('.')[0].length
+    return amount.toLocaleString(undefined, {
+      minimumFractionDigits: count > 6 ? 0 : undefined,
+      maximumFractionDigits: count > 6 ? 0 : undefined,
+    })
+  }
+
   return (
     <>
       <Box
@@ -92,7 +100,7 @@ export const TotalRewardsCard = ({
                       fontWeight={600}
                       textAlign={'right'}
                     >
-                      {totalEarned.toLocaleString()} ALGX
+                      {formatter(totalEarned || 0)} ALGX
                     </Typography>
 
                     <Typography
@@ -137,7 +145,7 @@ export const TotalRewardsCard = ({
                       fontWeight={600}
                       textAlign={'right'}
                     >
-                      {totalUnvested.toLocaleString()} ALGX
+                      {formatter(totalUnvested || 0)} ALGX
                     </Typography>
 
                     <Typography
