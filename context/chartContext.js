@@ -11,7 +11,7 @@ import useRewardsAddresses from '@/hooks/useRewardsAddresses'
 import { getEpochEnd } from '@/lib/getRewards'
 import { DateTime } from 'luxon'
 import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
-import { getAlgoExplorerAssets, getAssets } from '@/lib/getTinymanPrice'
+import { getAlgoExplorerAssets, getAssets } from '@/lib/getAlgoAssets'
 import { getEpochStart } from '../lib/getRewards'
 
 export const ChartDataContext = createContext(undefined)
@@ -217,8 +217,8 @@ export function ChartDataProvider({ children }) {
             withinStageData(epoch) && withinTimeRange(vestedUnixTime)
         ),
       ]
-    // eslint-disable-next-line max-len
-    // If includeUnvested and earnedRewards has no data for the current filter, replace with vestedRewards data
+    // If includeUnvested and earnedRewards has no data for the current filter,
+    // replace with vestedRewards data
     if (rewardsCopy.length < 1 && _includeUnvested) {
       _includeUnvested = false
       rewardsCopy = [
@@ -270,7 +270,6 @@ export function ChartDataProvider({ children }) {
         }
       })
     }
-    // console.log(assets)
     await Promise.all(
       Object.keys(assets).map(async (accrualAssetId) => {
         const list = assets[accrualAssetId]
@@ -285,10 +284,12 @@ export function ChartDataProvider({ children }) {
 
         try {
           const assetInfo = await getAlgoExplorerAssets(accrualAssetId)
-
           setAvailableAssets((prev) => ({
             ...prev,
-            [`${accrualAssetId}`]: { unit_name: assetInfo['unit-name'] },
+            [`${accrualAssetId}`]: {
+              unit_name: assetInfo['unit-name'],
+              ...assetInfo,
+            },
           }))
 
           data.push({
@@ -328,46 +329,47 @@ export function ChartDataProvider({ children }) {
     activeRange,
   ])
 
-  const earnedAssetData = useMemo(() => {
-    const rewardsCopy = [...rewards]
+  const lastWkEarnedAssets = useMemo(() => {
     const data = []
     const assets = {}
+    const lastWkUnixStart = Math.floor(
+      new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7) / 1000
+    )
+    const lastWkEpochStart = (lastWkUnixStart - getEpochStart(1)) / 604800 + 1
+    const lastWkUnixEnd = Math.floor(Date.now() / 1000)
+    const lastWkEpochEnd = (lastWkUnixEnd - getEpochStart(1)) / 604800 + 1
 
-    if (rewardsCopy.length > 0) {
-      rewardsCopy.forEach(({ value }) => {
-        if (assets[value.accrualAssetId]) {
-          assets[value.accrualAssetId] = [
-            ...assets[value.accrualAssetId],
-            value,
-          ]
-        } else {
-          assets[value.accrualAssetId] = [value]
+    if (rewards.length > 0) {
+      rewards.forEach(({ value, value: { epoch } }) => {
+        //calculate rewards within last week's epoch
+        if (
+          epoch >= lastWkEpochStart.toFixed(0) &&
+          epoch <= lastWkEpochEnd.toFixed(0)
+        ) {
+          if (assets[value.accrualAssetId]) {
+            assets[value.accrualAssetId] = [
+              ...assets[value.accrualAssetId],
+              value,
+            ]
+          } else {
+            assets[value.accrualAssetId] = [value]
+          }
         }
       })
     }
 
     for (const accrualAssetId in assets) {
       const list = assets[accrualAssetId]
-      const lastWkUnixStart = Math.floor(
-        new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7) / 1000
-      )
-      const lastWkEpochStart =
-        (lastWkUnixStart - getEpochStart(1)) / 604800 + 1
-
-      const lastWkUnixEnd = Math.floor(Date.now() / 1000)
-      const lastWkEpochEnd = (lastWkUnixEnd - getEpochStart(1)) / 604800 + 1
-
-      //Filter out all rewards within last weeks' epoch
-      const x = list.filter(
-        ({ epoch }) =>
-          epoch >= lastWkEpochStart.toFixed(0) &&
-          epoch <= lastWkEpochEnd.toFixed(0)
-      )
-      const lastWkRwds = x.reduce((a, b) => a + b.earnedRewardsFormatted, 0)
       data.push({
         accrualAssetId,
-        lastWeek: lastWkRwds.toFixed(2),
-        depthSum: list.reduce((a, b) => a + b.depthSum, 0) / 10080,
+        lastWeek: list
+          .reduce((a, b) => a + b.earnedRewardsFormatted, 0)
+          .toFixed(),
+        algoTotalDepth:
+          list.reduce((a, b) => a + b.algoTotalDepth, 0) /
+          (10080 * list.length),
+        asaTotalDepth:
+          list.reduce((a, b) => a + b.asaTotalDepth, 0) / (10080 * list.length),
         assetName: tinymanAssets[accrualAssetId]?.unit_name || '??',
         assetLogo:
           tinymanAssets[accrualAssetId]?.logo?.svg ||
@@ -390,13 +392,14 @@ export function ChartDataProvider({ children }) {
         setActiveStage,
         vestedChartData,
         earnedChartData,
-        earnedAssetData,
+        lastWkEarnedAssets,
         activeCurrency,
         setActiveCurrency,
         includeUnvested,
         setIncludeUnvested,
         selected,
         setSelected,
+        availableAssets,
       }}
     >
       {children}

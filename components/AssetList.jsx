@@ -13,12 +13,11 @@ import { AssetContainer } from './AssetContainer'
 
 export const AssetList = ({ isConnected }) => {
   const { t } = useTranslation('common')
-  // const [algoPrices, setAlgoPrices] = useState({});
   const context = useContext(ChartDataContext)
   if (context === undefined) {
     throw new Error('Must be inside of a Chart Provider')
   }
-  const { earnedAssetData } = context
+  const { lastWkEarnedAssets, availableAssets } = context
   return (
     <Box sx={{ paddingBlock: '1.5rem' }}>
       {!isConnected ? (
@@ -35,7 +34,7 @@ export const AssetList = ({ isConnected }) => {
       ) : (
         <>
           <Grid container spacing={2}>
-            {earnedAssetData.map((asset) => (
+            {lastWkEarnedAssets.map((asset) => (
               <Grid
                 key={asset.accrualAssetId}
                 item
