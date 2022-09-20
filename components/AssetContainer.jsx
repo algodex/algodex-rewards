@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import Image from 'next/image'
 import { useTranslation } from 'next-i18next'
 import PropTypes from 'prop-types'
@@ -12,32 +12,10 @@ import LaunchRoundedIcon from '@mui/icons-material/LaunchRounded'
 //Custom components and hooks
 import Link from './Nav/Link'
 import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
-import { getAlgoPrice } from '@/lib/getTinymanPrice'
 
 export const AssetContainer = ({ asset }) => {
-  const [algoPrices, setAlgoPrices] = useState({})
   const { t } = useTranslation('common')
   const { conversionRate } = usePriceConversionHook({})
-
-  const convertToAlgo = useCallback(async (accrualAssetId) => {
-    const prices = {}
-    const res = await getAlgoPrice(accrualAssetId)
-    if (!prices[accrualAssetId]) {
-      prices[accrualAssetId] = res
-      setAlgoPrices((prevState) => {
-        return {
-          ...prevState,
-          ...prices,
-        }
-      })
-    }
-  }, [])
-
-  useEffect(() => {
-    if (asset) {
-      convertToAlgo(asset.accrualAssetId)
-    }
-  }, [asset])
 
   return (
     <Box
@@ -124,11 +102,8 @@ export const AssetContainer = ({ asset }) => {
             fontWeight={600}
             lineHeight={'1.5rem'}
           >
-            {asset.depthSum.toFixed(2)} {asset.assetName} <br />
-            {(algoPrices[asset.accrualAssetId] * asset.depthSum || 0).toFixed(
-              3
-            )}{' '}
-            ALGO
+            {asset.algoTotalDepth.toFixed(2)} {asset.assetName} <br />
+            {asset.asaTotalDepth.toFixed(3)} ALGO
           </Typography>
         </Box>
         <Divider
@@ -145,10 +120,10 @@ export const AssetContainer = ({ asset }) => {
             textAlign={'right'}
             marginBottom={'0.5rem'}
           >
-            {t('Last Week’s Rewards')}
+            {asset.lastWeek ? t('Last Week’s Rewards') : t('Earned Rewards')}
           </Typography>
           <Typography fontSize={'1rem'} fontWeight={600} textAlign={'right'}>
-            {asset.lastWeek.toLocaleString()} ALGX
+            {(asset.lastWeek || asset.earnedRewards).toLocaleString()} ALGX
           </Typography>
 
           <Typography
@@ -157,7 +132,9 @@ export const AssetContainer = ({ asset }) => {
             textAlign={'right'}
             sx={{ color: 'secondary.light' }}
           >
-            {(asset.lastWeek * conversionRate).toLocaleString(undefined, {
+            {(
+              (asset.lastWeek || asset.earnedRewards) * conversionRate
+            ).toLocaleString(undefined, {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
             })}{' '}
@@ -174,5 +151,5 @@ AssetContainer.propTypes = {
 }
 
 AssetContainer.defaultProps = {
-  asset: [],
+  asset: {},
 }

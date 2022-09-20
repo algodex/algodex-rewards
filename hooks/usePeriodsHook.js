@@ -2,7 +2,7 @@ import { getRewardsData, getVestedRewardsData } from '@/lib/getRewards'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { getEpochEnd, getEpochStart } from '@/lib/getRewards'
 import { DateTime } from 'luxon'
-import { getAssets } from '@/lib/getTinymanPrice'
+import { getAssets } from '@/lib/getAlgoAssets'
 import { getAccruingStatus } from '../lib/getRewards'
 import { dummyReward, dummyVestedRewards } from '@/lib/dummyChartData'
 
@@ -30,9 +30,8 @@ export const usePeriodsHook = ({ activeWallet, isMobile }) => {
   }, [])
 
   const pendingPeriod = useMemo(() => {
-    const curr_unix = Math.floor(Date.now() / 1000)
+    const curr_unix = Math.floor(new Date().getTime() / 1000)
     const epoch = (curr_unix - getEpochStart(1)) / 604800 + 1
-
     const start = DateTime.fromJSDate(
       new Date(getEpochStart(epoch) * 1000)
     ).toLocaleString(DateTime.DATE_MED)
@@ -90,60 +89,44 @@ export const usePeriodsHook = ({ activeWallet, isMobile }) => {
     [isMobile]
   )
 
-  const getAssetsByEpoch = useCallback(
-    async (_epoch) => {
-      setActiveEpoch(_epoch)
-      const rewardsCopy = rewards.filter(
-        ({ value: { epoch } }) => epoch == _epoch
-      )
-      const data = []
-      const assets = {}
-      if (rewardsCopy.length > 0) {
-        rewardsCopy.forEach(({ value }) => {
-          if (assets[value.accrualAssetId]) {
-            assets[value.accrualAssetId] = [
-              ...assets[value.accrualAssetId],
-              value,
-            ]
-          } else {
-            assets[value.accrualAssetId] = [value]
-          }
-        })
-      }
-      for (const accrualAssetId in assets) {
-        const list = assets[accrualAssetId]
-        const now = new Date()
-        const lastWkUnixStart = Math.floor(
-          new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7) / 1000
-        )
-        const lastWkEpochStart =
-          (lastWkUnixStart - getEpochStart(1)) / 604800 + 1
-
-        const lastWkUnixEnd = Math.floor(Date.now() / 1000)
-        const lastWkEpochEnd = (lastWkUnixEnd - getEpochStart(1)) / 604800 + 1
-        //Filter out all rewards within last weeks' epoch
-        const x = list.filter(
-          ({ epoch }) =>
-            epoch >= lastWkEpochStart.toFixed(0) &&
-            epoch <= lastWkEpochEnd.toFixed(0)
-        )
-        const lastWkRwds = x.reduce((a, b) => a + b.earnedRewardsFormatted, 0)
-
-        data.push({
-          accrualAssetId,
-          lastWeek: lastWkRwds.toFixed(2),
-          depthSum: list.reduce((a, b) => a + b.depthSum, 0) / 10080,
-          assetName: tinymanAssets[accrualAssetId]?.unit_name || '??',
-          assetLogo:
-            tinymanAssets[accrualAssetId]?.logo?.svg ||
-            'https://asa-list.tinyman.org/assets/??',
-        })
-      }
-      setPeriodAssets(data)
-      setMobileAssets(isMobile ? true : false)
-    },
-    [isMobile, rewards, tinymanAssets]
-  )
+  const getAssetsByEpoch = async (_epoch) => {
+    setActiveEpoch(_epoch)
+    const rewardsCopy = rewards.filter(
+      ({ value: { epoch } }) => epoch == _epoch
+    )
+    const data = []
+    const assets = {}
+    if (rewardsCopy.length > 0) {
+      rewardsCopy.forEach(({ value }) => {
+        if (assets[value.accrualAssetId]) {
+          assets[value.accrualAssetId] = [
+            ...assets[value.accrualAssetId],
+            value,
+          ]
+        } else {
+          assets[value.accrualAssetId] = [value]
+        }
+      })
+    }
+    for (const accrualAssetId in assets) {
+      const list = assets[accrualAssetId]
+      data.push({
+        accrualAssetId,
+        earnedRewards: list.reduce((a, b) => a + b.earnedRewardsFormatted, 0),
+        algoTotalDepth:
+          list.reduce((a, b) => a + b.algoTotalDepth, 0) /
+          (10080 * list.length),
+        asaTotalDepth:
+          list.reduce((a, b) => a + b.asaTotalDepth, 0) / (10080 * list.length),
+        assetName: tinymanAssets[accrualAssetId]?.unit_name || '??',
+        assetLogo:
+          tinymanAssets[accrualAssetId]?.logo?.svg ||
+          'https://asa-list.tinyman.org/assets/??',
+      })
+    }
+    setPeriodAssets(data)
+    setMobileAssets(isMobile ? true : false)
+  }
 
   const completedPeriod = useMemo(() => {
     if (rewards.length > 0) {
@@ -215,7 +198,7 @@ export const usePeriodsHook = ({ activeWallet, isMobile }) => {
       setPeriodAssets([])
       fetchRewards(activeWallet?.address)
     }
-  }, [activeWallet?.address])
+  }, [activeWallet])
 
   useEffect(() => {
     if (activeEpoch) {

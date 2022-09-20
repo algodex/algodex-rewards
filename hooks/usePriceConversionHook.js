@@ -1,4 +1,4 @@
-import { getUSDPrice } from '@/lib/getTinymanPrice'
+import { getUSDPrice } from '@/lib/getAlgoAssets'
 import { useCallback, useEffect, useState } from 'react'
 
 export const usePriceConversionHook = ({ assetId = '724480511', conversionFunc = getUSDPrice }) => {
