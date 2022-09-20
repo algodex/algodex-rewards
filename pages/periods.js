@@ -82,7 +82,7 @@ export default function Periods() {
             xs={12}
             sm={12}
             md={6}
-            lg={5}
+            lg={7}
             xl={5}
             sx={isMobile ? { maxWidth: '100% !important' } : {}}
           >
@@ -106,7 +106,7 @@ export default function Periods() {
             xs={12}
             sm={12}
             md={isConnected ? 6 : 12}
-            lg={isConnected ? 7 : 12}
+            lg={isConnected ? 5 : 12}
             xl={isConnected ? 7 : 12}
             sx={isMobile ? { maxWidth: '100% !important' } : {}}
           >
@@ -127,7 +127,7 @@ export default function Periods() {
                     xs={12}
                     sm={12}
                     md={12}
-                    lg={6}
+                    lg={12}
                     xl={6}
                   >
                     <AssetContainer asset={asset} />

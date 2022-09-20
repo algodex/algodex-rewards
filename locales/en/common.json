@@ -49,11 +49,11 @@
   "Previous Periods": "Previous Periods",
   "Select Assets to Include in Chart": "Select Assets to Include in Chart",
   "currently earning rewards for this period. Number of rewards will be updated when they are paid out": "currently earning rewards for this period. Number of rewards will be updated when they are paid out",
-  "currently earning rewards for this period": "currently earning rewards for this period",
+  "currently earning rewards for period": "currently earning rewards for period",
   "Number of rewards will be updated when they are paid out": "Number of rewards will be updated when they are paid out",
   "is": "is",
   "NOT": "NOT",
-  "You have an active walletconnect session, do you want to disconnect the current session to connect another":"You have an active walletconnect session, do you want to disconnect the current session to connect another",
+  "You have an active walletconnect session, do you want to disconnect the current session to connect another": "You have an active walletconnect session, do you want to disconnect the current session to connect another",
   "Close": "Close",
   "Connect new": "Connect new",
   "Active Session": "Active Session",
@@ -62,8 +62,8 @@
   "Complete": "Complete",
   "Click the arrow beside each wallet to expand for the option to disconnect and to view ALGO and ALGX balances. Other ASAs are not shown on this page": "Click the arrow beside each wallet to expand for the option to disconnect and to view ALGO and ALGX balances. Other ASAs are not shown on this page",
   "Return Home": "Return Home",
-  "Return to Period List":"Return to Period List",
-  "ALGX Liquidity Rewards Program":"ALGX Liquidity Rewards Program",
-  "Rewards earned from Mainnet Version 1 and Mainnet Version 2 are subject to a vesting schedule. This vesting schedule is depicted in this document":"Rewards earned from Mainnet Version 1 and Mainnet Version 2 are subject to a vesting schedule. This vesting schedule is depicted in this document",
-  "Rewards were paid out on":"Rewards were paid out on"
+  "Return to Period List": "Return to Period List",
+  "ALGX Liquidity Rewards Program": "ALGX Liquidity Rewards Program",
+  "Rewards earned from Mainnet Version 1 and Mainnet Version 2 are subject to a vesting schedule. This vesting schedule is depicted in this document": "Rewards earned from Mainnet Version 1 and Mainnet Version 2 are subject to a vesting schedule. This vesting schedule is depicted in this document",
+  "Rewards were paid out on": "Rewards were paid out on"
 }

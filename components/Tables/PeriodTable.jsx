@@ -286,7 +286,7 @@ export const PeriodTable = ({
                             ''
                           )
                         }
-                    ${t('currently earning rewards for this period')} ${
+                    ${t('currently earning rewards for period')} ${
                       pendingPeriod.number
                     }. ${t(
                       'Number of rewards will be updated when they are paid out'
@@ -494,12 +494,15 @@ export const PeriodTable = ({
                   <Typography
                     sx={{
                       color: 'secondary.light',
-                      marginTop: '2rem',
+                      marginBlock: '2rem',
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
                     }}
-                    onClick={() => setMobileAssets(false)}
+                    onClick={() => {
+                      setMobileAssets(false)
+                      setActiveEpoch(0)
+                    }}
                   >
                     <ChevronLeftIcon /> {t('Return to Period List')}
                   </Typography>
@@ -507,6 +510,7 @@ export const PeriodTable = ({
                     <Grid container spacing={2}>
                       {periodAssets.map((asset) => (
                         <Grid
+                          sx={{ paddingTop: '0 !important' }}
                           key={asset.accrualAssetId}
                           item
                           xs={12}
