@@ -17,7 +17,8 @@ export const AssetList = ({ isConnected }) => {
   if (context === undefined) {
     throw new Error('Must be inside of a Chart Provider')
   }
-  const { lastWkEarnedAssets, availableAssets } = context
+  const { lastWkEarnedAssets } = context
+
   return (
     <Box sx={{ paddingBlock: '1.5rem' }}>
       {!isConnected ? (
@@ -33,6 +34,39 @@ export const AssetList = ({ isConnected }) => {
         </Typography>
       ) : (
         <>
+          {lastWkEarnedAssets.length > 0 && (
+            <>
+              <Typography
+                fontSize={'0.95rem'}
+                fontWeight={600}
+                color={'secondary.light'}
+                marginBottom={'1rem'}
+              >
+                {t(
+                  // eslint-disable-next-line max-len
+                  'These tiles below are for ASAs this wallet provided liquidity to over the last week'
+                )}
+                .{' '}
+                {t(
+                  // eslint-disable-next-line max-len
+                  '“Amount Supplied” is the average supplied over the last week'
+                )}
+                .
+              </Typography>
+              <Typography
+                fontSize={'0.95rem'}
+                fontStyle={'italic'}
+                color={'secondary.light'}
+                marginBottom={'1rem'}
+              >
+                {t(
+                  // eslint-disable-next-line max-len
+                  'Only ASAs that this wallet provided liquidity to over the last week are shown here'
+                )}
+                .
+              </Typography>
+            </>
+          )}
           <Grid container spacing={2}>
             {lastWkEarnedAssets.map((asset) => (
               <Grid
