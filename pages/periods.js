@@ -9,6 +9,7 @@ import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { useTheme } from '@mui/material/styles'
+import Typography from '@mui/material/Typography'
 
 // Custom components and hook(s)
 import { WalletDropdown } from '@/components/WalletDropdown'
@@ -28,6 +29,7 @@ export async function getServerSideProps({ locale }) {
 
 export default function Periods() {
   const { t } = useTranslation('periods')
+  const { t: c } = useTranslation('common')
   const { activeWallet, isConnected } = useContext(RewardsAddressesContext)
   const isMobile = useMediaQuery(useTheme().breakpoints.down('sm'))
   const [activeCurrency, setActiveCurrency] = useState('ALGX')
@@ -119,21 +121,51 @@ export default function Periods() {
               completedPeriod={completedPeriod}
             />
             {!isMobile && periodAssets.length > 0 && (
-              <Grid container spacing={2}>
-                {periodAssets.map((asset) => (
-                  <Grid
-                    key={asset.accrualAssetId}
-                    item
-                    xs={12}
-                    sm={12}
-                    md={12}
-                    lg={12}
-                    xl={6}
-                  >
-                    <AssetContainer asset={asset} />
-                  </Grid>
-                ))}
-              </Grid>
+              <>
+                <Typography
+                  fontSize={'0.95rem'}
+                  fontWeight={600}
+                  color={'secondary.light'}
+                  marginBottom={'1rem'}
+                >
+                  {c(
+                    // eslint-disable-next-line max-len
+                    'These tiles below are for ASAs this wallet provided liquidity to over this period'
+                  )}
+                  .{' '}
+                  {c(
+                    '“Amount Supplied” is the average supplied over the period'
+                  )}
+                  .
+                </Typography>
+                <Typography
+                  fontSize={'0.95rem'}
+                  fontStyle={'italic'}
+                  color={'secondary.light'}
+                  marginBottom={'1rem'}
+                >
+                  {c(
+                    // eslint-disable-next-line max-len
+                    'Only ASAs that this wallet provided liquidity to over this period are shown here'
+                  )}
+                  .
+                </Typography>
+                <Grid container spacing={2}>
+                  {periodAssets.map((asset) => (
+                    <Grid
+                      key={asset.accrualAssetId}
+                      item
+                      xs={12}
+                      sm={12}
+                      md={12}
+                      lg={12}
+                      xl={6}
+                    >
+                      <AssetContainer asset={asset} />
+                    </Grid>
+                  ))}
+                </Grid>
+              </>
             )}
           </Grid>
         </Grid>

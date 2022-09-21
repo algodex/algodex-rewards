@@ -95,7 +95,7 @@ export const AssetContainer = ({ asset }) => {
             color={'secondary.light'}
             marginBottom={'0.5rem'}
           >
-            {t('Avg Amount Supplied')}
+            {t('Amount Supplied')}
           </Typography>
           <Typography
             fontSize={'0.95rem'}

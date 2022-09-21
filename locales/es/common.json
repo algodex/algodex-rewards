@@ -15,7 +15,7 @@
   "Connect Wallet to View Assets": "Conectar Wallet para ver activos",
   "Asset": "Activo",
   "Asset ID": "ID de activo",
-  "Avg Amount Supplied": "Importe medio suministrado",
+  "Amount Supplied": "Cantidad suministrada",
   "Last Week’s Rewards": "Recompensas de la semana pasada",
   "Total": "Total",
   "Period Pending": "Period Pending",
@@ -65,5 +65,10 @@
   "Return to Period List":"Volver a la lista de períodos",
   "ALGX Liquidity Rewards Program":"Programa de recompensas de liquidez ALGX",
   "Rewards earned from Mainnet Version 1 and Mainnet Version 2 are subject to a vesting schedule. This vesting schedule is depicted in this document":"Las recompensas obtenidas de Mainnet Versión 1 y Mainnet Versión 2 están sujetas a un cronograma de adquisición. Este cronograma de adjudicación se describe en este documento.",
-  "Rewards were paid out on":"Las recompensas se pagaron el"
+  "Rewards were paid out on":"Las recompensas se pagaron el",
+  "These tiles below are for ASAs this wallet provided liquidity to over the last week": "Estos mosaicos a continuación son para ASA a los que esta billetera proporcionó liquidez durante la última semana",
+  "Only ASAs that this wallet provided liquidity to over the last week are shown here": "Aquí solo se muestran los ASA a los que esta billetera proporcionó liquidez durante la última semana",
+  "“Amount Supplied” is the average supplied over the period": "“Cantidad suministrada” es el promedio suministrado durante el período",
+  "These tiles below are for ASAs this wallet provided liquidity to over this period": "Estos mosaicos a continuación son para ASA a los que esta billetera proporcionó liquidez durante este período",
+  "Only ASAs that this wallet provided liquidity to over this period are shown here": "Aquí solo se muestran los ASA a los que esta billetera proporcionó liquidez durante este período"
 }

@@ -507,22 +507,52 @@ export const PeriodTable = ({
                     <ChevronLeftIcon /> {t('Return to Period List')}
                   </Typography>
                   {periodAssets.length > 0 && (
-                    <Grid container spacing={2}>
-                      {periodAssets.map((asset) => (
-                        <Grid
-                          sx={{ paddingTop: '0 !important' }}
-                          key={asset.accrualAssetId}
-                          item
-                          xs={12}
-                          sm={12}
-                          md={12}
-                          lg={6}
-                          xl={6}
-                        >
-                          <AssetContainer asset={asset} />
-                        </Grid>
-                      ))}
-                    </Grid>
+                    <>
+                      <Typography
+                        fontSize={'0.95rem'}
+                        fontWeight={600}
+                        color={'secondary.light'}
+                        marginBottom={'1rem'}
+                      >
+                        {t(
+                          // eslint-disable-next-line max-len
+                          'These tiles below are for ASAs this wallet provided liquidity to over this period'
+                        )}
+                        .{' '}
+                        {t(
+                          '“Amount Supplied” is the average supplied over the period'
+                        )}
+                        .
+                      </Typography>
+                      <Typography
+                        fontSize={'0.95rem'}
+                        fontStyle={'italic'}
+                        color={'secondary.light'}
+                        marginBottom={'1rem'}
+                      >
+                        {t(
+                          // eslint-disable-next-line max-len
+                          'Only ASAs that this wallet provided liquidity to over this period are shown here'
+                        )}
+                        .
+                      </Typography>
+                      <Grid container spacing={2}>
+                        {periodAssets.map((asset) => (
+                          <Grid
+                            sx={{ paddingTop: '0 !important' }}
+                            key={asset.accrualAssetId}
+                            item
+                            xs={12}
+                            sm={12}
+                            md={12}
+                            lg={6}
+                            xl={6}
+                          >
+                            <AssetContainer asset={asset} />
+                          </Grid>
+                        ))}
+                      </Grid>
+                    </>
                   )}
                 </>
               )}
