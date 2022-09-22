@@ -96,6 +96,7 @@ function useWallets(updateAddresses, removeAddress) {
   const handleDisconnect = useCallback((_address) => {
     console.debug('Handle removing from storage', _address)
     if (_address) {
+      // Removes walletConnect address when disconnected from user's walletConnect app
       removeAddress(_address)
     }
   }, [])
