@@ -102,8 +102,8 @@ export const AssetContainer = ({ asset }) => {
             fontWeight={600}
             lineHeight={'1.5rem'}
           >
-            {asset.algoTotalDepth.toFixed(2)} {asset.assetName} <br />
-            {asset.asaTotalDepth.toFixed(3)} ALGO
+            {asset.asaTotalDepth.toFixed(2)} {asset.assetName} <br />
+            {asset.algoTotalDepth.toFixed(3)} ALGO
           </Typography>
         </Box>
         <Divider
