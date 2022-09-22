@@ -42,7 +42,7 @@ export const usePeriodsHook = ({ activeWallet, isMobile }) => {
 
     return {
       date: `${start} - ${end}`,
-      number: epoch.toFixed(0),
+      number: epoch,
     }
   }, [])
 
