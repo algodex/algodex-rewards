@@ -91,37 +91,28 @@ export default function useRewardsAddresses() {
     setIsConnected,
   } = context
 
-  const updateAddresses = useCallback(
-    (_addresses) => {
-      if (_addresses == null) {
-        return
-      }
-      updateStorage(_addresses)
-    },
-    [addresses]
-  )
+  const updateAddresses = useCallback((_addresses) => {
+    if (_addresses == null) {
+      return
+    }
+    updateStorage(_addresses)
+  }, [])
 
   const removeAddress = useCallback(async (_address) => {
     const _addresses = await addressessDb.getAddresses()
     const parsedAddresses =
       _addresses.map(({ doc }) => JSON.parse(doc.wallet)) || []
-    addressessDb.removeAddress(_address)
     const _activeWallet = (await activeWalletDb.getAddresses())[0]?.doc
     const parsedActiveWallet = JSON.parse(_activeWallet?.wallet)
-    if (parsedAddresses.length > 1) {
-      const remainder = parsedAddresses.filter(
-        ({ address }) => address != _address
-      )
-      setAddresses(remainder)
-      _setAddresses(remainder)
-      if (_address === parsedActiveWallet?.address) {
-        setActiveWallet(remainder[0])
-      }
-    } else {
+    addressessDb.removeAddress(_address)
+    const remainder = parsedAddresses.filter(
+      ({ address }) => address != _address
+    )
+    setAddresses(remainder)
+    _setAddresses(remainder)
+    if (_address === parsedActiveWallet?.address) {
+      setActiveWallet(remainder[0])
       activeWalletDb.removeAddress(_address)
-      setAddresses([])
-      _setAddresses([])
-      setActiveWallet()
     }
   }, [])
 
@@ -141,16 +132,39 @@ export default function useRewardsAddresses() {
       const parsedAddresses =
         _addresses.map(({ doc }) => JSON.parse(doc.wallet)) || []
       setActiveWallet(_activeWallet ? JSON.parse(_activeWallet.wallet) : null)
-      updateStorage(parsedAddresses)
+      loadPage(parsedAddresses)
     }
     getDBData()
   }, [])
+
+  // Get updated acount details and display on screen
+  const loadPage = async (_addresses) => {
+    if (_addresses) {
+      setIsConnected(_addresses.length > 0 ? true : false)
+      const result = await getAccountInfo(_addresses)
+      setAddresses(result)
+      _setAddresses(result)
+      addressessDb.updateAddresses(result)
+      const _activeWallet = (await activeWalletDb.getAddresses())[0]?.doc
+      if (
+        viewAsWallet &&
+        (process.env.NEXT_PUBLIC_ENVIRONMENT === 'development' ||
+          typeof window.end2end !== 'undefined')
+      ) {
+        loginAsAnother(viewAsWallet)
+      } else if (result.length > 0 && !_activeWallet) {
+        setActiveWallet(result[0])
+      }
+    }
+  }
 
   // Login as another wallet
   const loginAsAnother = async (address) => {
     const result = await getAccountInfo([{ address }])
     setActiveWallet(result[0])
-    updateStorage([result[0], ...addresses])
+    setAddresses([result[0], ...addresses])
+    _setAddresses([result[0], ...addresses])
+    addressessDb.updateAddresses([result[0], ...addresses])
   }
 
   // Save active wallet when updated
@@ -217,32 +231,22 @@ export default function useRewardsAddresses() {
   }
 
   // Get updated acount details and save to storage
-  const updateStorage = useCallback(
-    async (_addresses) => {
+  const updateStorage = async (_addresses) => {
+    if (_addresses) {
       const DBaddresses = await addressessDb.getAddresses()
       const parsedAddresses =
         DBaddresses.map(({ doc }) => JSON.parse(doc.wallet)) || []
       setIsConnected(parsedAddresses.length > 0 ? true : false)
-      // setAddresses(_mergeAddresses(parsedAddresses, _addresses))
       const result = await getAccountInfo(_addresses)
       setAddresses(_mergeAddresses(parsedAddresses, result))
       _setAddresses(_mergeAddresses(parsedAddresses, result))
       addressessDb.updateAddresses(result)
       const _activeWallet = (await activeWalletDb.getAddresses())[0]?.doc
-      if (
-        viewAsWallet &&
-        (process.env.NEXT_PUBLIC_ENVIRONMENT === 'development' ||
-          typeof window.end2end !== 'undefined')
-      ) {
-        loginAsAnother(viewAsWallet)
-        return
-      }
       if (result.length > 0 && !_activeWallet) {
         setActiveWallet(result[0])
       }
-    },
-    [addresses, activeWallet]
-  )
+    }
+  }
 
   // Handle removing from storage
   const handleDisconnect = (_address, type) => {
