@@ -34,11 +34,11 @@ export const usePeriodsHook = ({ activeWallet, isMobile }) => {
     const epoch = Math.floor((curr_unix - getEpochStart(1)) / 604800 + 1)
     const start = DateTime.fromJSDate(
       new Date(getEpochStart(epoch) * 1000)
-    ).toLocaleString(DateTime.DATE_MED)
+    ).toLocaleString(DateTime.DATETIME_MED)
 
     const end = DateTime.fromJSDate(
       new Date(getEpochEnd(epoch) * 1000)
-    ).toLocaleString(DateTime.DATE_MED)
+    ).toLocaleString(DateTime.DATETIME_MED)
 
     return {
       date: `${start} - ${end}`,
@@ -141,11 +141,11 @@ export const usePeriodsHook = ({ activeWallet, isMobile }) => {
         new Date(
           getEpochStart(activeEpoch === 0 ? maxEpoch : activeEpoch) * 1000
         )
-      ).toLocaleString(DateTime.DATE_MED)
+      ).toLocaleString(DateTime.DATETIME_MED)
 
       const end = DateTime.fromJSDate(
         new Date(getEpochEnd(activeEpoch === 0 ? maxEpoch : activeEpoch) * 1000)
-      ).toLocaleString(DateTime.DATE_MED)
+      ).toLocaleString(DateTime.DATETIME_MED)
 
       const vestedUnixTime = vestedRewards.find(
         ({ value: { epoch } }) => epoch == activeEpoch
@@ -153,7 +153,7 @@ export const usePeriodsHook = ({ activeWallet, isMobile }) => {
 
       const vestedDate = vestedUnixTime
         ? DateTime.fromJSDate(new Date(vestedUnixTime * 1000)).toLocaleString(
-          DateTime.DATE_MED
+          DateTime.DATETIME_MED
         )
         : null
       return {
