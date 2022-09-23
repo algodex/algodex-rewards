@@ -78,12 +78,8 @@ export const usePeriodsHook = ({ activeWallet, isMobile }) => {
             )
           }
         })
-        .catch((err) => {
+        .catch(() => {
           setLoading(false)
-          console.error(err)
-          //TODO: This dummy data should be removed after production launch
-          // setRewards(dummyReward)
-          // setVestedRewards(dummyVestedRewards)
         })
     },
     [isMobile]
@@ -186,7 +182,7 @@ export const usePeriodsHook = ({ activeWallet, isMobile }) => {
           const res = await getAccruingStatus(activeWallet.address)
           setCurrentlyEarning(res.data)
         } catch (error) {
-          console.error(error)
+          // console.error(error)
         }
       }
       getStatus()
