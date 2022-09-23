@@ -61,9 +61,13 @@ export const EarningsChart = ({ isConnected, isMobile, isHome }) => {
   } = context
 
   useEffect(() => {
+    let ignore = false
     const assets = assetTableData.map(({ asset }) => asset)
     if (selected.includes('ALL') || isHome) {
-      setSelected(assets)
+      if (!ignore) setSelected(assets)
+    }
+    return () => {
+      ignore = false
     }
   }, [assetTableData])
 

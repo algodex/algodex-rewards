@@ -83,7 +83,6 @@ export function ChartDataProvider({ children }) {
         const res = await getAssets()
         setTinymanAssets(res)
       } catch (error) {
-        console.error('tinymanAsset error', error)
         getAllAssets()
       }
     }
@@ -304,7 +303,7 @@ export function ChartDataProvider({ children }) {
               ),
           })
         } catch (e) {
-          console.error(e)
+          // console.error(e)
         }
       })
     )
