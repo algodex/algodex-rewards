@@ -34,19 +34,21 @@ export function WalletsProvider({ children }) {
   const [addresses, setAddresses] = useState([])
   const walletConnect = useRef()
 
+  const initWalletConnect = async () => {
+    const WalletConnect = (await import('@walletconnect/client')).default
+    walletConnect.current = new WalletConnect({
+      bridge: 'https://bridge.walletconnect.org', // Required
+      qrcodeModal: QRCodeModal,
+    })
+    walletConnect.current.connected = false
+    return walletConnect.current
+  }
+
   useEffect(() => {
-    const initWalletConnect = async () => {
-      const WalletConnect = (await import('@walletconnect/client')).default
-      walletConnect.current = new WalletConnect({
-        bridge: 'https://bridge.walletconnect.org', // Required
-        qrcodeModal: QRCodeModal,
-      })
-      walletConnect.current.connected = false
-    }
     initWalletConnect()
   }, [])
   return (
-    <WalletsContext.Provider value={{ addresses, setAddresses, walletConnect }}>
+    <WalletsContext.Provider value={{ addresses, setAddresses, walletConnect, initWalletConnect }}>
       {children}
     </WalletsContext.Provider>
   )
@@ -72,7 +74,7 @@ function useWallets(updateAddresses, removeAddress) {
     async (_addresses) => {
       const accounts = []
       const mergedPrivateAddresses = _mergeAddresses(_addresses, accounts)
-      console.log({
+      console.debug({
         accounts,
         _addresses,
         addresses,

@@ -17,8 +17,9 @@ export default function useWalletConnect(onConnect, onDisconnect) {
   /**
    * Instance referenc
    */
-  // const walletConnect = useRef()
-  const { walletConnect } = useContext(WalletsContext)
+
+  const { walletConnect, initWalletConnect } = useContext(WalletsContext)
+
   const connect = async () => {
     try {
       // Something went wrong!
@@ -28,10 +29,19 @@ export default function useWalletConnect(onConnect, onDisconnect) {
       }
       // Check if connection is already established
       if (!walletConnect.current.connected) {
-        console.log('Creating Session')
+        console.debug('Creating Session')
+        if (walletConnect.current.sessionStarted) {
+          // Reinitialize wallet connect
+          walletConnect.current = await initWalletConnect()
+          walletConnect.current.on('connect', handleConnected)
+          walletConnect.current.on('session_update', handleConnected)
+          walletConnect.current.on('disconnect', handleDisconnect)
+        }
         // create new session
         walletConnect.current.createSession()
+        walletConnect.current.sessionStarted = true
       } else {
+        // Stop and start a new session
         walletConnect.current.killSession()
         setTimeout(() => {
           walletConnect.current.createSession()
@@ -41,25 +51,28 @@ export default function useWalletConnect(onConnect, onDisconnect) {
       console.error(ERROR.FAILED_TO_CONNECT, e)
     }
   }
+
   const disconnect = () => {
     if (walletConnect.current.connected) {
       onDisconnect(walletConnect.current.accounts[0])
       walletConnect.current.killSession()
+      walletConnect.current.sessionStarted = false
     }
   }
 
   const handleDisconnect = useCallback(
     (err) => {
-      console.log('DISCONNECTED')
+      console.debug('DISCONNECTED')
       if (err) throw err
       localStorage.removeItem('walletconnect')
+      walletConnect.current.sessionStarted = false
       onDisconnect(walletConnect.current.accounts[0])
     },
-    [onDisconnect]
+    [onDisconnect, walletConnect]
   )
 
   const handleConnected = (err, payload) => {
-    console.log('CONNECTED')
+    console.debug('CONNECTED')
     if (err) {
       throw err
     }
@@ -95,5 +108,6 @@ export default function useWalletConnect(onConnect, onDisconnect) {
       }
     }
   }, [walletConnect.current])
+
   return { connect, disconnect, connector: walletConnect.current }
 }

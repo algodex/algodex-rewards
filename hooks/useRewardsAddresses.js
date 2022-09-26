@@ -112,7 +112,7 @@ export default function useRewardsAddresses() {
     _setAddresses(remainder)
     if (_address === parsedActiveWallet?.address) {
       setActiveWallet(remainder[0])
-      activeWalletDb.removeAddress(_address)
+      // activeWalletDb.removeAddress(_address)
     }
   }, [])
 
