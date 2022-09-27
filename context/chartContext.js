@@ -332,19 +332,15 @@ export function ChartDataProvider({ children }) {
     const data = []
     const assets = {}
     const lastWkUnixStart = Math.floor(
-      new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7) / 1000
+      new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6) / 1000
     )
-    const lastWkEpochStart = (lastWkUnixStart - getEpochStart(1)) / 604800 + 1
-    const lastWkUnixEnd = Math.floor(Date.now() / 1000)
-    const lastWkEpochEnd = (lastWkUnixEnd - getEpochStart(1)) / 604800 + 1
-
+    const lastWkEpochStart = Math.floor(
+      (lastWkUnixStart - getEpochStart(1)) / 604800 + 1
+    )
     if (rewards.length > 0) {
       rewards.forEach(({ value, value: { epoch } }) => {
         //calculate rewards within last week's epoch
-        if (
-          epoch >= lastWkEpochStart.toFixed(0) &&
-          epoch <= lastWkEpochEnd.toFixed(0)
-        ) {
+        if (epoch === lastWkEpochStart) {
           if (assets[value.accrualAssetId]) {
             assets[value.accrualAssetId] = [
               ...assets[value.accrualAssetId],
@@ -361,9 +357,7 @@ export function ChartDataProvider({ children }) {
       const list = assets[accrualAssetId]
       data.push({
         accrualAssetId,
-        lastWeek: list
-          .reduce((a, b) => a + b.earnedRewardsFormatted, 0)
-          .toFixed(),
+        lastWeek: list.reduce((a, b) => a + b.earnedRewardsFormatted, 0),
         algoTotalDepth:
           list.reduce((a, b) => a + b.algoTotalDepth, 0) /
           (10080 * list.length),
