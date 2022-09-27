@@ -70,5 +70,7 @@
   "Only ASAs that this wallet provided liquidity to over the last week are shown here": "Aquí solo se muestran los ASA a los que esta billetera proporcionó liquidez durante la última semana",
   "“Amount Supplied” is the average supplied over the period": "“Cantidad suministrada” es el promedio suministrado durante el período",
   "These tiles below are for ASAs this wallet provided liquidity to over this period": "Estos mosaicos a continuación son para ASA a los que esta billetera proporcionó liquidez durante este período",
-  "Only ASAs that this wallet provided liquidity to over this period are shown here": "Aquí solo se muestran los ASA a los que esta billetera proporcionó liquidez durante este período"
+  "Only ASAs that this wallet provided liquidity to over this period are shown here": "Aquí solo se muestran los ASA a los que esta billetera proporcionó liquidez durante este período",
+  "Rewards will be paid out two days after period completion": "Las recompensas se pagarán dos días después de la finalización del período",
+  "is complete and will be available to view here shortly": "está completo y estará disponible para verlo aquí en breve"
 }

@@ -7,7 +7,13 @@ import Box from '@mui/material/Box'
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded'
 import Link from './Nav/Link'
 
-export const WarningCard = ({ title, warnings, link, icon: IconComponent }) => {
+export const WarningCard = ({
+  title,
+  warnings,
+  link,
+  icon: IconComponent,
+  note,
+}) => {
   return (
     <Box
       sx={{
@@ -22,7 +28,9 @@ export const WarningCard = ({ title, warnings, link, icon: IconComponent }) => {
         alignItems: 'flex-start',
       }}
     >
-      {IconComponent ? (
+      {IconComponent == 'Empty' ? (
+        <></>
+      ) : IconComponent ? (
         <IconComponent />
       ) : (
         <WarningRoundedIcon sx={{ marginRight: '5px' }} />
@@ -49,6 +57,19 @@ export const WarningCard = ({ title, warnings, link, icon: IconComponent }) => {
             ))}
           </Typography>
         )}
+        {note && (
+          <Typography
+            variant="p"
+            fontSize={'0.7rem'}
+            fontWeight={500}
+            fontStyle="italic"
+            sx={{
+              color: 'secondary.light',
+            }}
+          >
+            {note}
+          </Typography>
+        )}
         {link && (
           <Link
             href={link.url}
@@ -67,5 +88,6 @@ WarningCard.propTypes = {
   title: PropTypes.string,
   warnings: PropTypes.arrayOf(PropTypes.string),
   link: PropTypes.object,
-  IconComponent: PropTypes.element,
+  IconComponent: PropTypes.element || PropTypes.string,
+  note: PropTypes.string,
 }
