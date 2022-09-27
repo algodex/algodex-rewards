@@ -26,6 +26,8 @@ import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
 import { useTranslation } from 'next-i18next'
 import { AssetContainer } from '../AssetContainer'
 import { shortenAddress } from '../../lib/helper'
+import { checkIfRecorded } from '../../lib/getRewards'
+import { useEffect } from 'react'
 
 const columns = [
   { id: 'epoch', label: 'Period' },
@@ -95,6 +97,7 @@ export const PeriodTable = ({
   const { conversionRate } = usePriceConversionHook({})
   const [order, setOrder] = useState('desc')
   const [orderBy, setOrderBy] = useState('epoch')
+  const [hiddenPeriod, setHiddenPeriod] = useState(0)
 
   const descendingComparator = (a, b, orderBy) => {
     if (b[orderBy] < a[orderBy]) {
@@ -179,13 +182,26 @@ export const PeriodTable = ({
     return stableSort(Object.values(x), getComparator(order, orderBy))
   }, [rewards, vestedRewards, order, orderBy])
 
-  const currentPeriod = useMemo(() => {
-    // return a reward whose epoch is current.
-    const newR = Object.values(mergedRewards).filter(
-      ({ epoch }) => epoch >= parseInt(pendingPeriod.number)
-    )
-    return newR || []
-  }, [mergedRewards, pendingPeriod])
+  useEffect(() => {
+    let ignore = false
+    const runCheck = async () => {
+      try {
+        const res = await checkIfRecorded(pendingPeriod.number - 1)
+        if (!res.data.isRecorded) {
+          if (!ignore) {
+            setHiddenPeriod(res.data.epoch)
+          }
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    runCheck()
+
+    return () => {
+      ignore = true
+    }
+  }, [pendingPeriod])
 
   return (
     <>
@@ -236,64 +252,78 @@ export const PeriodTable = ({
             </>
           ) : (
             <>
+              {currentlyEarning.isAccruingRewards == false ? (
+                <WarningCard
+                  icon={() => {
+                    return (
+                      <ErrorOutlineOutlinedIcon
+                        sx={{
+                          marginRight: '6px',
+                          fontSize: '1.2rem',
+                          marginTop: '2px',
+                        }}
+                      />
+                    )
+                  }}
+                  title={currentlyEarning.notAccruingReason}
+                  link={{
+                    title: 'View info on earning rewards here',
+                    // eslint-disable-next-line max-len
+                    url: 'https://docs.algodex.com/rewards-program/algx-liquidity-rewards-program',
+                  }}
+                />
+              ) : (
+                <WarningCard
+                  icon={() => {
+                    return (
+                      <CheckCircleOutlineRoundedIcon
+                        sx={{
+                          marginRight: '6px',
+                          fontSize: '1.2rem',
+                          marginTop: '2px',
+                        }}
+                      />
+                    )
+                  }}
+                  title={currentlyEarning.notAccruingReason}
+                  warnings={[
+                    ` Wallet ${
+                      currentlyEarning.wallet
+                        ? shortenAddress({
+                          address: currentlyEarning.wallet,
+                        })
+                        : ''
+                    } ${t('is')} ${
+                      currentlyEarning.isAccruingRewards === false ? (
+                        <>{t('NOT')} </>
+                      ) : (
+                        ''
+                      )
+                    }
+                      ${t('currently earning rewards for period')} ${
+                  pendingPeriod.number
+                }. ${t(
+                  'Number of rewards will be updated when they are paid out'
+                )}.`,
+                  ]}
+                />
+              )}
+
+              {hiddenPeriod ? (
+                <WarningCard
+                  title={`${t('Period')} ${hiddenPeriod} ${t(
+                    'is complete and will be available to view here shortly'
+                  )}.`}
+                  note={`${t(
+                    'Rewards will be paid out two days after period completion'
+                  )}.`}
+                  icon={'Empty'}
+                />
+              ) : (
+                <></>
+              )}
               {!mobileAssets ? (
                 <>
-                  {currentlyEarning.isAccruingRewards == false ? (
-                    <WarningCard
-                      icon={() => {
-                        return (
-                          <ErrorOutlineOutlinedIcon
-                            sx={{
-                              marginRight: '6px',
-                              fontSize: '1.2rem',
-                              marginTop: '2px',
-                            }}
-                          />
-                        )
-                      }}
-                      title={currentlyEarning.notAccruingReason}
-                      link={{
-                        title: 'View info on earning rewards here',
-                        // eslint-disable-next-line max-len
-                        url: 'https://docs.algodex.com/rewards-program/algx-liquidity-rewards-program',
-                      }}
-                    />
-                  ) : (
-                    <WarningCard
-                      icon={() => {
-                        return (
-                          <CheckCircleOutlineRoundedIcon
-                            sx={{
-                              marginRight: '6px',
-                              fontSize: '1.2rem',
-                              marginTop: '2px',
-                            }}
-                          />
-                        )
-                      }}
-                      title={currentlyEarning.notAccruingReason}
-                      warnings={[
-                        ` Wallet ${
-                          currentlyEarning.wallet
-                            ? shortenAddress({
-                              address: currentlyEarning.wallet,
-                            })
-                            : ''
-                        } ${t('is')} ${
-                          currentlyEarning.isAccruingRewards === false ? (
-                            <>{t('NOT')} </>
-                          ) : (
-                            ''
-                          )
-                        }
-                    ${t('currently earning rewards for period')} ${
-                      pendingPeriod.number
-                    }. ${t(
-                      'Number of rewards will be updated when they are paid out'
-                    )}.`,
-                      ]}
-                    />
-                  )}
                   <Typography
                     sx={{
                       color: 'primary.light',
@@ -306,92 +336,7 @@ export const PeriodTable = ({
                     )}
                     .
                   </Typography>
-                  {currentPeriod.length > 0 && (
-                    <>
-                      <Typography
-                        sx={{
-                          color: 'primary.contrastText',
-                          fontWeight: 700,
-                          fontSize: '1.2rem',
-                          marginTop: '2rem',
-                        }}
-                      >
-                        {t('Current Period')}
-                      </Typography>
-                      <TableContainer>
-                        <Table stickyHeader aria-label="sticky table">
-                          {(loading || currentPeriod.length > 0) && (
-                            <TableHead>
-                              <TableRow>
-                                {columns.map((column) => (
-                                  <StyledTableCell
-                                    key={column.id}
-                                    align={column.align}
-                                    style={{ minWidth: column.minWidth }}
-                                    component="th"
-                                    scope="row"
-                                  >
-                                    {t(`${column.label}`)}
-                                  </StyledTableCell>
-                                ))}
-                                <StyledTableCell></StyledTableCell>
-                              </TableRow>
-                            </TableHead>
-                          )}
-                          {loading ? (
-                            <TableLoader columnCount={5} />
-                          ) : (
-                            <TableBody>
-                              {currentPeriod.map((row) => {
-                                return (
-                                  <TableRow
-                                    hover
-                                    tabIndex={-1}
-                                    key={row.epoch}
-                                    sx={[
-                                      {
-                                        cursor: 'pointer',
-                                      },
-                                      row.epoch == activeEpoch &&
-                                        activeRowStyles,
-                                    ]}
-                                    onClick={() => {
-                                      setActiveEpoch(row.epoch)
-                                    }}
-                                  >
-                                    <>
-                                      <StyledTableCell>
-                                        {row.epoch}
-                                      </StyledTableCell>
-                                      <StyledTableCell align="right">
-                                        {attachCurrency(
-                                          row.earnedRewardsFormatted
-                                        )}
-                                      </StyledTableCell>
-                                      <StyledTableCell align="right">
-                                        {attachCurrency(
-                                          row.formattedVestedRewards || 0
-                                        )}
-                                      </StyledTableCell>
-                                      <StyledTableCell align="right">
-                                        {attachCurrency(
-                                          row.earnedRewardsFormatted -
-                                            (row.formattedVestedRewards || 0)
-                                        )}
-                                      </StyledTableCell>
-                                      <StyledTableCell>
-                                        <ChevronRightIcon />
-                                      </StyledTableCell>
-                                    </>
-                                  </TableRow>
-                                )
-                              })}
-                            </TableBody>
-                          )}
-                        </Table>
-                      </TableContainer>
-                    </>
-                  )}
+
                   <Typography
                     sx={{
                       color: 'primary.contrastText',

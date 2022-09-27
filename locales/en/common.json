@@ -70,5 +70,7 @@
   "Only ASAs that this wallet provided liquidity to over the last week are shown here": "Only ASAs that this wallet provided liquidity to over the last week are shown here",
   "“Amount Supplied” is the average supplied over the period": "“Amount Supplied” is the average supplied over the period",
   "These tiles below are for ASAs this wallet provided liquidity to over this period": "These tiles below are for ASAs this wallet provided liquidity to over this period",
-  "Only ASAs that this wallet provided liquidity to over this period are shown here": "Only ASAs that this wallet provided liquidity to over this period are shown here"
+  "Only ASAs that this wallet provided liquidity to over this period are shown here": "Only ASAs that this wallet provided liquidity to over this period are shown here",
+  "Rewards will be paid out two days after period completion": "Rewards will be paid out two days after period completion",
+  "is complete and will be available to view here shortly": "is complete and will be available to view here shortly"
 }
