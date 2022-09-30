@@ -18,6 +18,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ErrorOutlineOutlinedIcon from '@mui/icons-material/ErrorOutlineOutlined'
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded'
+import InfoIcon from '@mui/icons-material/Info'
 
 //Custom components and hooks
 import { TableLoader } from '../Loaders/TableLoader'
@@ -196,12 +197,13 @@ export const PeriodTable = ({
         console.log(error)
       }
     }
-    runCheck()
-
+    if (rewards.length > 0) {
+      runCheck()
+    }
     return () => {
       ignore = true
     }
-  }, [pendingPeriod])
+  }, [pendingPeriod, rewards])
 
   return (
     <>
@@ -317,7 +319,17 @@ export const PeriodTable = ({
                   note={`${t(
                     'Rewards will be paid out two days after period completion'
                   )}.`}
-                  icon={'Empty'}
+                  icon={() => {
+                    return (
+                      <InfoIcon
+                        sx={{
+                          marginRight: '6px',
+                          fontSize: '1.2rem',
+                          marginTop: '2px',
+                        }}
+                      />
+                    )
+                  }}
                 />
               ) : (
                 <></>
@@ -413,14 +425,14 @@ export const PeriodTable = ({
                                     </StyledTableCell>
                                     <StyledTableCell align="right">
                                       {attachCurrency(
-                                        row.earnedRewardsFormatted
+                                        row.earnedRewardsFormatted || 0
                                       )}
                                     </StyledTableCell>
                                     <StyledTableCell align="right">
                                       {attachCurrency(row.vestedRewards || 0)}
                                     </StyledTableCell>
                                     <StyledTableCell align="right">
-                                      {attachCurrency(row.unvestedRewards)}
+                                      {attachCurrency(row.unvestedRewards || 0)}
                                     </StyledTableCell>
                                     <StyledTableCell>
                                       <ChevronRightIcon />

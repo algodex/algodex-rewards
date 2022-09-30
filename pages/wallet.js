@@ -6,6 +6,7 @@ import { defaults } from 'next-i18next.config'
 // Material UI components
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
+import Box from '@mui/material/Box'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 
 // Custom components and hook(s)
@@ -64,25 +65,36 @@ export default function Wallet() {
             xs={12}
             sm={12}
             md={10}
-            lg={7}
-            xl={6}
+            lg={8}
+            xl={7}
             marginX={'auto'}
             marginY={'1rem'}
           >
-            <Grid>
-              <Grid
-                item
-                xs={12}
-                sm={12}
-                md={8}
-                lg={7}
-                xl={6}
-                marginX={'auto'}
-              >
-                <WalletDropdown screen={'wallet'} />
+            <Box
+              sx={{
+                backgroundColor: '#232B3C',
+                boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+                border: '1px solid',
+                borderColor: 'secondary.light3',
+                padding: '16px',
+                borderRadius: '3px',
+              }}
+            >
+              <Grid>
+                <Grid
+                  item
+                  xs={12}
+                  sm={12}
+                  md={8}
+                  lg={7}
+                  xl={6}
+                  marginX={'auto'}
+                >
+                  <WalletDropdown screen={'wallet'} />
+                </Grid>
               </Grid>
-            </Grid>
-            <WalletList />
+              <WalletList />
+            </Box>
           </Grid>
         </Grid>
       </Container>

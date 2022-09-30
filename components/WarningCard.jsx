@@ -13,6 +13,7 @@ export const WarningCard = ({
   link,
   icon: IconComponent,
   note,
+  styles,
 }) => {
   return (
     <Box
@@ -26,6 +27,7 @@ export const WarningCard = ({
         borderColor: 'secondary.light3',
         display: 'flex',
         alignItems: 'flex-start',
+        ...styles,
       }}
     >
       {IconComponent == 'Empty' ? (
@@ -90,4 +92,5 @@ WarningCard.propTypes = {
   link: PropTypes.object,
   IconComponent: PropTypes.element || PropTypes.string,
   note: PropTypes.string,
+  styles: PropTypes.object
 }

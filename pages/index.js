@@ -151,7 +151,7 @@ export default function Home() {
             )}
           </Grid>
         </Grid>
-        <AssetList isConnected={isConnected} rewards={rewards} />
+        <AssetList isConnected={isConnected} />
       </Container>
     </>
   )

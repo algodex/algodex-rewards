@@ -65,7 +65,9 @@ export function ChartDataProvider({ children }) {
   const [includeUnvested, setIncludeUnvested] = useState(true)
   const { conversionRate } = usePriceConversionHook({})
   const { activeWallet } = useRewardsAddresses()
-  const { rewards, vestedRewards } = usePeriodsHook({ activeWallet })
+  const { rewards, vestedRewards, pendingPeriod } = usePeriodsHook({
+    activeWallet,
+  })
   const [tinymanAssets, setTinymanAssets] = useState({})
   const [selected, setSelected] = useState(['ALL'])
   const [assetTableData, setAssetTableData] = useState([
@@ -393,6 +395,8 @@ export function ChartDataProvider({ children }) {
         selected,
         setSelected,
         availableAssets,
+        pendingPeriod,
+        rewards
       }}
     >
       {children}
