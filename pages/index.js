@@ -151,7 +151,7 @@ export default function Home() {
             )}
           </Grid>
         </Grid>
-        <AssetList isConnected={isConnected} pendingPeriod={pendingPeriod} />
+        <AssetList isConnected={isConnected} />
       </Container>
     </>
   )
