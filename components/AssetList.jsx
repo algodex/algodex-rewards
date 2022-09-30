@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { useTranslation } from 'next-i18next'
 
@@ -10,14 +10,38 @@ import Grid from '@mui/material/Grid'
 //Custom components and hooks
 import { ChartDataContext } from 'context/chartContext'
 import { AssetContainer } from './AssetContainer'
+import { WarningCard } from './WarningCard'
+import { checkIfRecorded } from '../lib/getRewards'
 
-export const AssetList = ({ isConnected }) => {
+export const AssetList = ({ isConnected, pendingPeriod }) => {
   const { t } = useTranslation('common')
+  const [hiddenPeriod, setHiddenPeriod] = useState(0)
   const context = useContext(ChartDataContext)
   if (context === undefined) {
     throw new Error('Must be inside of a Chart Provider')
   }
   const { lastWkEarnedAssets } = context
+
+  useEffect(() => {
+    let ignore = false
+    const runCheck = async () => {
+      try {
+        const res = await checkIfRecorded(pendingPeriod.number - 1)
+        if (!res.data.isRecorded) {
+          if (!ignore) {
+            setHiddenPeriod(res.data.epoch)
+          }
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    runCheck()
+
+    return () => {
+      ignore = true
+    }
+  }, [pendingPeriod])
 
   return (
     <Box sx={{ paddingBlock: '1.5rem' }}>
@@ -34,6 +58,19 @@ export const AssetList = ({ isConnected }) => {
         </Typography>
       ) : (
         <>
+          {hiddenPeriod ? (
+            <WarningCard
+              title={`${t('Period')} ${hiddenPeriod} ${t(
+                'is complete and will be available to view here shortly'
+              )}.`}
+              note={`${t(
+                'Rewards will be paid out two days after period completion'
+              )}.`}
+              icon={'Empty'}
+            />
+          ) : (
+            <></>
+          )}
           {lastWkEarnedAssets.length > 0 && (
             <>
               <Typography
@@ -90,10 +127,9 @@ export const AssetList = ({ isConnected }) => {
 
 AssetList.propTypes = {
   isConnected: PropTypes.bool,
-  rewards: PropTypes.array,
+  pendingPeriod: PropTypes.object,
 }
 
 AssetList.defaultProps = {
   isConnected: false,
-  rewards: [],
 }

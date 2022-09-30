@@ -145,6 +145,9 @@ export const WalletList = () => {
                               title: 'View info on earning rewards here',
                               url: 'https://docs.algodex.com/rewards-program/algx-liquidity-rewards-program',
                             }}
+                            styles={{
+                              backgroundColor: 'primary.dark',
+                            }}
                           />
                         ) : (
                           <>
