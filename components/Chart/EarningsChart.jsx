@@ -134,6 +134,7 @@ export const EarningsChart = ({ isConnected, isMobile, isHome }) => {
               fontSize: '1rem',
               fontWeight: 600,
               textAlign: 'center',
+              zIndex: 2,
             }}
           >
             {t(
