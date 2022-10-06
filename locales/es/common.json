@@ -48,9 +48,9 @@
   "You can select a period from this list to view more information": "Puede seleccionar un período de esta lista para ver más información",
   "Previous Periods": "Períodos anteriores",
   "Select Assets to Include in Chart": "Seleccionar activos para incluir en el gráfico",
-  "currently earning rewards for this period. Number of rewards will be updated when they are paid out": "actualmente ganando recompensas por este período. El número de recompensas se actualizará cuando se paguen",
+  "currently earning rewards for this period. Number of rewards will be updated after the end of the period": "actualmente ganando recompensas por este período. El número de recompensas se actualizará después del final del período",
   "currently earning rewards for period": "actualmente ganando recompensas por período",
-  "Number of rewards will be updated when they are paid out": "El número de recompensas se actualizará cuando se paguen",
+  "Number of rewards will be updated after the end of the period": "El número de recompensas se actualizará después del final del período",
   "is": "es",
   "NOT": "NO",
   "You have an active walletconnect session, do you want to disconnect the current session to connect another":"Tienes una sesión activa de walletconnect, ¿quieres desconectar la sesión actual para conectar otra?",
@@ -58,7 +58,7 @@
   "Connect new": "Conectar nueva",
   "Active Session": "Sesión activa",
   "View breakdown of earning and vesting of ALGX from each period here": "Vea el desglose de ganancias y derechos de ALGX de cada período aquí",
-  "Rewards have been paid out through Period": "Las recompensas se han pagado a través del período",
+  "Rewards have been calculated through Period": "Las recompensas se han calculado a través del período",
   "Complete": "Completa",
   "Click the arrow beside each wallet to expand for the option to disconnect and to view ALGO and ALGX balances. Other ASAs are not shown on this page": "Haga clic en la flecha al lado de cada billetera para expandir la opción de desconectarse y ver los saldos de ALGO y ALGX. Otros ASA no se muestran en esta página",
   "Return Home": "Volver a casa",
@@ -71,6 +71,6 @@
   "“Amount Supplied” is the average supplied over the period": "“Cantidad suministrada” es el promedio suministrado durante el período",
   "These tiles below are for ASAs this wallet provided liquidity to over this period": "Estos mosaicos a continuación son para ASA a los que esta billetera proporcionó liquidez durante este período",
   "Only ASAs that this wallet provided liquidity to over this period are shown here": "Aquí solo se muestran los ASA a los que esta billetera proporcionó liquidez durante este período",
-  "Rewards will be paid out two days after period completion": "Las recompensas se pagarán dos días después de la finalización del período",
+  "Rewards will be updated two days after period completion": "Las recompensas se actualizarán dos días después de la finalización del período",
   "is complete and will be available to view here shortly": "está completo y estará disponible para verlo aquí en breve"
 }
