@@ -305,7 +305,7 @@ export const PeriodTable = ({
                       ${t('currently earning rewards for period')} ${
                   pendingPeriod.number
                 }. ${t(
-                  'Number of rewards will be updated when they are paid out'
+                  'Number of rewards will be updated after the end of the period'
                 )}.`,
                   ]}
                 />
@@ -317,7 +317,7 @@ export const PeriodTable = ({
                     'is complete and will be available to view here shortly'
                   )}.`}
                   note={`${t(
-                    'Rewards will be paid out two days after period completion'
+                    'Rewards will be updated two days after period completion'
                   )}.`}
                   icon={() => {
                     return (

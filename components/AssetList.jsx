@@ -67,7 +67,7 @@ export const AssetList = ({ isConnected }) => {
                 'is complete and will be available to view here shortly'
               )}.`}
               note={`${t(
-                'Rewards will be paid out two days after period completion'
+                'Rewards will be updated two days after period completion'
               )}.`}
               icon={() => {
                 return (

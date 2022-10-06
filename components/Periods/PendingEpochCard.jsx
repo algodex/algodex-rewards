@@ -106,23 +106,23 @@ export const PendingEpochCard = ({
                     )}
                     {tc(
                       // eslint-disable-next-line max-len
-                      'currently earning rewards for this period. Number of rewards will be updated when they are paid out'
+                      'currently earning rewards for this period. Number of rewards will be updated after the end of the period'
                     )}
                     .
                   </Typography>
 
-                  <Typography
+                  {/* <Typography
                     variant="p"
                     fontSize={'0.8rem'}
                     fontStyle={'italic'}
                     sx={{ color: 'secondary.light' }}
                   >
-                    {tc(
+                 {tc(
                       // eslint-disable-next-line max-len
-                      'Rewards will be paid out within two days after the end of one-week accrual periods'
+              'Rewards will be paid out within two days after the end of one-week accrual periods'
                     )}
                     .
-                  </Typography>
+                  </Typography> */}
                 </Box>
               </Box>
             )}
@@ -182,7 +182,7 @@ export const PendingEpochCard = ({
             fontWeight={700}
             marginBottom={'.3rem'}
           >
-            {t('Rewards have been paid out through Period')}:{' '}
+            {t('Rewards have been calculated through Period')}:{' '}
             {Math.max(...rewards.map(({ value }) => value.epoch))}
           </Typography>
           <Typography
