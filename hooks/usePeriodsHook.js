@@ -32,9 +32,7 @@ export const usePeriodsHook = ({ activeWallet, isMobile }) => {
   const pendingPeriod = useMemo(() => {
     const curr_unix = Math.floor(new Date().getTime() / 1000)
     const epoch = Math.floor((curr_unix - getEpochStart(1)) / 604800 + 1)
-    const UTC = DateTime.fromJSDate(
-      new Date(getEpochStart(epoch) * 1000)
-    ).offsetNameShort
+    const UTC = DateTime.fromJSDate(new Date()).offsetNameShort
     const start = DateTime.fromJSDate(
       new Date(getEpochStart(epoch) * 1000)
     ).toLocaleString(DateTime.DATETIME_MED)
