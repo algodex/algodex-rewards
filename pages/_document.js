@@ -22,7 +22,9 @@ import createEmotionCache from '@/utils/createEmotionCache'
 const theme = getTheme('dark')
 
 const APP_NAME = 'Algodex - Rewards'
-const APP_DESCRIPTION = 'Algodex Rewards '
+const APP_DESCRIPTION =
+  // eslint-disable-next-line max-len
+  'The Algodex rewards app allows users to receive reward distributions and view accrued historical rewards from providing high-quality liquidity to verified asset pairs on Algodex.'
 export default class MyDocument extends Document {
   render() {
     return (
