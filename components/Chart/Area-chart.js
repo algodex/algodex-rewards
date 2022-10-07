@@ -120,9 +120,7 @@ export default function AreaChart({ isConnected }) {
         },
       })
     } else {
-      setTimeout(() => {
-        areaSeries.vested.setData(dummyChartData)
-      }, 2000)
+      areaSeries.vested.setData(dummyChartData)
     }
   }, [
     vestedChartData,
@@ -151,9 +149,6 @@ export default function AreaChart({ isConnected }) {
       const { width, height } = entries[0].contentRect
       chart?.current?.applyOptions({ width, height })
       chart?.current?.timeScale().fitContent()
-      // setTimeout(() => {
-      //   chart?.current?.timeScale().fitContent()
-      // }, 0)
     })
 
     resizeObserver.current.observe(chartContainerRef.current)
@@ -163,7 +158,11 @@ export default function AreaChart({ isConnected }) {
 
   return (
     <>
-      <div ref={chartContainerRef} className="chart-container" data-testid={'chart'} />
+      <div
+        ref={chartContainerRef}
+        className="chart-container"
+        data-testid={'chart'}
+      />
     </>
   )
 }

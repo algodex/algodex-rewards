@@ -24,12 +24,6 @@ const { i18n } = require('./next-i18next.config')
 const rewrites = () => {
   return [
     {
-      source: '/pouch/:db*',
-      destination: `${
-        process.env.DB_BASE_URL ? `${process.env.DB_BASE_URL}/:db*` : '/:db*'
-      }`,
-    },
-    {
       source: '/rewards/:db*',
       destination: `${
         process.env.ALGODEX_PROXY_API

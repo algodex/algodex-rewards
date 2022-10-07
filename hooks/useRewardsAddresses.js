@@ -25,16 +25,21 @@ import {
 import PropTypes from 'prop-types'
 import algosdk from 'algosdk'
 
-// PouchDB
-import DB from '@/lib/db'
 import { useRouter } from 'next/router'
+import {
+  getActiveWallet,
+  getAllWallets,
+  storageKeys,
+  updateActiveWallet,
+  updateWallets,
+} from '../lib/walletStorage'
 
 export const RewardsAddressesContext = createContext(undefined)
 
 export function RewardsAddressesProvider({ children }) {
-  const [addresses, setAddresses] = useState([])
+  const [addresses, setAddresses] = useState(getAllWallets())
+  const [activeWallet, setActiveWallet] = useState(getActiveWallet())
   const [isConnected, setIsConnected] = useState(false)
-  const [activeWallet, setActiveWallet] = useState()
   const minAmount = 1000
   useEffect(() => {
     setIsConnected(addresses.length > 0 ? true : false)
@@ -92,20 +97,12 @@ export default function useRewardsAddresses() {
   const {
     query: { viewAsWallet },
   } = useRouter()
-  const addressessDb = new DB('algodex_user_wallet_addresses')
-  const activeWalletDb = new DB('activeWallet')
   const context = useContext(RewardsAddressesContext)
   if (context === undefined) {
     throw new Error('Must be inside of a Rewards Addresses Provider')
   }
-  const {
-    addresses,
-    setAddresses,
-    activeWallet,
-    setActiveWallet,
-    minAmount,
-    setIsConnected,
-  } = context
+  const { addresses, setAddresses, activeWallet, setActiveWallet, minAmount } =
+    context
 
   const updateAddresses = useCallback((_addresses) => {
     if (_addresses == null) {
@@ -115,62 +112,40 @@ export default function useRewardsAddresses() {
   }, [])
 
   const removeAddress = useCallback(async (_address) => {
-    const _addresses = await addressessDb.getAddresses()
-    const parsedAddresses =
-      _addresses.map(({ doc }) => JSON.parse(doc.wallet)) || []
-    const _activeWallet = (await activeWalletDb.getAddresses())[0]?.doc
-    const parsedActiveWallet = JSON.parse(_activeWallet?.wallet)
-    addressessDb.removeAddress(_address)
-    const remainder = parsedAddresses.filter(
-      ({ address }) => address != _address
-    )
+    const _addresses = getAllWallets()
+    const _activeWallet = getActiveWallet()
+    const remainder = _addresses.filter(({ address }) => address != _address)
     setAddresses(remainder)
-    _setAddresses(remainder)
-    if (_address === parsedActiveWallet?.address) {
+    updateWallets(remainder)
+    if (_address === _activeWallet?.address) {
       setActiveWallet(remainder[0])
-      // activeWalletDb.removeAddress(_address)
     }
   }, [])
 
-  const {
-    setAddresses: _setAddresses,
-    myAlgoConnect,
-    peraConnect,
-    peraDisconnect,
-    myAlgoDisconnect,
-  } = useWallets(updateAddresses, removeAddress)
+  const { myAlgoConnect, peraConnect, peraDisconnect, myAlgoDisconnect } =
+    useWallets(updateAddresses, removeAddress)
 
   // Fetch saved and active wallets from storage
   useEffect(() => {
-    const getDBData = async () => {
-      const _addresses = await addressessDb.getAddresses()
-      const _activeWallet = (await activeWalletDb.getAddresses())[0]?.doc
-      const parsedAddresses =
-        _addresses.map(({ doc }) => JSON.parse(doc.wallet)) || []
-      setActiveWallet(_activeWallet ? JSON.parse(_activeWallet.wallet) : null)
-      loadPage(parsedAddresses)
-    }
-    getDBData()
+    getStoredData()
   }, [])
 
   // Get updated acount details and display on screen
-  const loadPage = async (_addresses) => {
-    if (_addresses) {
-      setIsConnected(_addresses.length > 0 ? true : false)
-      const result = await getAccountInfo(_addresses)
-      setAddresses(result)
-      _setAddresses(result)
-      addressessDb.updateAddresses(result)
-      const _activeWallet = (await activeWalletDb.getAddresses())[0]?.doc
-      if (
-        viewAsWallet &&
-        (process.env.NEXT_PUBLIC_ENVIRONMENT === 'development' ||
-          typeof window.end2end !== 'undefined')
-      ) {
-        loginAsAnother(viewAsWallet)
-      } else if (result.length > 0 && !_activeWallet) {
-        setActiveWallet(result[0])
-      }
+  const getStoredData = async () => {
+    const result =
+      addresses.length > 0 ? await getAccountInfo(addresses) : addresses
+    setAddresses(result)
+    updateWallets(result)
+
+    if (
+      viewAsWallet &&
+      !addresses.find(({ address }) => address === viewAsWallet) &&
+      (process.env.NEXT_PUBLIC_ENVIRONMENT === 'development' ||
+        typeof window.end2end !== 'undefined')
+    ) {
+      loginAsAnother(viewAsWallet)
+    } else if (result.length > 0 && !activeWallet) {
+      setActiveWallet(result[0])
     }
   }
 
@@ -179,28 +154,12 @@ export default function useRewardsAddresses() {
     const result = await getAccountInfo([{ address }])
     setActiveWallet(result[0])
     setAddresses([result[0], ...addresses])
-    _setAddresses([result[0], ...addresses])
-    addressessDb.updateAddresses([result[0], ...addresses])
+    updateWallets([result[0], ...addresses])
   }
 
   // Save active wallet when updated
   useEffect(() => {
-    const updateActive = async () => {
-      const address = (await activeWalletDb.getAddresses())[0]?.doc
-      const _activeWallet = address ? JSON.parse(address.wallet) : null
-      if (
-        addresses.length > 0 &&
-        activeWallet &&
-        _activeWallet?.address !== activeWallet?.address
-      ) {
-        const result = await getAccountInfo([activeWallet])
-        if (result[0]) {
-          activeWalletDb.removeAddress(_activeWallet?.address)
-          activeWalletDb.updateActiveWallet(result[0])
-        }
-      }
-    }
-    updateActive()
+    updateActiveWallet(activeWallet)
   }, [activeWallet])
 
   //Get account info
@@ -246,19 +205,14 @@ export default function useRewardsAddresses() {
     return Array.from(map.values())
   }
 
-  // Get updated acount details and save to storage
+  // Get updated account info and save to storage
   const updateStorage = async (_addresses) => {
     if (_addresses) {
-      const DBaddresses = await addressessDb.getAddresses()
-      const parsedAddresses =
-        DBaddresses.map(({ doc }) => JSON.parse(doc.wallet)) || []
-      setIsConnected(parsedAddresses.length > 0 ? true : false)
       const result = await getAccountInfo(_addresses)
-      setAddresses(_mergeAddresses(parsedAddresses, result))
-      _setAddresses(_mergeAddresses(parsedAddresses, result))
-      addressessDb.updateAddresses(result)
-      const _activeWallet = (await activeWalletDb.getAddresses())[0]?.doc
-      if (result.length > 0 && !_activeWallet) {
+      setAddresses(_mergeAddresses(_addresses, result))
+      updateWallets(_mergeAddresses(_addresses, result))
+
+      if (result.length > 0 && !activeWallet) {
         setActiveWallet(result[0])
       }
     }

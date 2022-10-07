@@ -26,6 +26,7 @@ import {
 } from 'react'
 import PropTypes from 'prop-types'
 import QRCodeModal from 'algorand-walletconnect-qrcode-modal'
+import { getAllWallets } from '../lib/walletStorage'
 
 /**
  *
@@ -47,7 +48,7 @@ function _mergeAddresses(a, b) {
 }
 export const WalletsContext = createContext()
 export function WalletsProvider({ children }) {
-  const [addresses, setAddresses] = useState([])
+  const [addresses, setAddresses] = useState(getAllWallets())
   const walletConnect = useRef()
 
   const initWalletConnect = async () => {
@@ -64,7 +65,9 @@ export function WalletsProvider({ children }) {
     initWalletConnect()
   }, [])
   return (
-    <WalletsContext.Provider value={{ addresses, setAddresses, walletConnect, initWalletConnect }}>
+    <WalletsContext.Provider
+      value={{ addresses, setAddresses, walletConnect, initWalletConnect }}
+    >
       {children}
     </WalletsContext.Provider>
   )
@@ -103,8 +106,9 @@ function useWallets(updateAddresses, removeAddress) {
       setAddresses(
         _mergeAddresses(addresses, _mergeAddresses(_addresses, accounts))
       )
+      const current = getAllWallets()
       updateAddresses(
-        _mergeAddresses(addresses, _mergeAddresses(_addresses, accounts))
+        _mergeAddresses(current, _mergeAddresses(_addresses, accounts))
       )
     },
     [setAddresses, addresses]
@@ -114,6 +118,9 @@ function useWallets(updateAddresses, removeAddress) {
   const handleDisconnect = useCallback((_address) => {
     console.debug('Handle removing from storage', _address)
     if (_address) {
+      setAddresses((prev) =>
+        prev.filter(({ address }) => address !== _address)
+      )
       // Removes walletConnect address when disconnected from user's walletConnect app
       removeAddress(_address)
     }
