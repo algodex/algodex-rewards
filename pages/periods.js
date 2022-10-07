@@ -69,8 +69,6 @@ export default function Periods() {
     <>
       <Head>
         <title>{t('title')}</title>
-        <meta name="description" content={t('description')} />
-        <link rel="icon" href="/favicon.ico" />
       </Head>
       <Container
         maxWidth="md"

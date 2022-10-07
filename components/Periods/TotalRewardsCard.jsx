@@ -192,7 +192,7 @@ export const TotalRewardsCard = ({
                   width: '8rem',
                   textAlign: 'center',
                   marginTop: '-2rem',
-                  marginLeft: '1rem',
+                  marginLeft: '2.2rem',
                 }}
               >
                 {t('Connect a wallet to see your total rewards add up here')}
