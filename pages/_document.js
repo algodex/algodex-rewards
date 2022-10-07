@@ -22,7 +22,7 @@ import createEmotionCache from '@/utils/createEmotionCache'
 const theme = getTheme('dark')
 
 const APP_NAME = 'Algodex - Rewards'
-const APP_DESCRIPTION = 'Algodex is a '
+const APP_DESCRIPTION = 'Algodex Rewards '
 export default class MyDocument extends Document {
   render() {
     return (
