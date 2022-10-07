@@ -20,11 +20,18 @@ import createEmotionServer from '@emotion/server/create-instance'
 import getTheme from '@/themes/getTheme'
 import createEmotionCache from '@/utils/createEmotionCache'
 const theme = getTheme('dark')
+
+const APP_NAME = 'Algodex - Rewards'
+const APP_DESCRIPTION =
+  // eslint-disable-next-line max-len
+  'The Algodex rewards app allows users to receive reward distributions and view accrued historical rewards from providing high-quality liquidity to verified asset pairs on Algodex.'
 export default class MyDocument extends Document {
   render() {
     return (
       <Html lang="en">
         <Head>
+          <meta name="application-name" content={APP_NAME} />
+          <meta name="description" content={APP_DESCRIPTION} />
           {/* PWA primary color */}
           <meta name="theme-color" content={theme.palette.primary.main} />
           <link rel="shortcut icon" href="/favicon.ico" />

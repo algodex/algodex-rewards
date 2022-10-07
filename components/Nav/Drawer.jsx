@@ -36,6 +36,7 @@ import OutboxIcon from '@mui/icons-material/Outbox'
 import ArticleIcon from '@mui/icons-material/Article'
 import HelpCenterIcon from '@mui/icons-material/HelpCenter'
 import InfoIcon from '@mui/icons-material/Info'
+import GitHubIcon from '@mui/icons-material/GitHub'
 
 // Custom MUI Components
 import ListItemLink from '@/components/Nav/ListItemLink'
@@ -76,11 +77,11 @@ const otherLinks = [
     icon: () => <OutboxIcon sx={{ color: 'secondary.light' }} />,
     link: 'https://mailbox.algodex.com/',
   },
-  // {
-  //   text: 'REWARDS',
-  //   icon: () => <ArticleIcon sx={{ color: 'secondary.light' }} />,
-  // link:'/'
-  // },
+  {
+    text: 'GITHUB',
+    icon: () => <GitHubIcon sx={{ color: 'secondary.light' }} />,
+    link: 'https://github.com/algodex/algodex-rewards ',
+  },
 ]
 function Drawer({ width, offset, isMobile, open, ...props }) {
   const { t: common } = useTranslation('common')
