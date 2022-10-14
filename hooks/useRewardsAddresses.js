@@ -29,18 +29,17 @@ import { useRouter } from 'next/router'
 import {
   getActiveWallet,
   getAllWallets,
-  storageKeys,
   updateActiveWallet,
   updateWallets,
 } from '../lib/walletStorage'
 
+export const minAmount = 3000
 export const RewardsAddressesContext = createContext(undefined)
 
 export function RewardsAddressesProvider({ children }) {
   const [addresses, setAddresses] = useState(getAllWallets())
   const [activeWallet, setActiveWallet] = useState(getActiveWallet())
   const [isConnected, setIsConnected] = useState(false)
-  const minAmount = 1000
   useEffect(() => {
     setIsConnected(addresses.length > 0 ? true : false)
   }, [addresses])

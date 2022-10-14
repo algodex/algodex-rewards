@@ -45,6 +45,7 @@ import { AssetContainer } from '../AssetContainer'
 import { shortenAddress } from '../../lib/helper'
 import { checkIfRecorded } from '../../lib/getRewards'
 import { useEffect } from 'react'
+import { minAmount } from '../../hooks/useRewardsAddresses'
 
 const columns = [
   { id: 'epoch', label: 'Period' },
@@ -257,7 +258,7 @@ export const PeriodTable = ({
                     title="Not enough ALGX in wallet for rewards"
                     warnings={[
                       // eslint-disable-next-line max-len
-                      'At least 100 ALGX must be held for a wallet to vest retroactive rewards and/or earn new rewards.',
+                      `At least ${minAmount} ALGX must be held for a wallet to vest retroactive rewards and/or earn new rewards.`,
                     ]}
                     link={{
                       title: 'View info on earning rewards here',
