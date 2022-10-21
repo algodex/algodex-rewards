@@ -22,7 +22,6 @@ import { useTranslation } from 'next-i18next'
 // Material UI components
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
-import LaunchRoundedIcon from '@mui/icons-material/LaunchRounded'
 import InfoRoundedIcon from '@mui/icons-material/InfoRounded'
 import CircularProgress from '@mui/material/CircularProgress'
 import styled from '@emotion/styled'
@@ -30,6 +29,7 @@ import Tooltip, { tooltipClasses } from '@mui/material/Tooltip'
 
 // custom hook and libs
 import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
+import { attachCurrency } from '../../lib/helper'
 
 const styles = {
   selectorContainer: {
@@ -74,19 +74,6 @@ export const CurrentEpochCard = ({
   const { t } = useTranslation('common')
 
   const { conversionRate } = usePriceConversionHook({})
-
-  const attachCurrency = (price) => {
-    return `${
-      activeCurrency === 'ALGX'
-        ? price.toLocaleString(undefined, {
-          maximumFractionDigits: 0,
-        })
-        : (price * conversionRate).toLocaleString(undefined, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        })
-    } ${activeCurrency}`
-  }
 
   return (
     <>
@@ -222,7 +209,13 @@ export const CurrentEpochCard = ({
                     <CircularProgress size={'1rem'} />
                   </>
                 ) : (
-                  <>{attachCurrency(completedPeriod.earnedRewards || 0)}</>
+                  <>
+                    {attachCurrency({
+                      price: completedPeriod.earnedRewards || 0,
+                      conversionRate,
+                      activeCurrency,
+                    })}
+                  </>
                 )}
               </Typography>
             </Box>
@@ -244,7 +237,13 @@ export const CurrentEpochCard = ({
                     <CircularProgress size={'1rem'} />
                   </>
                 ) : (
-                  <>{attachCurrency(completedPeriod.vestedRewards || 0)}</>
+                  <>
+                    {attachCurrency({
+                      price: completedPeriod.vestedRewards || 0,
+                      conversionRate,
+                      activeCurrency,
+                    })}
+                  </>
                 )}
               </Typography>
             </Box>
@@ -274,32 +273,6 @@ export const CurrentEpochCard = ({
             {t('Rewards were paid out on')} {completedPeriod.vestedDate}.
           </Typography>
         )}
-
-        <Box textAlign={'center'} marginTop={'1.5rem'}>
-          {isConnected && completedPeriod.transactionId && (
-            <Link
-              href={`http://algoexplorer.io/tx/${completedPeriod.transactionId}`}
-              target={'_blanc'}
-              sx={{
-                textDecoration: 'none',
-                fontSize: '0.8rem',
-                fontWeight: 700,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'flex-end',
-              }}
-            >
-              {t('View on AlgoExplorer')}
-              <LaunchRoundedIcon
-                sx={{
-                  color: 'primary.contrastText',
-                  fontSize: '0.9rem',
-                  marginLeft: '0.3rem',
-                }}
-              />
-            </Link>
-          )}
-        </Box>
       </Box>
     </>
   )
