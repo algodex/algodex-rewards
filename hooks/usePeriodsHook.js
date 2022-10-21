@@ -123,6 +123,7 @@ export const usePeriodsHook = ({ activeWallet, isMobile }) => {
     }
     for (const accrualAssetId in assets) {
       const list = assets[accrualAssetId]
+      // console.log(list)
       data.push({
         accrualAssetId,
         earnedRewards: list.reduce((a, b) => a + b.earnedRewardsFormatted, 0),
@@ -135,6 +136,11 @@ export const usePeriodsHook = ({ activeWallet, isMobile }) => {
         assetLogo:
           tinymanAssets[accrualAssetId]?.logo?.svg ||
           'https://asa-list.tinyman.org/assets/??',
+        transactionId: vestedRewards.find(
+          ({ value }) =>
+            value.transactionId != null &&
+            parseInt(accrualAssetId) === value.accrualAssetId
+        )?.value?.transactionId,
       })
     }
     setPeriodAssets(data)
@@ -181,8 +187,6 @@ export const usePeriodsHook = ({ activeWallet, isMobile }) => {
           0
         ),
         vestedDate,
-        transactionId: selected.find(({ value }) => value.transactionId != null)
-          ?.value?.transactionId,
       }
     } else {
       return {

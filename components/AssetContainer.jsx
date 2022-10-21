@@ -82,7 +82,11 @@ export const AssetContainer = ({ asset }) => {
         </Box>
         <Box sx={{ marginLeft: 'auto', alignSelf: 'flex-start' }}>
           <Link
-            href={`https://algoexplorer.io/asset/${asset.accrualAssetId}`}
+            href={
+              asset.transactionId
+                ? `http://algoexplorer.io/tx/${asset.transactionId}`
+                : `https://algoexplorer.io/asset/${asset.accrualAssetId}`
+            }
             target={'_blanc'}
           >
             <LaunchRoundedIcon
