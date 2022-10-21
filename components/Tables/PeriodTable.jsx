@@ -449,7 +449,9 @@ export const PeriodTable = ({
                                     </StyledTableCell>
                                     <StyledTableCell align="right">
                                       {attachCurrency({
-                                        price: row.unvestedRewards || 0,
+                                        price: Math.abs(
+                                          row.unvestedRewards || 0
+                                        ),
                                         activeCurrency,
                                         conversionRate,
                                       })}
