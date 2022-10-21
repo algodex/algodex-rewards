@@ -118,8 +118,16 @@ export const AssetContainer = ({ asset }) => {
             fontWeight={600}
             lineHeight={'1.5rem'}
           >
-            {asset.asaTotalDepth.toFixed(2)} {asset.assetName} <br />
-            {asset.algoTotalDepth.toFixed(3)} ALGO
+            {asset.asaTotalDepth.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}{' '}
+            {asset.assetName} <br />
+            {asset.algoTotalDepth.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}{' '}
+            ALGO
           </Typography>
         </Box>
         <Divider
@@ -139,7 +147,10 @@ export const AssetContainer = ({ asset }) => {
             {asset.lastWeek ? t('Last Week’s Rewards') : t('Earned Rewards')}
           </Typography>
           <Typography fontSize={'1rem'} fontWeight={600} textAlign={'right'}>
-            {(asset.lastWeek || asset.earnedRewards).toLocaleString()} ALGX
+            {(asset.lastWeek || asset.earnedRewards).toLocaleString(undefined, {
+              maximumFractionDigits: 0,
+            })}{' '}
+            ALGX
           </Typography>
 
           <Typography

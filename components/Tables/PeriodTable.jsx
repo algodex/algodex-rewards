@@ -42,7 +42,7 @@ import { WarningCard } from '../WarningCard'
 import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
 import { useTranslation } from 'next-i18next'
 import { AssetContainer } from '../AssetContainer'
-import { shortenAddress } from '../../lib/helper'
+import { attachCurrency, shortenAddress } from '../../lib/helper'
 import { checkIfRecorded } from '../../lib/getRewards'
 import { useEffect } from 'react'
 import { minAmount } from '../../hooks/useRewardsAddresses'
@@ -151,13 +151,6 @@ export const PeriodTable = ({
     const isAsc = orderBy === property && order === 'asc'
     setOrder(isAsc ? 'desc' : 'asc')
     setOrderBy(property)
-  }
-
-  const attachCurrency = (price) => {
-    return `${(activeCurrency === 'ALGX'
-      ? price
-      : price * conversionRate
-    ).toLocaleString()} ${activeCurrency}`
   }
 
   const mergedRewards = useMemo(() => {
@@ -441,15 +434,25 @@ export const PeriodTable = ({
                                       {row.epoch}
                                     </StyledTableCell>
                                     <StyledTableCell align="right">
-                                      {attachCurrency(
-                                        row.earnedRewardsFormatted || 0
-                                      )}
+                                      {attachCurrency({
+                                        price: row.earnedRewardsFormatted || 0,
+                                        activeCurrency,
+                                        conversionRate,
+                                      })}
                                     </StyledTableCell>
                                     <StyledTableCell align="right">
-                                      {attachCurrency(row.vestedRewards || 0)}
+                                      {attachCurrency({
+                                        price: row.vestedRewards || 0,
+                                        activeCurrency,
+                                        conversionRate,
+                                      })}
                                     </StyledTableCell>
                                     <StyledTableCell align="right">
-                                      {attachCurrency(row.unvestedRewards || 0)}
+                                      {attachCurrency({
+                                        price: row.unvestedRewards || 0,
+                                        activeCurrency,
+                                        conversionRate,
+                                      })}
                                     </StyledTableCell>
                                     <StyledTableCell>
                                       <ChevronRightIcon />

@@ -78,7 +78,9 @@ export const CurrentEpochCard = ({
   const attachCurrency = (price) => {
     return `${
       activeCurrency === 'ALGX'
-        ? price.toLocaleString()
+        ? price.toLocaleString(undefined, {
+          maximumFractionDigits: 0,
+        })
         : (price * conversionRate).toLocaleString(undefined, {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,

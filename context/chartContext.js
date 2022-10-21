@@ -29,6 +29,7 @@ import { DateTime } from 'luxon'
 import { usePriceConversionHook } from '@/hooks/usePriceConversionHook'
 import { getAlgoExplorerAssets, getAssets } from '@/lib/getAlgoAssets'
 import { getEpochStart } from '../lib/getRewards'
+import { attachCurrency } from '../lib/helper'
 
 export const ChartDataContext = createContext(undefined)
 
@@ -205,20 +206,6 @@ export function ChartDataProvider({ children }) {
     return data
   }, [rewards, includeUnvested, activeStage, activeRange, selected])
 
-  const attachCurrency = (price) => {
-    return `${
-      activeCurrency === 'ALGX'
-        ? price.toLocaleString(undefined, {
-          minimumFractionDigits: 3,
-          maximumFractionDigits: 3,
-        })
-        : (price * conversionRate).toLocaleString(undefined, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        })
-    } ${activeCurrency}`
-  }
-
   const getAssetTableData = useCallback(async () => {
     let _includeUnvested = includeUnvested
     let rewardsCopy = includeUnvested
@@ -262,9 +249,13 @@ export function ChartDataProvider({ children }) {
     const data = [
       {
         asset: 'ALL',
-        EDRewards: attachCurrency(estDailyRwd),
-        total: attachCurrency(
-          _includeUnvested
+        EDRewards: attachCurrency({
+          price: estDailyRwd,
+          activeCurrency,
+          conversionRate,
+        }),
+        total: attachCurrency({
+          price: _includeUnvested
             ? rewardsCopy.reduce(
               (a, b) => a + b.value.earnedRewardsFormatted,
               0
@@ -272,8 +263,10 @@ export function ChartDataProvider({ children }) {
             : rewardsCopy.reduce(
               (a, b) => a + b.value.formattedVestedRewards,
               0
-            )
-        ),
+            ),
+          activeCurrency,
+          conversionRate,
+        }),
       },
     ]
 
@@ -311,14 +304,22 @@ export function ChartDataProvider({ children }) {
 
           data.push({
             asset: assetInfo?.['unit-name'] || '??',
-            EDRewards: attachCurrency(dailyRwd),
+            EDRewards: attachCurrency({
+              price: dailyRwd,
+              activeCurrency,
+              conversionRate,
+            }),
             total: _includeUnvested
-              ? attachCurrency(
-                list.reduce((a, b) => a + b.earnedRewardsFormatted, 0)
-              )
-              : attachCurrency(
-                list.reduce((a, b) => a + b.formattedVestedRewards, 0)
-              ),
+              ? attachCurrency({
+                price: list.reduce((a, b) => a + b.earnedRewardsFormatted, 0),
+                activeCurrency,
+                conversionRate,
+              })
+              : attachCurrency({
+                price: list.reduce((a, b) => a + b.formattedVestedRewards, 0),
+                activeCurrency,
+                conversionRate,
+              }),
           })
         } catch (e) {
           // console.error(e)
@@ -412,7 +413,7 @@ export function ChartDataProvider({ children }) {
         setSelected,
         availableAssets,
         pendingPeriod,
-        rewards
+        rewards,
       }}
     >
       {children}
