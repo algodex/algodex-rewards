@@ -78,6 +78,11 @@ const otherLinks = [
     link: 'https://mailbox.algodex.com/',
   },
   {
+    text: 'ADD LIQUIDITY',
+    icon: () => <OutboxIcon sx={{ color: 'secondary.light' }} />,
+    link: 'https://tradingbot.algodex.com/',
+  },
+  {
     text: 'GITHUB',
     icon: () => <GitHubIcon sx={{ color: 'secondary.light' }} />,
     link: 'https://github.com/algodex/algodex-rewards ',
