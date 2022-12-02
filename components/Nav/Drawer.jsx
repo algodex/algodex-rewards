@@ -37,6 +37,7 @@ import ArticleIcon from '@mui/icons-material/Article'
 import HelpCenterIcon from '@mui/icons-material/HelpCenter'
 import InfoIcon from '@mui/icons-material/Info'
 import GitHubIcon from '@mui/icons-material/GitHub'
+import TrendingUpIcon from '@mui/icons-material/TrendingUp'
 
 // Custom MUI Components
 import ListItemLink from '@/components/Nav/ListItemLink'
@@ -79,7 +80,7 @@ const otherLinks = [
   },
   {
     text: 'ADD LIQUIDITY',
-    icon: () => <OutboxIcon sx={{ color: 'secondary.light' }} />,
+    icon: () => <TrendingUpIcon sx={{ color: 'secondary.light' }} />,
     link: 'https://tradingbot.algodex.com/',
   },
   {
