@@ -29,6 +29,8 @@ describe('Algodex Rewards Chart ', () => {
     })
 
     cy.get('[data-testid=chart]').should('be.visible')
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(4000)
     cy.get('[data-testid=column-asset-USDC]').contains('USDC')
     cy.get('[data-testid=column-asset-goBTC]').contains('goBTC')
   })
